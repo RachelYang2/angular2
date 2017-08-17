@@ -1,0 +1,7 @@
+.table-striped > tbody > tr:nth-of-type(odd) {
+     background-color: #1f1f1f; 
+}
+
+ng2-smart-table{
+	font-size:14px;
+}

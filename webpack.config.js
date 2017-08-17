@@ -27,7 +27,7 @@ module.exports = {
           },
           {
             test: /\.css$/,
-            loader:'style-loader!css-loader' 
+            loaders: 'style-loader!css-loader' 
           },
           {
             test: /\.css$/,
@@ -40,13 +40,6 @@ module.exports = {
         extensions: ['.js', '.ts']
     },
     plugins: [
-        // new webpack.ContextReplacementPlugin(
-        //   // The (\\|\/) piece accounts for path separators in *nix and Windows
-        //   /angular(\\|\/)core(\\|\/)@angular/,
-        //   helpers.root('./src'), // location of your src
-        //   {} // a map of your routes
-        // ),
-    
         new webpack.optimize.CommonsChunkPlugin({
           name: ['app', 'vendor', 'polyfills','vendor.js']
         }),

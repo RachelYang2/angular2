@@ -5,9 +5,11 @@ import '@angular/common';
 import '@angular/http';
 import '@angular/router';
 
-import 'jquery';
-import 'bootstrap/dist/js/bootstrap';
-import 'bootstrap-loader';
+
 
 // RxJS
 import 'rxjs';
+
+import 'jquery';
+import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap-loader';

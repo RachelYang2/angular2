@@ -18,46 +18,7 @@
 </head>
 <body>
 <toaster-container toaster-options="{'time-out': 3000, 'close-button':true, 'animation-class': 'toast-center-right'}"></toaster-container>
-
-
-<div class="container-fluid"  us-spinner="{color:'#ffffff', lines:13, width:14, length:28, radius:42, shadow:true, hwaccel:true, speed:0.8}" spinner-on="false" style="padding-top:56px;padding-bottom:90px;height:100%;padding-right:0;" id="mainContent">
-
-
-    <div class="col-md-9 col-xs-12" >
-        <button type="button" class="btn btn-primary btn-circle" style="position: absolute; top: 0px; right: 10px; z-index:99" onclick="history.back();"><span style="margin-bottom:20px;">Back</span></button>
-        <!-- main content goes here-->
-        <div id="mainWindow" class="row" ng-view style="overflow-y: auto;overflow-x:hidden; padding-right: 10px;" ng-controller="MainCtrl">
-
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-md-3" style="padding-right:0;">
-        <!-- <div id="rightbar" ng-controller="SideBarCtrl" class="" style="background-color:#262626;"> -->
-        <ng-include src="'/sidebar.html'"/>
-        <!-- </div> -->
-
-    </div>
-
-    <div id="footerwrap" class="navbar-fixed-bottom" ng-controller="FooterCtrl">
-        <!-- <footer class="clearfix"></footer> -->
-        <div class="container-fluid">
-            <div class="row ">
-                <p ng-show="!notifications">{{timestamp|date:'short'}} - Welcome <label>{{fullName}}</label>!</p>
-                <p ng-repeat="r in notifications">
-                    {{r.timestamp|date:'short'}} - <label>{{r.owner}}</label> {{r.operation}}d a {{r.target}} named
-                    <a ng-if="r.target=='model'" routerLink="/viewrule/{{r.name}}">{{r.name}}</a>
-                    <label ng-if="r.target=='dataasset'">"{{r.name}}"</label>
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
 <app-root></app-root>
-<!-- <script type="text/javascript" src="inline.bundle.js"></script>
-<script type="text/javascript" src="polyfills.bundle.js"></script>
-<script type="text/javascript" src="styles.bundle.js"></script>
-<script type="text/javascript" src="vendor.bundle.js"></script> -->
-<!-- <script type="text/javascript" src="./main.js"></script> -->
 </body>
 </body>
 </html>
