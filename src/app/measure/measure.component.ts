@@ -13,53 +13,50 @@ export class MeasureComponent implements OnInit {
   settings = {
     columns: {
       name: {
-        title: 'Measure Name'
+        title: 'Measure Name',
+        editable:false,
+        type:'html'
       },
       type: {
-        title: 'Measure Type'
+        title: 'Measure Type',
+        editable:false,
       },
       description: {
-        title: 'Description'
+        title: 'Description',
+        editable:false,
       },
       organization: {
-        title: 'Organization'
+        title: 'Organization',
+        editable:false,
       }
     },
     actions:{
+    	position:'right',
     	add:false,
-    	columnTitle:'',
-    	edit:false,
-    	delete:false
+    	columnTitle:'Action',
+    	edit:true,
+    	delete:true
     },
-    hideSubHeader:true
+
+    hideSubHeader:true,
+    edit:{
+    	editButtonContent:'<i class="fa fa-eye"></i>'
+    },
+    delete:{
+    	deleteButtonContent:'<i class="fa fa-trash-o"></i>'
+    },
+    mode:'external'
 
   };
   
-  // [
-  //   {
-  //     id: 1,
-  //     name: "Leanne Graham",
-  //     username: "Bret",
-  //     email: "Sincere@april.biz"
-  //   },
-  //   // ... other rows here
-  //   {
-  //     id: 11,
-  //     name: "Nicholas DuBuque",
-  //     username: "Nicholas.Stanton",
-  //     email: "Rey.Padberg@rosamond.biz"
-  //   }
-  // ];
-
   constructor(private http:HttpClient) { };
 
   ngOnInit():void {
-  	this.http.get('http://localhost:8080/measures').subscribe(data =>{
-  	// this.http.get('../../measures.json').subscribe(data =>{
-  		// console.log(data);
-  		this.results = data;
-  		// console.log(this.results);
-  	});
+  	// this.http.get('http://localhost:8080/measures').subscribe(data =>{
+  	// this.http.get('./measures.json').subscribe(data =>{
+  	// 	this.results = data;
+  	// });
+  	this.results = [{"id":1,"name":"waq","description":"waq","organization":"waq","type":"accuracy","source":{"id":1,"type":"HIVE","version":"1.2","config":{"database":"default","table.name":"users_info_src"}},"target":{"id":2,"type":"HIVE","version":"1.2","config":{"database":"default","table.name":"users_info_target"}},"evaluateRule":{"id":1,"sampleRatio":0,"rules":"$source['user_id'] == $target['user_id'] AND $source['first_name'] == $target['first_name'] AND $source['last_name'] == $target['last_name'] AND $source['address'] == $target['address'] AND $source['email'] == $target['email'] AND $source['phone'] == $target['phone'] AND $source['post_code'] == $target['post_code']"},"owner":"test"},{"id":2,"name":"viewitem_hourly","description":"qq","organization":"hadoop","type":"accuracy","source":{"id":3,"type":"HIVE","version":"1.2","config":{"database":"default","table.name":"data_exp"}},"target":{"id":4,"type":"HIVE","version":"1.2","config":{"database":"default","table.name":"data_only"}},"evaluateRule":{"id":2,"sampleRatio":0,"rules":"$source['uid'] == $target['uage']"},"owner":"test"}];
   };
   data = this.results;
 }

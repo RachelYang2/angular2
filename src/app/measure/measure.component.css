@@ -2,6 +2,14 @@
      background-color: #1f1f1f; 
 }
 
-ng2-smart-table{
-	font-size:14px;
+#measureTable{
+	font-size:18px;
+}
+
+.ng2-st-actions-title .ng2-smart-title{
+	color:#1e6bb8;
+}
+
+#measureTable .ng2-smart-titles{
+	background-color:#7D95CC;
 }

@@ -1,10 +1,13 @@
 <div>
     <p>
-        <a class="btn btn-primary btn-o btn-wide" routeLink="/createrule"><i class="fa fa-plus"></i> Create Measure</a>
+        <a routerLink="/createmeasure" class="btn btn-primary btn-o btn-wide" >
+        <i class="fa fa-plus"></i> 
+        Create Measure
+        </a>
     </p>
 
     <div id="modelContainer">
-    	<ng2-smart-table [settings]="settings" [source]="results"></ng2-smart-table>
+    	<ng2-smart-table [settings]="settings" [source]="results" id="measureTable"></ng2-smart-table>
 <!--         <table st-table="displayed" st-pipe="paging" class="table table-striped">
             <thead>
             <tr style="background-color:#7D95CC">
