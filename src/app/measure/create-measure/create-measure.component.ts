@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 
 @Component({
   selector: 'app-create-measure',
@@ -10,6 +11,7 @@ export class CreateMeasureComponent implements OnInit {
     {
       id: 1,
       name: 'root1',
+      isExpanded: true,
       children: [
         { id: 2, name: 'child1' },
         { id: 3, name: 'child2' }
@@ -18,6 +20,7 @@ export class CreateMeasureComponent implements OnInit {
     {
       id: 4,
       name: 'root2',
+      isExpanded: true,
       children: [
         { id: 5, name: 'child2.1' },
         {
@@ -30,6 +33,23 @@ export class CreateMeasureComponent implements OnInit {
       ]
     }
   ];
+
+  options: ITreeOptions = {
+    displayField: 'name',
+    isExpandedField: 'expanded',
+    // idField: 'uuid',
+    actionMapping: {
+      mouse: {
+        click: (tree, node, $event) => {
+          if (node.hasChildren) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+        }
+      }
+    },
+    
+    animateExpand: true,
+    animateSpeed: 30,
+    animateAcceleration: 1.2
+  }
 
 
   constructor() { }
