@@ -1,3 +1,6 @@
+@import url('../../../../node_modules/angular2-toaster/toaster.css');
+@import url('../measure.component.css');
+
 div.tree div.tree-children::before,
 div.tree::before {
     content: "";

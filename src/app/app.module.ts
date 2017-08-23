@@ -5,6 +5,9 @@ import {HttpClientModule} from '@angular/common/http';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { TreeModule } from 'angular-tree-component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+import {ToasterModule, ToasterService} from 'angular2-toaster';
 
 import { AppComponent } from './app.component';
 import { MeasureComponent } from './measure/measure.component';
@@ -69,6 +72,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     Ng2SmartTableModule,
     TreeModule,
+    BrowserAnimationsModule,
+    ToasterModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
