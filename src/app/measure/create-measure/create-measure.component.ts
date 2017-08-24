@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToasterModule, ToasterService} from 'angular2-toaster';
@@ -11,6 +13,7 @@ class node {
   children:object[];
   isExpanded:boolean;
   cols:object[];
+  parent:string;
 };
 
 @Component({
@@ -23,38 +26,91 @@ export class CreateMeasureComponent implements OnInit {
 
   currentStep = 1;
   selection = [];
+  selectedAll = false;
+  selectedAllTarget = false;
   selectionTarget = [];
-  selectionPK = [];
   mappings = [];
   matches = [];
   dataAsset = '';
   basic = {};
   rules = '';
   currentDB = '';
+  currentTable = '';
+  currentDBTarget = '';
+  currentTableTarget = '';
+  schemaCollection:object[];
+  schemaCollectionTarget:object[];
+  matchFunctions = ['==', '!==', '>', '>=','<',"<="];
+  measureTypes = ['accuracy,validity','anomaly detection','publish metrics'];
 
   private toasterService: ToasterService;
 
-       next (form) {
-           // this.currentStep++;
-           // console.log(this.currentStep);
-           // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-           // console.log($(stepSelection));
-       }
 
-      prev (form) {
-          // this.currentStep--;
-          // console.log(this.currentStep);
-          // setTimeout(function(){
-          // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-          // }, 0);
+  toggleSelection (value) {
+      console.log(value);
+      var idx = this.selection.indexOf(value);
+      // is currently selected
+      if (idx > -1) {
+          this.selection.splice(idx, 1);
+          this.selectedAll = false;
       }
-      goTo (i) {
-        
-          this.currentStep = i;
-          console.log(this.currentStep);
-          var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-          console.log($(stepSelection));
+      // is newly selected
+      else {
+          this.selection.push(value);
       }
+      console.log(this.selection);
+  };
+
+  toggleSelectionTarget (value) {
+      console.log(value);
+      var idx = this.selectionTarget.indexOf(value);
+      // is currently selected
+      if (idx > -1) {
+          this.selectionTarget.splice(idx, 1);
+          this.selectedAllTarget = false;
+      }
+      // is newly selected
+      else {
+          this.selectionTarget.push(value);
+      }
+      console.log(this.selectionTarget);
+  };
+
+  toggleAll () {
+    if (this.selectedAll) {
+        this.selectedAll = true;
+    } else {
+        this.selectedAll = false;
+    }
+    this.selection = [];
+    // for(let item in this.schemaCollection){
+    //   item.selected = this.selectedAll;
+    //   if (this.selectedAll) {
+    //       this.selection.push(this.currentNode.name + '.' + item.name);
+    //   }
+    // }
+  };
+
+  next (form) {
+      this.currentStep++;
+      console.log(this.currentStep);
+      // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
+      // console.log($(stepSelection));
+  }
+
+  prev (form) {
+      this.currentStep--;
+      // console.log(this.currentStep);
+      // setTimeout(function(){
+      // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
+      // }, 0);
+  }
+  goTo (i) {
+      this.currentStep = i;
+      console.log(this.currentStep);
+      var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
+      console.log($(stepSelection));
+  }
       // submit = function(form) {                
       //         form.$setPristine();
       //         var rule = '';
@@ -241,9 +297,7 @@ export class CreateMeasureComponent implements OnInit {
   
   };
   
-  schemaCollection:object[];
-  schemaCollectionTarget:object[];
-
+  
 
   options: ITreeOptions = {
     displayField: 'name',
@@ -252,22 +306,20 @@ export class CreateMeasureComponent implements OnInit {
     actionMapping: {
       mouse: {
         click: (tree, node, $event) => {
-          console.log(tree);
-          console.log(node);
-          console.log($event);
-
           if (node.hasChildren) {
-            this.currentDB = node.name;
+            this.currentDB = node.data.name;
+            this.currentTable = '';
             TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
           }
           else if(node.data.cols)
           {
+            this.currentTable = node.data.name;
+            this.currentDB = node.data.parent;
             this.schemaCollection = node.data.cols;
           }
         }
       }
     },
-
     animateExpand: true,
     animateSpeed: 30,
     animateAcceleration: 1.2
@@ -280,19 +332,20 @@ export class CreateMeasureComponent implements OnInit {
     actionMapping: {
       mouse: {
         click: (tree, node, $event) => {
-          console.log(tree);
-          console.log(node);
-          console.log($event);
-
-          if (node.hasChildren) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+          if (node.hasChildren) {
+            this.currentDBTarget = node.data.name;
+            this.currentTableTarget = '';
+            TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+          }
           else if(node.data.cols)
           {
+            this.currentTableTarget = node.data.name;
+            this.currentDBTarget = node.data.parent;
             this.schemaCollectionTarget = node.data.cols;
           }
         }
       }
     },
-
     animateExpand: true,
     animateSpeed: 30,
     animateAcceleration: 1.2
@@ -340,7 +393,9 @@ export class CreateMeasureComponent implements OnInit {
           new_child.name = this.data[db][i]['tableName'];
           new_node.children.push(new_child);
           new_child.isExpanded = false;
+          new_child.parent = db;
           new_child.cols = this.data[db][i]['sd']['cols'];
+
         }
         this.nodeList.push(new_node);
     }

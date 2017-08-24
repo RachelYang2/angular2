@@ -8,7 +8,7 @@ import { TreeModule } from 'angular-tree-component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {ToasterModule, ToasterService} from 'angular2-toaster';
-
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { MeasureComponent } from './measure/measure.component';
 import { JobComponent } from './job/job.component';
@@ -74,6 +74,7 @@ const appRoutes: Routes = [
     TreeModule,
     BrowserAnimationsModule,
     ToasterModule,
+    FormsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
