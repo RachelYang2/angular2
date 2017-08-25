@@ -142,7 +142,7 @@
                       </tr>
                       <tr *ngFor="let row of schemaCollectionTarget">
                         <td>
-                        <input type="checkbox" type="checkbox" #chooseTarget (click)='toggleSelectionTarget(chooseTarget.value)' value={{row.parent}}.{{row.name}}/>
+                        <input type="checkbox" type="checkbox" #chooseTarget (click)='toggleSelectionTarget(chooseTarget.value)' value={{currentTableTarget}}.{{row.name}}/>
                         </td>
                         <td>{{row.name}}</td>
                         <td>{{row.type}}</td>
@@ -187,17 +187,22 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <tr *ngFor="let item of selectionTarget" >
-                        <td>{{currentDBTarget}}.{{currentTableTarget}}{{item}}</td>
+                      <tr *ngFor="let item of selectionTarget;let i = index" >
+                        <td>{{currentDBTarget}}.{{item}}</td>
                         <td style="text-align:center;">
-                          <select class="form-control" style="background:#00FFFF;font-weight:bold" id="mapRule" name='mapRule'>
-                            <option *ngFor="let func of matchFunctions" [ngValue]="func">{{func}}</option>
+                          <select class="form-control" style="background:#00FFFF;font-weight:bold" id="mapRule" name='mapRule' [(ngModel)]="matches[i]" >
+                            <option *ngFor="let func of matchFunctions" >{{func}}</option>
                           </select>
                         </td>
                         <td>
-                          <select class="form-control" [(ngModel)]='mappings' name='mappings'>
+                          <select class="form-control" [ngModel] = 'mappings' name="mappings"
+                          (ngModelChange)="addMapping($event,i)" >
                             <option value="">-Please select-</option>
-                            <option *ngFor="let itemSrc of selection" [ngValue]="itemSrc">{{currentDB}}.{{itemSrc}}</option>
+                            <option  
+                            *ngFor="let itemSrc of selection"  
+                            [ngValue]="itemSrc"   
+                        >
+                            {{currentDB}}.{{itemSrc}}</option>
                           </select>
                         </td>
                       </tr>
@@ -224,11 +229,8 @@
                       <div class="" style="text-align:left;display:block;float:left;width:10%;">
                         x 100%
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
               </fieldset>
             </div>
@@ -260,9 +262,9 @@
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" ng-model="basic.name" name="ruleName" placeholder="Please input the measure name" required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
-                        <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.required">Measure Name is required</span>
-                        <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.pattern">Only letter, number, "-" and "_" are allowed</span>
+                        <input type="text" class="form-control" [(ngModel)]="name" name="name" placeholder="Please input the measure name" required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
+                        <!-- <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.required">Measure Name is required</span>
+                        <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.pattern">Only letter, number, "-" and "_" are allowed</span> -->
                       </div>
                     </div>
                   </div>
@@ -273,7 +275,7 @@
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" ng-model="basic.desc" placeholder="Please input detail description of your measure">
+                        <input type="text" class="form-control" [(ngModel)]="desc" placeholder="Please input detailed description of your measure" name="desc">
                       </div>
                     </div>
                   </div>
@@ -282,10 +284,10 @@
                       <label for="typeSelector" class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Measure Type:
                       </label>
-
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
                         <select id="typeSelector" class="form-control" [(ngModel)]="type"  disabled required name="type">
-                          <option *ngFor="let row of measureTypes" value="{{$index}}" >{{row}}</option>
+                          <!-- <option *ngFor="let row of measureTypes" value="{{$index}}" >{{type}}</option> -->
+                          <option>{{type}}</option>
                         </select>
                       </div>
                     </div>
@@ -295,10 +297,8 @@
                       <label for="systemSelector" class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Organization:
                       </label>
-
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" id="systemSelector" class="form-control" ng-model="basic.system"  required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
-
+                        <input type="text" id="systemSelector" class="form-control" [(ngModel)]="org"  required ng-pattern="'([0-9a-zA-Z\\_\\-])+'" name="org">
                       </div>
                     </div>
                   </div>
@@ -307,30 +307,27 @@
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         DataAsset:
                       </label>
-
                       <div class="col-md-10 col-lg-10 col-sm-10">
-                        <!-- <input type="text" class="form-control" name="DataAsset"
-                        [ngValue]="{{currentTable}}.{{currentTableTarget}}" disabled> -->
+                        <input type="text" class="form-control" name="DataAsset"
+                        value="{{currentTable}}.{{currentTableTarget}}" disabled>
                       </div>
                     </div>
                   </div>
-
                   <div class="col-md-12 col-lg-12 col-sm-12">
                     <div class="form-group">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Owner:
                       </label>
-
                       <div class="col-md-10 col-lg-10 col-sm-10">
-                        <input type="text"  class="form-control" ng-model="basic.owner" ng-init="basic.owner=ntAccount" disabled>
+                        <input type="text"  class="form-control" name="owner" disabled
+                        [(ngModel)]="owner" >
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <div style="color:#b2c831">
                   <p>
-                    <i class="fa fa-info-circle"></i> After submitted, please go to "<a class="bark-link" href="#/measures">Measures</a>" to check the measure status
+                    <i class="fa fa-info-circle"></i> After submitted, please go to "<a class="bark-link" routerLink="/measures">Measures</a>" to check the measure status
                   </p>
                 </div>
 
@@ -357,10 +354,94 @@
               </div>
               <div class="modal-body">
                 <!-- <ng-include src="'/pages/measures/confirmation-ac.html'"/> -->
+                <div class="container-fluid" id="viewruleContent" style="overflow:auto;">
+                  <div class="row">
+                    <h5 class="over-title margin-bottom-15">Basic information</h5>
+                  </div><!--//row-->
+                  <div class="row">
+                    <div  class="col-lg-12 col-md-12 col-sm-12">
+                      <div id="viewrule-definition" class="viewrule-content">
+                        <div class="row">
+                          <label class="col-md-4 col-lg-4 col-sm-4">
+                            Measure Name:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
+                            {{name}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label class="col-md-4 col-lg-4 col-sm-4">
+                            Measure Description:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
+                            {{desc}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label class="col-md-4 col-lg-4 col-sm-4">
+                            Measure Type:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
+                            {{type}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label for="systemSelector" class="col-md-4 col-lg-4 col-sm-4">
+                            Organization:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
+                            {{org}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label class="col-md-4 col-lg-4 col-sm-4">
+                            DataAsset:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8" style="color: #fff"  >{{currentTable}}.{{currentTableTarget}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <label class="col-md-4 col-lg-4 col-sm-4">
+                            Owner:
+                          </label>
+                          <div class="col-md-8 col-lg-8 col-sm-8" style="color: #fff">
+                            {{owner}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!--//row-->
+                  <br/>
+                  <h5 class="row">Mapping rules</h5>
+                  <div class="row">
+                    <p>{{rules}}</p>
+                    <p>
+                      <label style="color:#B2C831">Accuracy Calculation Formula as Below:</label>
+                    </p>
+                    <div class="col-md-12 col-lg-12 col-sm-12" style="color:#fff;font-size:16px;display: flex;                align-items: center">
+                      <div class="" style="text-align:right;display:block;float:left;width:20%;">
+                        Accuracy Rate(%) =
+                      </div>
+                      <div class="" style="text-align:center;display:block;float:left;margin:0 10px 0 10px">
+                        <div class="formula-text-up" style="border-bottom:1px solid;">
+                          Total Count of Matched records between <span class="badge">{{selectionTarget.length}}</span> <span style="color:green;">{{currentTableTarget}}</span>  and <span class="badge">{{mappings.length}}
+                          </span> <span style="color:green;">{{currentTable}}</span>  fields
+                        </div>
+                        <div>
+                          Total Count of records in <span style="color:green;font-weight:bold;">{{currentDB}}.{{currentTable}}</span>
+                        </div>
+                      </div>
+                      <div class="" style="text-align:left;display:block;float:left;width:10%;">
+                        x 100%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" (click)="form.save()">Save</button>
+                <button type="button" class="btn btn-primary" (click)="save()">Save</button>
               </div>
             </div>
           </div>

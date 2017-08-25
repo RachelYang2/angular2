@@ -29,10 +29,11 @@ export class CreateMeasureComponent implements OnInit {
   selectedAll = false;
   selectedAllTarget = false;
   selectionTarget = [];
+  map = [];
   mappings = [];
   matches = [];
   dataAsset = '';
-  basic = {};
+  // = {};
   rules = '';
   currentDB = '';
   currentTable = '';
@@ -41,13 +42,47 @@ export class CreateMeasureComponent implements OnInit {
   schemaCollection:object[];
   schemaCollectionTarget:object[];
   matchFunctions = ['==', '!==', '>', '>=','<',"<="];
-  measureTypes = ['accuracy,validity','anomaly detection','publish metrics'];
+  measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
+  type = 'accuracy';
+  newMeasure = {
+    "name":'',
+    "description":'',
+    "organization":'',
+    "type":'',
+    "source":{
+        "type":"HIVE",
+        "version":"1.2",
+        "config":{
+            "database":'',
+            "table.name":'',
+        },
+    },
+    "target":{
+        "type":"HIVE",
+        "version":"1.2",
+        "config":{
+            "database":'',
+            "table.name":'',
+        },
+    },
+    "evaluateRule":{
+        "rules":'',
+    },
+    "owner":'',
+    "mappings":[],
+  };
+  name:'';
+  desc:'';
+  org:'';
+  owner = 'test';
 
   private toasterService: ToasterService;
 
+  addMapping(x,i){   
+    this.mappings[i] = x;
+  }
 
   toggleSelection (value) {
-      console.log(value);
       var idx = this.selection.indexOf(value);
       // is currently selected
       if (idx > -1) {
@@ -58,11 +93,9 @@ export class CreateMeasureComponent implements OnInit {
       else {
           this.selection.push(value);
       }
-      console.log(this.selection);
   };
 
   toggleSelectionTarget (value) {
-      console.log(value);
       var idx = this.selectionTarget.indexOf(value);
       // is currently selected
       if (idx > -1) {
@@ -73,7 +106,6 @@ export class CreateMeasureComponent implements OnInit {
       else {
           this.selectionTarget.push(value);
       }
-      console.log(this.selectionTarget);
   };
 
   toggleAll () {
@@ -93,74 +125,65 @@ export class CreateMeasureComponent implements OnInit {
 
   next (form) {
       this.currentStep++;
-      console.log(this.currentStep);
-      // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-      // console.log($(stepSelection));
   }
-
   prev (form) {
       this.currentStep--;
-      // console.log(this.currentStep);
-      // setTimeout(function(){
-      // var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-      // }, 0);
   }
   goTo (i) {
       this.currentStep = i;
-      console.log(this.currentStep);
-      var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-      console.log($(stepSelection));
   }
-      // submit = function(form) {                
-      //         form.$setPristine();
-      //         var rule = '';
-      //         this.data={
-      //           "name":this.basic.name,
-      //           "description":this.basic.desc,
-      //           "organization":this.basic.system,
-      //           "type":this.basic.type,
-      //           "source":{
-      //               "type":"HIVE",
-      //               "version":"1.2",
-      //               "config":{
-      //                   "database":this.currentNode.parent[0].dbName,
-      //                   "table.name":this.currentNode.name,
-      //               },
-      //           },
-      //           "target":{
-      //               "type":"HIVE",
-      //               "version":"1.2",
-      //               "config":{
-      //                   "database":this.currentNodeTarget.parent[0].dbName,
-      //                   "table.name":this.currentNodeTarget.name,
-      //               },
-      //           },
-      //           "evaluateRule":{
-      //               "rules":'',
-      //           },
-      //           "owner":this.basic.owner,
-      //           mappings:[],
-      //         };
-      //         this.dataAsset = this.currentNodeTarget.name + ',' + this.currentNode.name;
-      //         var mappingRule = function(src, tgt, matches) {
-      //             var s = src.split('.');
-      //             var t = tgt.split('.');
-      //             return "$source['" + s[1] + "'] " + matches + " $target['" + t[1] + "']";
-      //         }
-      //         var rules = this.selectionTarget.map(function(item, i) {
-      //             return mappingRule(this.selection[i], item, this.matches[i]);
-      //         });
-      //         rule = rules.join(" AND ");
-      //         this.rules = rule;
-      //         this.data.evaluateRule.rules = rule;
-      //         for(var i =0; i < this.selectionTarget.length; i ++){
-      //           this.data.mappings.push({target:this.selectionTarget[i],
-      //                           src:this.mappings[i],
-      //                           matchMethod: this.matches[i],
-      //                           isPk: (this.selectionPK.indexOf(this.selectionTarget[i])>-1)?true:false});
-      //         }
-      //         // $('#confirm').show();
-      // }
+  submit (form) {                
+      // form.$setPristine();
+      var rule = '';
+      this.newMeasure={
+        "name":this.name,
+        "description":this.desc,
+        "organization":this.org,
+        "type":this.type,
+        "source":{
+            "type":"HIVE",
+            "version":"1.2",
+            "config":{
+                "database":this.currentDB,
+                "table.name":this.currentTable,
+            },
+        },
+        "target":{
+            "type":"HIVE",
+            "version":"1.2",
+            "config":{
+                "database":this.currentDBTarget,
+                "table.name":this.currentTableTarget,
+            },
+        },
+        "evaluateRule":{
+            "rules":'',
+        },
+        "owner":this.owner,
+        mappings:[],
+      };
+      console.log(this.newMeasure);
+      var mappingRule = function(src, tgt, matches) {
+          var s = src.split('.');
+          var t = tgt.split('.');
+          return "$source['" + s[1] + "'] " + matches + " $target['" + t[1] + "']";
+      }
+      var self = this;
+      var rules = this.selectionTarget.map(function(item, i) {
+          return mappingRule(self.selection[i], item, self.matches[i]);
+      });
+      rule = rules.join(" AND ");
+      this.rules = rule;
+      this.newMeasure.evaluateRule.rules = rule;
+      for(var i =0; i < this.selectionTarget.length; i ++){
+        this.newMeasure.mappings.push({target:this.selectionTarget[i],
+                        src:this.mappings[i],
+                        matchMethod: this.matches[i]});
+      }
+      console.log(this.newMeasure);
+      console.log($('#confirm'));
+          $('#confirm').show();
+  }
 
             // save: function() {
             //     var newModel = $config.uri.addModels;
@@ -297,8 +320,6 @@ export class CreateMeasureComponent implements OnInit {
   
   };
   
-  
-
   options: ITreeOptions = {
     displayField: 'name',
     isExpandedField: 'expanded',
@@ -351,7 +372,6 @@ export class CreateMeasureComponent implements OnInit {
     animateAcceleration: 1.2
   };
 
-
   errorMessage = function(i, msg) {
       var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source.', 'please complete the form in this step before proceeding'];
       if (!msg) {
@@ -395,10 +415,8 @@ export class CreateMeasureComponent implements OnInit {
           new_child.isExpanded = false;
           new_child.parent = db;
           new_child.cols = this.data[db][i]['sd']['cols'];
-
         }
         this.nodeList.push(new_node);
     }
-    console.log(this.nodeList);
   };
 }
