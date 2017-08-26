@@ -40,7 +40,7 @@ export class MeasureComponent implements OnInit {
 
     hideSubHeader:true,
     edit:{
-    	editButtonContent:'<i class="fa fa-eye"></i>'
+    	editButtonContent:'<i class="fa fa-eye"></i>&nbsp;&nbsp;'
     },
     delete:{
     	deleteButtonContent:'<i class="fa fa-trash-o"></i>'

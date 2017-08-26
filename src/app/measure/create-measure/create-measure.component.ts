@@ -6,15 +6,37 @@ import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-c
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToasterModule, ToasterService} from 'angular2-toaster';
 import * as $ from 'jquery';
+import  {HttpClient} from '@angular/common/http';
+import  {Router} from "@angular/router";
+
 
 class node {
   name: string;
   id: number;
   children:object[];
   isExpanded:boolean;
-  cols:object[];
+  cols:Col[];
   parent:string;
 };
+class Col{
+  name:string;
+  type:string;
+  comment:string;
+  selected :boolean;
+  constructor(name:string,type:string,comment:string,selected:boolean){
+    this.name = name;
+    this.type = type;
+    this.comment = comment;
+    this.selected = false;
+  }
+  getSelected(){
+    return this.selected;
+  }
+  setSelected(selected){
+    this.selected = selected;
+  }
+
+}
 
 @Component({
   selector: 'app-create-measure',
@@ -39,8 +61,8 @@ export class CreateMeasureComponent implements OnInit {
   currentTable = '';
   currentDBTarget = '';
   currentTableTarget = '';
-  schemaCollection:object[];
-  schemaCollectionTarget:object[];
+  schemaCollection:Col[];
+  schemaCollectionTarget:Col[];
   matchFunctions = ['==', '!==', '>', '>=','<',"<="];
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
@@ -75,15 +97,34 @@ export class CreateMeasureComponent implements OnInit {
   desc:'';
   org:'';
   owner = 'test';
+  createResult = '';
 
   private toasterService: ToasterService;
 
-  addMapping(x,i){   
-    this.mappings[i] = x;
+
+  public visible = false;
+  public visibleAnimate = false;
+
+  public hide(): void {
+    this.visibleAnimate = false;
+    setTimeout(() => this.visible = false, 300);
   }
 
-  toggleSelection (value) {
-      var idx = this.selection.indexOf(value);
+  public onContainerClicked(event: MouseEvent): void {
+    if ((<HTMLElement>event.target).classList.contains('modal')) {
+      this.hide();
+    }
+  }
+
+  addMapping(x,i){   
+    this.mappings[i] = x;
+    console.log(i);
+    console.log(this.mappings);
+  }
+
+  toggleSelection (row) {
+      row.selected = !row.selected;
+      var idx = this.selection.indexOf(row.name);
       // is currently selected
       if (idx > -1) {
           this.selection.splice(idx, 1);
@@ -91,12 +132,13 @@ export class CreateMeasureComponent implements OnInit {
       }
       // is newly selected
       else {
-          this.selection.push(value);
+          this.selection.push(row.name);
       }
   };
 
-  toggleSelectionTarget (value) {
-      var idx = this.selectionTarget.indexOf(value);
+  toggleSelectionTarget (row) {
+      row.selected = !row.selected;
+      var idx = this.selectionTarget.indexOf(row.name);
       // is currently selected
       if (idx > -1) {
           this.selectionTarget.splice(idx, 1);
@@ -104,23 +146,30 @@ export class CreateMeasureComponent implements OnInit {
       }
       // is newly selected
       else {
-          this.selectionTarget.push(value);
+          this.selectionTarget.push(row.name);
       }
   };
 
   toggleAll () {
-    if (this.selectedAll) {
-        this.selectedAll = true;
-    } else {
-        this.selectedAll = false;
-    }
+    this.selectedAll = !this.selectedAll;
     this.selection = [];
-    // for(let item in this.schemaCollection){
-    //   item.selected = this.selectedAll;
-    //   if (this.selectedAll) {
-    //       this.selection.push(this.currentNode.name + '.' + item.name);
-    //   }
-    // }
+    for(var i =0; i < this.schemaCollection.length; i ++){
+      this.schemaCollection[i].selected = this.selectedAll;
+      if (this.selectedAll) {
+          this.selection.push(this.schemaCollection[i].name);
+      }
+    }
+  };
+
+  toggleAllTarget () {
+    this.selectedAllTarget = !this.selectedAllTarget;
+    this.selectionTarget = [];
+    for(var i =0; i < this.schemaCollectionTarget.length; i ++){
+      this.schemaCollectionTarget[i].selected = this.selectedAllTarget;
+      if (this.selectedAllTarget) {
+          this.selectionTarget.push(this.schemaCollectionTarget[i].name);
+      }
+    }
   };
 
   next (form) {
@@ -162,11 +211,8 @@ export class CreateMeasureComponent implements OnInit {
         "owner":this.owner,
         mappings:[],
       };
-      console.log(this.newMeasure);
       var mappingRule = function(src, tgt, matches) {
-          var s = src.split('.');
-          var t = tgt.split('.');
-          return "$source['" + s[1] + "'] " + matches + " $target['" + t[1] + "']";
+          return "$source['" + src + "'] " + matches + " $target['" + tgt + "']";
       }
       var self = this;
       var rules = this.selectionTarget.map(function(item, i) {
@@ -180,26 +226,26 @@ export class CreateMeasureComponent implements OnInit {
                         src:this.mappings[i],
                         matchMethod: this.matches[i]});
       }
-      console.log(this.newMeasure);
-      console.log($('#confirm'));
-          $('#confirm').show();
+      this.visible = true;
+      setTimeout(() => this.visibleAnimate = true, 100);
   }
 
-            // save: function() {
-            //     var newModel = $config.uri.addModels;
-            //     $http.post(newModel, this.data).then(function successCallback(data) {
-            //         $('#confirm').on('hidden.bs.modal', function(e) {
-            //             $('#confirm').off('hidden.bs.modal');
-            //             $location.path('/measures').replace();
-            //             this.$apply();
-            //         });
-            //         $('#confirm').modal('hide');
-            //     },function errorCallback(response) {
-            //         toaster.pop('error', 'Error when creating measure', response.message);
-            //     }
-            //     );
-            // },
-        // }
+            save() {
+
+              this.http
+              .post('...', this.newMeasure)
+              .subscribe(data => {
+                  this.createResult = data['results'];
+              },
+              err => {
+                console.log('Something went wrong!');
+              }
+              );
+              this.hide();
+              this.router.navigate(['/measures']);
+
+                //         $location.path('/measures').replace();
+            }
 
   data: { [key: string]: Array<object>; } = {
     "default": [
@@ -317,7 +363,6 @@ export class CreateMeasureComponent implements OnInit {
             },
         }
     ],
-  
   };
   
   options: ITreeOptions = {
@@ -382,7 +427,7 @@ export class CreateMeasureComponent implements OnInit {
   };
 
   nodeList:object[];
-  constructor(toasterService: ToasterService) {
+  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
   };
 
@@ -414,7 +459,13 @@ export class CreateMeasureComponent implements OnInit {
           new_node.children.push(new_child);
           new_child.isExpanded = false;
           new_child.parent = db;
-          new_child.cols = this.data[db][i]['sd']['cols'];
+          new_child.cols = Array<Col>();
+          for(let j = 0;j<this.data[db][i]['sd']['cols'].length;j++){
+              let new_col = new Col(this.data[db][i]['sd']['cols'][j].name,
+              this.data[db][i]['sd']['cols'][j].type,
+              this.data[db][i]['sd']['cols'][j].comment,false);
+              new_child.cols.push(new_col);
+          }
         }
         this.nodeList.push(new_node);
     }

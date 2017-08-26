@@ -279,11 +279,21 @@ h5 {
     text-align: center;
 
 }
+.modal {
+  background: rgba(0,0,0,0.6);
+}
 
 .modal-header {
   /*background-image:url('../img/sep-half.png');*/
   background-color: #4f4f4f;
   color:#fff;
+}
+.modal-body{
+  background-color: #1f1f1f;
+}
+.modal-footer{
+  background-color: #1f1f1f;
+
 }
 
 .btn-circle {
@@ -881,8 +891,8 @@ a:hover {
 
 #footerwrap {
     padding-left: 30px;
-    height: 90px;
-    background:#262626;
+    height: 70px;
+    background:#1f1f1f;
     padding-top:10px;
     padding-bottom: 10px;
     border-top-style: solid;
