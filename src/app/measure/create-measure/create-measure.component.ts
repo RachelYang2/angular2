@@ -239,8 +239,7 @@ export class CreateMeasureComponent implements OnInit {
               },
               err => {
                 console.log('Something went wrong!');
-              }
-              );
+              });
               this.hide();
               this.router.navigate(['/measures']);
 
