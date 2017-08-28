@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { TreeModule } from 'angular-tree-component';
@@ -14,6 +15,7 @@ import { HealthComponent } from './health/health.component';
 import { MydashboardComponent } from './mydashboard/mydashboard.component';
 import { CreateMeasureComponent } from './measure/create-measure/create-measure.component';
 import { MeasureDetailComponent } from './measure/measure-detail/measure-detail.component';
+import { CreateJobComponent } from './job/create-job/create-job.component';
 
 const appRoutes: Routes = [
   { 
@@ -36,6 +38,10 @@ const appRoutes: Routes = [
     path: 'jobs',
     component: JobComponent,
     data: { title: 'Heroes List' }
+  },
+  {
+    path: 'createjob',
+    component:CreateJobComponent
   },
   {
     path: 'createmeasure',
@@ -63,12 +69,14 @@ const appRoutes: Routes = [
     MydashboardComponent,
     CreateMeasureComponent,
     MeasureDetailComponent,
+    CreateJobComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     Ng2SmartTableModule,
     TreeModule,
+    FormsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
