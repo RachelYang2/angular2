@@ -35,7 +35,6 @@ class Col{
   setSelected(selected){
     this.selected = selected;
   }
-
 }
 
 @Component({
@@ -230,21 +229,18 @@ export class CreateMeasureComponent implements OnInit {
       setTimeout(() => this.visibleAnimate = true, 100);
   }
 
-            save() {
-
-              this.http
-              .post('...', this.newMeasure)
-              .subscribe(data => {
-                  this.createResult = data['results'];
-              },
-              err => {
-                console.log('Something went wrong!');
-              });
-              this.hide();
-              this.router.navigate(['/measures']);
-
-                //         $location.path('/measures').replace();
-            }
+  save() {
+    this.http
+    .post('http://localhost:8080/measure', this.newMeasure)
+    .subscribe(data => {
+        this.createResult = data['results'];
+    },
+    err => {
+      console.log('Something went wrong!');
+    });
+    this.hide();
+    this.router.navigate(['/measures']);
+  }
 
   data: { [key: string]: Array<object>; } = {
     "default": [

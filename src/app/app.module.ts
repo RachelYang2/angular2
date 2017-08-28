@@ -6,6 +6,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { TreeModule } from 'angular-tree-component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AngularEchartsModule } from 'ngx-echarts';
 
 import {ToasterModule, ToasterService} from 'angular2-toaster';
 import { FormsModule } from '@angular/forms';
@@ -75,6 +76,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     ToasterModule,
     FormsModule,
+    AngularEchartsModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only

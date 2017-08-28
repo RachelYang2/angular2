@@ -13,7 +13,7 @@ export class MeasureDetailComponent implements OnInit {
   currentId:string;
   constructor(private route: ActivatedRoute,
   private router: Router,private http:HttpClient) { };
-  ruleData : object;
+  ruleData : any;
   sourceLength : number;
   sourceDB : string;
   targetDB : string;
@@ -21,10 +21,13 @@ export class MeasureDetailComponent implements OnInit {
   targetTable : string;
 
   ngOnInit() {
+    this.ruleData = {
+      'evaluateRule':''
+    };
   	var getModelUrl;
   	this.currentId = this.route.snapshot.paramMap.get('id');
 
-    getModelUrl = '...'+"/"+this.currentId;
+    getModelUrl = 'http://localhost:8080/measure'+"/"+this.currentId;
         this.http.get(getModelUrl).subscribe(data=>{
           this.ruleData = data;
           this.sourceLength = this.ruleData.evaluateRule.rules.split('AND').length;
