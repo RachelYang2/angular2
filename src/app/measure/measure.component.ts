@@ -55,11 +55,7 @@ export class MeasureComponent implements OnInit {
   	this.http.get('http://localhost:8080/measures').subscribe(data =>{
   	// this.http.get('./measures.json').subscribe(data =>{
   		this.results = data;
-      console.log(typeof(data));
-      console.log(data);
       for(let measure in data){
-        console.log(measure);
-        console.log(data[measure]);
         data[measure].name = '<a href="/measure/' + data[measure].id+'">'+data[measure].name+'</a>';
       }
   	});

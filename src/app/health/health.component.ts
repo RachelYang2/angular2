@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import  {HttpClient} from '@angular/common/http';
+import  {Router} from "@angular/router";
+
 import * as $ from 'jquery';
 
 @Component({
@@ -9,88 +11,9 @@ import * as $ from 'jquery';
 })
 export class HealthComponent implements OnInit {
 
-  constructor(private http: HttpClient) { };
+  constructor(private http: HttpClient,private router:Router) { };
   chartOption:object;
-
   // var formatUtil = echarts.format;
-//   chartOption = {
-//   title: {
-//     text: '堆叠区域图'
-//   },
-//   tooltip : {
-//     trigger: 'axis'
-//   },
-//   legend: {
-//     data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
-//   },
-//   toolbox: {
-//     feature: {
-//       saveAsImage: {}
-//     }
-//   },
-//   grid: {
-//     left: '3%',
-//     right: '4%',
-//     bottom: '3%',
-//     containLabel: true
-//   },
-//   xAxis : [
-//     {
-//       type : 'category',
-//       boundaryGap : false,
-//       data : ['周一','周二','周三','周四','周五','周六','周日']
-//     }
-//   ],
-//   yAxis : [
-//     {
-//       type : 'value'
-//     }
-//   ],
-//   series : [
-//     {
-//       name:'邮件营销',
-//       type:'line',
-//       stack: '总量',
-//       areaStyle: {normal: {}},
-//       data:[120, 132, 101, 134, 90, 230, 210]
-//     },
-//     {
-//       name:'联盟广告',
-//       type:'line',
-//       stack: '总量',
-//       areaStyle: {normal: {}},
-//       data:[220, 182, 191, 234, 290, 330, 310]
-//     },
-//     {
-//       name:'视频广告',
-//       type:'line',
-//       stack: '总量',
-//       areaStyle: {normal: {}},
-//       data:[150, 232, 201, 154, 190, 330, 410]
-//     },
-//     {
-//       name:'直接访问',
-//       type:'line',
-//       stack: '总量',
-//       areaStyle: {normal: {}},
-//       data:[320, 332, 301, 334, 390, 330, 320]
-//     },
-//     {
-//       name:'搜索引擎',
-//       type:'line',
-//       stack: '总量',
-//       label: {
-//         normal: {
-//           show: true,
-//           position: 'top'
-//         }
-//       },
-//       areaStyle: {normal: {}},
-//       data:[820, 932, 901, 934, 1290, 1330, 1320]
-//     }
-//   ]
-// }
-
   orgs = [];
   dataData = [];
   finalData = [];
@@ -184,12 +107,19 @@ export class HealthComponent implements OnInit {
       }
     ]
   }
-}
-;
+};
+  
+  onChartClick($event){
+    if($event.data.name){
+        // body...
+        this.router.navigate(['/detailed/'+$event.data.name]);
+    }
+  }
 
   resizeTreeMap() {
     $('#chart1').height( $('#mainWindow').height() - $('.bs-component').outerHeight() );
   };
+
   parseData(data) {
     var sysId = 0;
     var metricId = 0;
@@ -207,7 +137,7 @@ export class HealthComponent implements OnInit {
             	for(let metric of sys.metrics){
                 var itemChild = {
                     id: 'id_' + sysId + '_' + metricId,
-                    name: metric.name,// + '(' + metric.dq + '%)',
+                    name: metric.name,
                     value: 1,
                     dq: metric.dq,
                     sysName: sys.name,
@@ -298,11 +228,6 @@ export class HealthComponent implements OnInit {
     };
     this.resizeTreeMap();
     this.chartOption = option;
-    // this.myChart.on('click', function(param) {
-    //     if (param.data.name) {
-    //         window.location.href = '/#!/detailed/'+param.data.name;
-    //     }
-    // });
   };
         // this.$on('resizeHandler', function(e) {
         //     if($route.current.$$route.controller == 'HealthCtrl'){
@@ -322,7 +247,6 @@ export class HealthComponent implements OnInit {
             orgNode.name = value;
             orgNode.assetMap = data[value];
        }
-       console.log(this.orgs);
        this.originalOrgs = this.orgs;
          // $http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).then(function successCallback(data) {
         // $http.get(url_dashboard).then(function successCallback(data){

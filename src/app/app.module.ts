@@ -18,6 +18,8 @@ import { HealthComponent } from './health/health.component';
 import { MydashboardComponent } from './mydashboard/mydashboard.component';
 import { CreateMeasureComponent } from './measure/create-measure/create-measure.component';
 import { MeasureDetailComponent } from './measure/measure-detail/measure-detail.component';
+import { MetricComponent } from './metric/metric.component';
+import { DetailMetricComponent } from './metric/detail-metric/detail-metric.component';
 
 const appRoutes: Routes = [
   { 
@@ -45,6 +47,10 @@ const appRoutes: Routes = [
     path: 'createmeasure',
     component:CreateMeasureComponent
   },
+  {
+    path: 'detailed/:name',
+    component:DetailMetricComponent
+  },
   { 
     path: '',
     redirectTo: 'health',
@@ -67,6 +73,8 @@ const appRoutes: Routes = [
     MydashboardComponent,
     CreateMeasureComponent,
     MeasureDetailComponent,
+    MetricComponent,
+    DetailMetricComponent,
   ],
   imports: [
     BrowserModule,
