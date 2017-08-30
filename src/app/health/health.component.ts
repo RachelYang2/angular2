@@ -1,17 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import  {HttpClient} from '@angular/common/http';
 import  {Router} from "@angular/router";
+import {GetMetricService} from '../service/get-metric.service'
 
 import * as $ from 'jquery';
 
 @Component({
   selector: 'app-health',
   templateUrl: './health.component.html',
-  styleUrls: ['./health.component.css']
+  styleUrls: ['./health.component.css'],
+  providers:[GetMetricService]
 })
 export class HealthComponent implements OnInit {
 
-  constructor(private http: HttpClient,private router:Router) { };
+  constructor(private http: HttpClient,private router:Router,
+    public getMetricService: GetMetricService) { };
   chartOption:object;
   // var formatUtil = echarts.format;
   orgs = [];
@@ -111,7 +114,6 @@ export class HealthComponent implements OnInit {
   
   onChartClick($event){
     if($event.data.name){
-        // body...
         this.router.navigate(['/detailed/'+$event.data.name]);
     }
   }
@@ -237,77 +239,6 @@ export class HealthComponent implements OnInit {
         //     }
         // });
   ngOnInit() {
-    // var url_dashboard = '...' ;
-    var url_organization = 'http://localhost:8080/orgWithMetricsName';
-    this.http.get(url_organization).subscribe(data => {
-       var orgNode = null;
-       	for(let value in data){
-            orgNode = new Object();
-            this.orgs.push(orgNode);
-            orgNode.name = value;
-            orgNode.assetMap = data[value];
-       }
-       this.originalOrgs = this.orgs;
-         // $http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).then(function successCallback(data) {
-        // $http.get(url_dashboard).then(function successCallback(data){
-        	// this.http.get(url_dashboard).subscribe(data => {
-
-            // angular.forEach(data['results'].hits.hits, function(sys) {
-            	// for(let sys of this.metricData.hits.hits){
-                // var chartData = sys._source;
-                // chartData.sort = function(a,b){
-                //     return a.tmst - b.tmst;
-                // }
-            // });
-            // this.originalData = angular.copy(data.data);
-            // this.myData = angular.copy(this.originalData.hits.hits);
-            this.myData = this.metricData.hits.hits;
-            this.metricName = [];
-            for(var i = 0;i<this.myData.length;i++){
-                this.metricName.push(this.myData[i]._source.name);
-            }
-            this.metricNameUnique = [];
-            // // angular.forEach(this.metricName,function(name){
-            for(let name of this.metricName){
-                if(this.metricNameUnique.indexOf(name) === -1){
-                    this.dataData[this.metricNameUnique.length] = new Array();
-                    this.metricNameUnique.push(name);
-                }
-            };
-            for(var i = 0;i<this.myData.length;i++){
-                for(var j = 0 ;j<this.metricNameUnique.length;j++){
-                    if(this.myData[i]._source.name==this.metricNameUnique[j]){
-                        this.dataData[j].push(this.myData[i]);
-                    }
-                }
-            }
-            for(let sys of this.originalOrgs){
-                var node = null;
-                node = new Object();
-                node.name = sys.name;
-                node.dq = 0;
-                node.metrics = new Array();
-                for (let metric of this.dataData){
-                    if(sys.assetMap.indexOf(metric[metric.length-1]._source.name)!= -1){
-                        // var metricNode = new Object();
-                        var metricNode = {
-                            'name':'',
-                            'timestamp':'',
-                            'dq':0,
-                            'details':[]
-                        }
-                        metricNode.name = metric[metric.length-1]._source.name;
-                        metricNode.timestamp = metric[metric.length-1]._source.tmst;
-                        metricNode.dq = metric[metric.length-1]._source.matched/metric[metric.length-1]._source.total*100;
-                        metricNode.details = new Array();
-                        node.metrics.push(metricNode);
-                    }
-                }
-                this.finalData.push(node);
-            }
-            // this.originalData = angular.copy(this.finalData);
-            this.renderTreeMap(this.finalData);
-        });
-     };
-  
+       this.renderTreeMap(this.getMetricService.renderData());
+  };
 }

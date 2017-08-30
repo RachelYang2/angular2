@@ -20,6 +20,7 @@ import { CreateMeasureComponent } from './measure/create-measure/create-measure.
 import { MeasureDetailComponent } from './measure/measure-detail/measure-detail.component';
 import { MetricComponent } from './metric/metric.component';
 import { DetailMetricComponent } from './metric/detail-metric/detail-metric.component';
+import { DataassetComponent } from './dataasset/dataasset.component';
 
 const appRoutes: Routes = [
   { 
@@ -36,7 +37,7 @@ const appRoutes: Routes = [
   },
   { 
     path: 'mydashboard', 
-    component: AppComponent 
+    component: MydashboardComponent 
   },
   {
     path: 'jobs',
@@ -50,6 +51,14 @@ const appRoutes: Routes = [
   {
     path: 'detailed/:name',
     component:DetailMetricComponent
+  },
+  {
+    path: 'dataassets',
+    component:DataassetComponent
+  },
+  {
+    path: 'metrics',
+    component:MetricComponent
   },
   { 
     path: '',
@@ -75,6 +84,7 @@ const appRoutes: Routes = [
     MeasureDetailComponent,
     MetricComponent,
     DetailMetricComponent,
+    DataassetComponent,
   ],
   imports: [
     BrowserModule,

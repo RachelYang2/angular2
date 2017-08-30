@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component ,Directive,ViewContainerRef} from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
-  // template: './app.component.html',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'app';

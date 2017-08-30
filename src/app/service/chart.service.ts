@@ -41,7 +41,6 @@ export class ChartService {
     var data = [];
     var chartData = metric.details;
     for(var i = 0; i < chartData.length; i++){
-         data.push([this.formatTimeStamp(chartData[i]._source.tmst), parseFloat((chartData[i]._source.matched/chartData[i]._source.total*100).toFixed(2))]);
            if(chartData[i]._source.total!=0)
              data.push([this.formatTimeStamp(chartData[i]._source.tmst), parseFloat((chartData[i]._source.matched/chartData[i]._source.total*100).toFixed(2))]);
            else
@@ -57,6 +56,7 @@ export class ChartService {
 
   getOptionSide(metric) {
     var data = this.getMetricData(metric);
+    var self = this;
     var option = {
       title: {
         show: false
@@ -73,7 +73,7 @@ export class ChartService {
       tooltip : {
           trigger: 'axis',
           formatter : function(params) {
-            return new Date(this.getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+            return new Date(self.getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
                       '<br /> Value : ' + params[0].data[1];;
           }
       },
@@ -82,16 +82,43 @@ export class ChartService {
               splitLine: {
                   show: false
               },
-              splitNumber: 2
+              splitNumber: 2,
+              axisLine:{
+              lineStyle:{
+                color:'white'
+              },
+            },
+            axisLabel:{
+              color:'white'
+            },
+            nameTextStyle:{
+              color:'white'
+            }
       },
       yAxis : {
               type : 'value',
               scale : true,
-              name: this.formatter_yaxis_name(metric),
+              splitNumber: 2,
+              name: 'accuracy%',
               axisLabel: {
-                  formatter: this.formatter_value
+                  formatter: this.formatter_value,
+                  color:'white'
               },
-              splitNumber: 2
+              splitLine:{
+                lineStyle:{
+                  'type':'dashed'
+                }
+              },
+              axisLine:{
+              lineStyle:{
+                color:'white'
+              }
+            },
+              nameTextStyle:{
+                color:'white'
+              },
+              max:100
+              
       },
       series:{}
     };

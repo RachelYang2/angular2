@@ -13,18 +13,9 @@ import * as $ from 'jquery';
 })
 export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  constructor(chartService:ChartService,private route: ActivatedRoute,
+  constructor(public chartService:ChartService,private route: ActivatedRoute,
   private router: Router,private http:HttpClient) {
-  	route.params.subscribe(val=>{
-  	this.currentMeasure = this.route.snapshot.paramMap.get('name');
-  	this.chartOption = chartService.getOptionBig(this.getData(this.currentMeasure));
-    $('#bigChartDiv').height(window.innerHeight-120+'px');
-    $('#bigChartDiv').width(window.innerWidth-400+'px');
-  	$('#bigChartContainer').show();
-  	})
-  	// this.chartService = chartService;
   };
-  // chartService:any;
   selectedMeasure:string;
   chartOption:{};
   currentMeasure:string;
@@ -76,12 +67,10 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
 }
 ;
 
-
-
   ngOnInit() {
   	console.log('init');
   	this.currentMeasure = this.route.snapshot.paramMap.get('name');
-  	// this.chartOption = this.chartService.getOptionBig(this.getData(this.currentMeasure));
+  	this.chartOption = this.chartService.getOptionBig(this.getData(this.currentMeasure));
     $('#bigChartDiv').height(window.innerHeight-120+'px');
     $('#bigChartDiv').width(window.innerWidth-400+'px');
   	$('#bigChartContainer').show();
@@ -94,13 +83,6 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(){
   	console.log('after view init')
   }
-
-  // ngOnChanges(changes:SimpleChanges){
-  // 	// this.chartOption = this.chartService.getOptionBig(this.getData(this.currentMeasure));
-  //   $('#bigChartDiv').height(window.innerHeight-120+'px');
-  //   $('#bigChartDiv').width(window.innerWidth-400+'px');
-  // 	$('#bigChartContainer').show();
-  // }
 
   getData(metricName){
   	 var metricDetailUrl = '...';
