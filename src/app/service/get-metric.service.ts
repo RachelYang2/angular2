@@ -94,6 +94,70 @@ export class GetMetricService {
           "matched" : 1047890
         }
       },
+      {
+        "_source" : {
+          "name" : "search_hourly",
+          "tmst" : 1493948223461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948224461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "search_hourly",
+          "tmst" : 1493948225461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948226461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948223461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948224461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948225461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948226461,
+          "total" : 100,
+          "matched" : 99
+        }
+      }
     ]
   }
 };

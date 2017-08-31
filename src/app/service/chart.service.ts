@@ -32,6 +32,10 @@ export class ChartService {
     return result;
   }
 
+  getTooltipPosition(point, params, dom) {
+      return [point[0]/2, point[1]/2];
+  }
+
   formatTimeStamp(timestamp) {
       var TzOffset = new Date(timestamp).getTimezoneOffset()/60-7;
       return timestamp+TzOffset*60*60*1000;
@@ -155,13 +159,15 @@ export class ChartService {
 
   getOptionThum(metric) {
     var data = this.getMetricData(metric);
+    var self = this;
     var option = {
       title: {
         text:  metric.name,
         left: 'center',
         textStyle: {
             fontWeight: 'normal',
-            fontSize: 15
+            fontSize: 15,
+            color:'white'
         }
       },
       backgroundColor: 'transparent',
@@ -173,11 +179,15 @@ export class ChartService {
       },
       tooltip : {
           trigger: 'axis',
+          // formatter : function(params) {
+          //   return this.getTooltip(params);
+          // },
           formatter : function(params) {
-            return this.getTooltip(params);
+            return new Date(self.getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
+                      '<br /> Value : ' + params[0].data[1];;
           },
           position: function(point, params, dom) {
-              return this.getTooltipPosition(point, params, dom);
+              return self.getTooltipPosition(point, params, dom);
           }
       },
       xAxis : {
@@ -220,7 +230,8 @@ export class ChartService {
               nameTextStyle:{
               	color:'white'
               },
-              splitNumber: 2
+              splitNumber: 2,
+              max:100
       },
       series:{}
     };
@@ -298,7 +309,8 @@ export class ChartService {
       		  },
               nameTextStyle:{
               	color:'white'
-              }
+              },
+              max:100
       },
       animation: true,
       series:{}

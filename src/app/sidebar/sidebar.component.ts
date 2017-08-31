@@ -4,8 +4,6 @@ import  {Router} from "@angular/router";
 import {ChartService} from '../service/chart.service';
 import  {DatePipe} from '@angular/common';
 import {GetMetricService} from '../service/get-metric.service'
-
-
 import * as $ from 'jquery';
 
 @Component({
