@@ -234,8 +234,13 @@ export class CreateMeasureComponent implements OnInit {
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {
         this.createResult = data['results'];
-        this.hide();
-        this.router.navigate(['/measures']);
+        var self = this;
+        setTimeout(function () {
+          self.hide();
+          self.router.navigate(['/measures']);
+          // body...
+        },0)
+        
     },
     err => {
       console.log('Something went wrong!');

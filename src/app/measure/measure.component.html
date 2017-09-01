@@ -7,7 +7,7 @@
     </p>
 
     <div id="modelContainer">
-    	<ng2-smart-table [settings]="settings" [source]="results" id="measureTable"></ng2-smart-table>
+    	<ng2-smart-table [settings]="settings" [source]="results" id="measureTable"  (delete)="onDelete($event)" (edit)="onEdit($event)"></ng2-smart-table>
 <!--         <table st-table="displayed" st-pipe="paging" class="table table-striped">
             <thead>
             <tr style="background-color:#7D95CC">

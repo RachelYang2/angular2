@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import  {Router} from "@angular/router";
+
 
 @Component({
   selector: 'app-measure',
@@ -49,7 +51,28 @@ export class MeasureComponent implements OnInit {
 
   };
   
-  constructor(private http:HttpClient) { };
+  constructor(private http:HttpClient,private router:Router) { };
+
+  onDelete($event){
+    console.log($event);
+    let id = $event.data.id;
+    let deleteUrl = 'http://localhost:8080/measure/'+id;
+    this.http.delete(deleteUrl).subscribe(data => {
+      // let deleteResult = data;
+      // if(deleteResult.code==202){
+
+      // }
+      let deleteResult:any = data;
+      console.log(deleteResult.code);
+      if(deleteResult.code==202){
+        
+      }
+    })
+  }
+  onEdit($event){
+    console.log($event);
+    this.router.navigate(['/measure/'+$event.data.id]);
+  }
 
   ngOnInit():void {
   	this.http.get('http://localhost:8080/measures').subscribe(data =>{
