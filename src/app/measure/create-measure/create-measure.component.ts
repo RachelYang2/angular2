@@ -234,12 +234,13 @@ export class CreateMeasureComponent implements OnInit {
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {
         this.createResult = data['results'];
+        this.hide();
+        this.router.navigate(['/measures']);
     },
     err => {
       console.log('Something went wrong!');
     });
-    this.hide();
-    this.router.navigate(['/measures']);
+    
   }
 
   data: { [key: string]: Array<object>; } = {

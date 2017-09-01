@@ -221,6 +221,6 @@ export class GetMetricService {
                 }
                 this.finalData.push(node);
   			}
-  			return this.finalData;
+  			return JSON.parse(JSON.stringify(this.finalData));
 		};
 }

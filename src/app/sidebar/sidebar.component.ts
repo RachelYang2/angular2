@@ -36,7 +36,7 @@ export class SidebarComponent implements OnInit {
   metricNameUnique = [];
   myData = [];
   metricData = {
-  "hits" : {
+"hits" : {
     "hits" : [
       {
         "_source" : {
@@ -72,14 +72,6 @@ export class SidebarComponent implements OnInit {
       },
       {
         "_source" : {
-          "name" : "xixi",
-          "tmst" : 1494009423461,
-          "total" : 8029660,
-          "matched" : 7979653
-        }
-      },
-      {
-        "_source" : {
           "name" : "haha",
           "tmst" : 1493959023461,
           "total" : 1086389,
@@ -92,6 +84,14 @@ export class SidebarComponent implements OnInit {
           "tmst" : 1493973423461,
           "total" : 1090650,
           "matched" : 1090445
+        }
+      },
+      {
+        "_source" : {
+          "name" : "xixi",
+          "tmst" : 1494009423461,
+          "total" : 8029660,
+          "matched" : 7979653
         }
       },
       {
@@ -112,10 +112,66 @@ export class SidebarComponent implements OnInit {
       },
       {
         "_source" : {
-          "name" : "haha",
-          "tmst" : 1494013023461,
-          "total" : 1063349,
-          "matched" : 1055783
+          "name" : "search_hourly",
+          "tmst" : 1493948223461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948224461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "search_hourly",
+          "tmst" : 1493948225461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948226461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948223461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "hh",
+          "tmst" : 1493948224461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948225461,
+          "total" : 100,
+          "matched" : 99
+        }
+      },
+      {
+        "_source" : {
+          "name" : "buy_hourly",
+          "tmst" : 1493948226461,
+          "total" : 100,
+          "matched" : 99
         }
       }
     ]
