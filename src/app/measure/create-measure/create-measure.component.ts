@@ -3,11 +3,11 @@ import { FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ToasterModule, ToasterService} from 'angular2-toaster';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ToasterModule, ToasterService} from 'angular2-toaster';
 import * as $ from 'jquery';
-import  {HttpClient} from '@angular/common/http';
-import  {Router} from "@angular/router";
+import { HttpClient} from '@angular/common/http';
+import { Router} from "@angular/router";
 
 
 class node {
@@ -54,7 +54,6 @@ export class CreateMeasureComponent implements OnInit {
   mappings = [];
   matches = [];
   dataAsset = '';
-  // = {};
   rules = '';
   currentDB = '';
   currentTable = '';
@@ -63,6 +62,7 @@ export class CreateMeasureComponent implements OnInit {
   schemaCollection:Col[];
   schemaCollectionTarget:Col[];
   matchFunctions = ['==', '!==', '>', '>=','<',"<="];
+
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
   newMeasure = {
@@ -96,11 +96,9 @@ export class CreateMeasureComponent implements OnInit {
   desc:'';
   org:'';
   owner = 'test';
-  createResult = '';
+  createResult :any;
 
   private toasterService: ToasterService;
-
-
   public visible = false;
   public visibleAnimate = false;
 
@@ -117,8 +115,6 @@ export class CreateMeasureComponent implements OnInit {
 
   addMapping(x,i){   
     this.mappings[i] = x;
-    console.log(i);
-    console.log(this.mappings);
   }
 
   toggleSelection (row) {
@@ -233,14 +229,12 @@ export class CreateMeasureComponent implements OnInit {
     this.http
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {
-        this.createResult = data['results'];
+        this.createResult = data;
         var self = this;
         setTimeout(function () {
           self.hide();
           self.router.navigate(['/measures']);
-          // body...
         },0)
-        
     },
     err => {
       console.log('Something went wrong!');
@@ -441,7 +435,7 @@ export class CreateMeasureComponent implements OnInit {
   // this.toasterService.pop(toast);
 
   popToast() {
-        this.toasterService.pop('success', 'Args Title', 'Args Body');
+      this.toasterService.pop('success', 'Args Title', 'Args Body');
   }
 
   ngOnInit() {

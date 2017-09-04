@@ -136,48 +136,7 @@ export class MetricComponent implements OnInit {
 
   ngOnInit() {
   	this.finalData = this.getMetricService.renderData();
-    // this.originalData = this.duplicateArray();
     this.originalData = JSON.parse(JSON.stringify(this.finalData));
-    // this.originalData = $.extend(true, {}, this.finalData);
-    // this.originalData = $.map(this.originalData, function(value, index) {
-    // return [value];
-    // });
-    console.log(this.originalData);
-  	// for(let data of this.finalData){
-  	// 	let org = {
-  	// 		'name':data.name,
-  	// 		'dq':data.dq,
-  	// 		'metrics':[]
-  	// 	};
-  	// 	for(let metric of data.metrics){
-  	// 		let node = {
-  	// 			'name':metric.name,
-  	// 			'dq':metric.dq,
-  	// 			'timestamp':metric.timestamp,
-  	// 			'details':[]
-  	// 		}
-  	// 		for(let detail of metric.details){
-   //        let detailNode = {
-   //          "_source":{
-   //            // 'matched':detail._source.matched,
-   //            // 'name':detail._source.name,
-   //            // 'tmst':detail._source.tmst,
-   //            // 'total':detail._source.total
-   //            'matched':1,
-   //            'name':'d',
-   //            'tmst':11,
-   //            'total':11
-   //          }
-   //        }
-  	// 			node.details.push(detailNode);
-  	// 		}
-  	// 		org.metrics.push(node);
-  	// 	}
-  	// 	this.originalData.push(org);
-  	// }
-    // this.originalData = this.finalData.map(x =>Object.assign({},x));
-    // this.originalData = $.extend(true,[],this.finalData);
-    // this.originalData = Object.assign([], this.finalData);
   	var self = this;
   	setTimeout(function(){
   		// body...
