@@ -18,165 +18,16 @@ export class SidebarComponent implements OnInit {
   	private router:Router,
   	public chartService:ChartService,
   	public getMetricService:GetMetricService) {
-
   }
 
   orgs = [];
   finalData = [];
-  originalOrgs = [];
   status:{
   	'health':number,
   	'invalid':number
   };
   chartOption = new Map();
   // var formatUtil = echarts.format;
-  dataData = [];
-  originalData = [];
-  metricName = [];
-  metricNameUnique = [];
-  myData = [];
-  metricData = {
-"hits" : {
-    "hits" : [
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493962623461,
-          "total" : 8043288,
-          "matched" : 8034775
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493973423461,
-          "total" : 9479698,
-          "matched" : 9476094
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493987823461,
-          "total" : 9194117,
-          "matched" : 9164237
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493995023461,
-          "total" : 9429018,
-          "matched" : 9375324
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493959023461,
-          "total" : 1086389,
-          "matched" : 1083336
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493973423461,
-          "total" : 1090650,
-          "matched" : 1090445
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1494009423461,
-          "total" : 8029660,
-          "matched" : 7979653
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493980623461,
-          "total" : 1088940,
-          "matched" : 1079003
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493995023461,
-          "total" : 1048833,
-          "matched" : 1047890
-        }
-      },
-      {
-        "_source" : {
-          "name" : "search_hourly",
-          "tmst" : 1493948223461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948224461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "search_hourly",
-          "tmst" : 1493948225461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948226461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948223461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948224461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948225461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948226461,
-          "total" : 100,
-          "matched" : 99
-        }
-      }
-    ]
-  }
-};
 
   pageInit() {
     var allDataassets = '...';

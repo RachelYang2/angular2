@@ -1,5 +1,5 @@
-@import url('../../../../node_modules/angular2-toaster/toaster.css');
-@import url('../measure.component.css');
+@import url('../../../../../node_modules/angular2-toaster/toaster.css');
+@import url('../../measure.component.css');
 
 div.tree div.tree-children::before,
 div.tree::before {
@@ -96,10 +96,3 @@ div.tree>treenode>div>.node-wrapper>treenodeexpander>.toggle-children-wrapper {
     left: 22px
 }
 
-.panel{
-    background-color: #222222;
-}
-
-.panel-footer{
-    background-color: #3c3c3c;
-}
