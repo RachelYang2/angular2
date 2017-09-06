@@ -96,3 +96,6 @@ div.tree>treenode>div>.node-wrapper>treenodeexpander>.toggle-children-wrapper {
     left: 22px
 }
 
+label{
+    font-weight: normal;
+}

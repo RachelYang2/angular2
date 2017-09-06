@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ToasterModule, ToasterService} from 'angular2-toaster';
+import { ToasterModule, ToasterService,ToasterContainerComponent} from 'angular2-toaster';
 import * as $ from 'jquery';
 import { HttpClient} from '@angular/common/http';
 import { Router} from "@angular/router";
@@ -18,16 +18,29 @@ class node {
   cols:Col[];
   parent:string;
 };
+
 class Col{
   name:string;
   type:string;
   comment:string;
   selected :boolean;
+  isNum:boolean;
+  isExpanded:boolean;
+  rules:string[];
+  // selectedRules:{[rule:string]:boolean};
+  selectedRules:boolean[];
   constructor(name:string,type:string,comment:string,selected:boolean){
     this.name = name;
     this.type = type;
     this.comment = comment;
     this.selected = false;
+    this.isExpanded = false;
+    if(this.type=='bigint'||this.type=='int'||this.type=='smallint'||this.type==''||this.type=='double'
+      ||this.type=='float'){
+      this.isNum = true;
+    }
+    this.selectedRules = [false,false,false,false,false,false,false,false,false,false,false];
+    this.rules = [];
   }
   getSelected(){
     return this.selected;
@@ -45,10 +58,8 @@ class Col{
 export class PrComponent implements OnInit {
 
   currentStep = 1;
-  selection = [];
+  selection : Col[];
   selectedAll = false;
-  selectedAllTarget = false;
-  selectionTarget = [];
   map = [];
   mappings = [];
   matches = [];
@@ -56,46 +67,52 @@ export class PrComponent implements OnInit {
   rules = '';
   currentDB = '';
   currentTable = '';
-  currentDBTarget = '';
-  currentTableTarget = '';
   schemaCollection:Col[];
-  schemaCollectionTarget:Col[];
-  matchFunctions = ['==', '!==', '>', '>=','<',"<="];
 
-  measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'profiling';
   newMeasure = {
-    "name":'',
-    "description":'',
-    "organization":'',
-    "type":'',
-    "source":{
-        "type":"HIVE",
-        "version":"1.2",
-        "config":{
-            "database":'',
-            "table.name":'',
-        },
-    },
-    "target":{
-        "type":"HIVE",
-        "version":"1.2",
-        "config":{
-            "database":'',
-            "table.name":'',
-        },
-    },
-    "evaluateRule":{
-        "rules":'',
-    },
-    "owner":'',
-    "mappings":[],
+    "name": "",
+    "process.type": "batch",
+    "data.sources": [
+      {
+        "name": "source",
+        "connectors": [
+          {
+            "type": "hive",
+            "version": "1.2",
+            "config": {
+              "database": "",
+              "table.name":""
+            }
+          }
+        ]
+      }
+    ],
+    "evaluateRule": {
+      "rules": [
+        {
+          "dsl.type": "griffin-dsl",
+          "dq.type": "profiling",
+          "rule": "",
+          "details": {}
+        }
+      ]
+    }
   };
   name:'';
   desc:'';
   org:'';
   owner = 'test';
   createResult :any;
+
+  ruleMap = [
+             'total count',
+             'distinct count',
+             'null detection count',
+             'regular expression detection count',
+             'rule detection count','max','min','median','avg',
+             'enum detection group count',
+             'groupby count']
 
   private toasterService: ToasterService;
   public visible = false;
@@ -118,7 +135,8 @@ export class PrComponent implements OnInit {
 
   toggleSelection (row) {
       row.selected = !row.selected;
-      var idx = this.selection.indexOf(row.name);
+      console.log(row);
+      var idx = this.selection.indexOf(row);
       // is currently selected
       if (idx > -1) {
           this.selection.splice(idx, 1);
@@ -126,21 +144,20 @@ export class PrComponent implements OnInit {
       }
       // is newly selected
       else {
-          this.selection.push(row.name);
+          this.selection.push(row);
       }
   };
 
-  toggleSelectionTarget (row) {
-      row.selected = !row.selected;
-      var idx = this.selectionTarget.indexOf(row.name);
+  toggleSelectionRules (row,index) {
+      row.selectedRules[index] = !row.selectedRules[index];
+      var idx = row.rules.indexOf(this.ruleMap[index]);
       // is currently selected
       if (idx > -1) {
-          this.selectionTarget.splice(idx, 1);
-          this.selectedAllTarget = false;
+          row.rules.splice(idx, 1);
       }
       // is newly selected
       else {
-          this.selectionTarget.push(row.name);
+          row.rules.push(this.ruleMap[index]);
       }
   };
 
@@ -150,18 +167,7 @@ export class PrComponent implements OnInit {
     for(var i =0; i < this.schemaCollection.length; i ++){
       this.schemaCollection[i].selected = this.selectedAll;
       if (this.selectedAll) {
-          this.selection.push(this.schemaCollection[i].name);
-      }
-    }
-  };
-
-  toggleAllTarget () {
-    this.selectedAllTarget = !this.selectedAllTarget;
-    this.selectionTarget = [];
-    for(var i =0; i < this.schemaCollectionTarget.length; i ++){
-      this.schemaCollectionTarget[i].selected = this.selectedAllTarget;
-      if (this.selectedAllTarget) {
-          this.selectionTarget.push(this.schemaCollectionTarget[i].name);
+          this.selection.push(this.schemaCollection[i]);
       }
     }
   };
@@ -178,48 +184,48 @@ export class PrComponent implements OnInit {
   submit (form) {                
       // form.$setPristine();
       var rule = '';
-      this.newMeasure={
-        "name":this.name,
-        "description":this.desc,
-        "organization":this.org,
-        "type":this.type,
-        "source":{
-            "type":"HIVE",
-            "version":"1.2",
-            "config":{
-                "database":this.currentDB,
-                "table.name":this.currentTable,
-            },
-        },
-        "target":{
-            "type":"HIVE",
-            "version":"1.2",
-            "config":{
-                "database":this.currentDBTarget,
-                "table.name":this.currentTableTarget,
-            },
-        },
-        "evaluateRule":{
-            "rules":'',
-        },
-        "owner":this.owner,
-        mappings:[],
-      };
+      // this.newMeasure={
+      //   "name":this.name,
+      //   "description":this.desc,
+      //   "organization":this.org,
+      //   "type":this.type,
+      //   "source":{
+      //       "type":"HIVE",
+      //       "version":"1.2",
+      //       "config":{
+      //           "database":this.currentDB,
+      //           "table.name":this.currentTable,
+      //       },
+      //   },
+      //   "target":{
+      //       "type":"HIVE",
+      //       "version":"1.2",
+      //       "config":{
+      //           "database":'this.currentDBTarget',
+      //           "table.name":'this.currentTableTarget',
+      //       },
+      //   },
+      //   "evaluateRule":{
+      //       "rules":'',
+      //   },
+      //   "owner":this.owner,
+      //   mappings:[],
+      // };
       var mappingRule = function(src, tgt, matches) {
           return "$source['" + src + "'] " + matches + " $target['" + tgt + "']";
       }
       var self = this;
-      var rules = this.selectionTarget.map(function(item, i) {
-          return mappingRule(self.selection[i], item, self.matches[i]);
-      });
-      rule = rules.join(" AND ");
-      this.rules = rule;
-      this.newMeasure.evaluateRule.rules = rule;
-      for(var i =0; i < this.selectionTarget.length; i ++){
-        this.newMeasure.mappings.push({target:this.selectionTarget[i],
-                        src:this.mappings[i],
-                        matchMethod: this.matches[i]});
-      }
+      // var rules = this.selectionTarget.map(function(item, i) {
+      //     return mappingRule(self.selection[i], item, self.matches[i]);
+      // });
+      // rule = rules.join(" AND ");
+      // this.rules = rule;
+      // this.newMeasure.evaluateRule.rules = rule;
+      // for(var i =0; i < this.selectionTarget.length; i ++){
+      //   this.newMeasure.mappings.push({target:this.selectionTarget[i],
+      //                   src:this.mappings[i],
+      //                   matchMethod: this.matches[i]});
+      // }
       this.visible = true;
       setTimeout(() => this.visibleAnimate = true, 100);
   }
@@ -385,32 +391,6 @@ export class PrComponent implements OnInit {
     animateAcceleration: 1.2
   };
 
-  targetOptions: ITreeOptions = {
-    displayField: 'name',
-    isExpandedField: 'expanded',
-    idField: 'id',
-    actionMapping: {
-      mouse: {
-        click: (tree, node, $event) => {
-          if (node.hasChildren) {
-            this.currentDBTarget = node.data.name;
-            this.currentTableTarget = '';
-            TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
-          }
-          else if(node.data.cols)
-          {
-            this.currentTableTarget = node.data.name;
-            this.currentDBTarget = node.data.parent;
-            this.schemaCollectionTarget = node.data.cols;
-          }
-        }
-      }
-    },
-    animateExpand: true,
-    animateSpeed: 30,
-    animateAcceleration: 1.2
-  };
-
   errorMessage = function(i, msg) {
       var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source.', 'please complete the form in this step before proceeding'];
       if (!msg) {
@@ -424,14 +404,6 @@ export class PrComponent implements OnInit {
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
   };
-
-  // toast: Toast = {
-  //   type: 'success',
-  //   title: 'close button',
-  //   showCloseButton: true
-  // };
- 
-  // this.toasterService.pop(toast);
 
   popToast() {
       this.toasterService.pop('success', 'Args Title', 'Args Body');
