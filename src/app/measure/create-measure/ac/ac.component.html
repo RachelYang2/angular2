@@ -1,11 +1,9 @@
-<toaster-container></toaster-container>
-<button (click)="popToast()">pop toast</button>
 <div class="container-fluid">
   <div class="row">
     <h5 class="over-title margin-bottom-15">Create Measure</h5>
   </div>
   <div class="row">
-    <form name="Form" id="form" novalidate>
+    <form name="Form" id="form" (ngSubmit)="submit(acForm)" #acForm="ngForm"  novalidate>
       <div id="wizard" class="swMain" >
         <ul>
           <li (click)="goTo(1)" >
@@ -96,6 +94,7 @@
               </fieldset>
             </div>
             <div class="form-group btn-container">
+              <toaster-container></toaster-container>
               <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
               </button>
@@ -153,6 +152,7 @@
               <button class="btn btn-primary btn-o back-step btn-wide pull-left" (click)="prev(Form)">
                 <i class="fa fa-arrow-circle-left"></i> Back
               </button>
+              <toaster-container></toaster-container>
               <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
               </button>
@@ -232,6 +232,7 @@
               <button class="btn btn-primary btn-o back-step btn-wide pull-left" (click)="prev(Form)">
                 <i class="fa fa-arrow-circle-left"></i> Back
               </button>
+              <toaster-container></toaster-container>
               <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
               </button>
@@ -249,15 +250,17 @@
                 </legend>
                 <div class="y-scrollable">
                   <div class="col-md-12 col-lg-12 col-sm-12">
-                    <div class="form-group">
+                    <div class="form-group" [ngClass]="{'has-error':acName.dirty&&acName.invalid, 'has-success':acName.valid}">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Measure Name<span class="symbol required"></span>:
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" [(ngModel)]="name" name="name" placeholder="Please input the measure name" required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
-                        <!-- <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.required">Measure Name is required</span>
-                        <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.pattern">Only letter, number, "-" and "_" are allowed</span> -->
+                        <input type="text" class="form-control" [(ngModel)]="name" name="acName" #acName="ngModel" placeholder="Please input the measure name" required pattern="^[a-zA-Z0-9_-]*$" id="acName">
+                        <span class="error text-small block " 
+                        *ngIf="acName.dirty && (acName.errors?.required)">
+                        Measure Name is required</span>
+                        <span class="error text-small block " *ngIf="acName.dirty && (acName.errors?.pattern)">Only letter, number, "-" and "_" are allowed</span>
                       </div>
                     </div>
                   </div>
@@ -331,7 +334,8 @@
               <button class="btn btn-primary btn-o back-step btn-wide pull-left" (click)="prev(Form)">
                 <i class="fa fa-arrow-circle-left"></i> Back
               </button>
-              <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit(Form)">
+              <toaster-container></toaster-container>
+              <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit(acForm)">
                 Submit
               </button>
             </div>

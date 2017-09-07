@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, Validator} from '@angular/forms';
+// import { PatternValidator } from '@angular/forms';
+
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -44,6 +46,8 @@ class Col{
 })
 
 export class AcComponent implements OnInit {
+
+
 
   currentStep = 1;
   selection = [];
@@ -168,8 +172,31 @@ export class AcComponent implements OnInit {
   };
 
   next (form) {
+    if(this.formValidation(this.currentStep)){
       this.currentStep++;
+    }else{
+      this.toasterService.pop('error','Error!','Please select at least one attribute!');
+          return false;
+    }
   }
+
+  formValidation = function(step) {
+       if (step == undefined) {
+           step = this.currentStep;
+       }
+       if (step == 1) {
+           return this.selection && this.selection.length > 0;
+       } else if (step == 2) {
+           return (this.selectionTarget && this.selectionTarget.length > 0)//at least one target is selected
+                   // && !((this.currentTable.name == this.currentTableTarget.name)&&(this.currentDB.name == this.currentDBTarget.name));//target and source should be different
+       } else if (step == 3) {
+           return this.selectionTarget && this.selectionTarget.length == this.mappings.length
+                   && this.mappings.indexOf('') == -1
+       } else if (step == 4) {
+       }
+       return false;
+   } 
+
   prev (form) {
       this.currentStep--;
   }
@@ -178,6 +205,10 @@ export class AcComponent implements OnInit {
   }
   submit (form) {                
       // form.$setPristine();
+      if (!form.valid) {
+        this.toasterService.pop('error', 'Error!', 'please complete the form in this step before proceeding');
+        return false;
+      }
       var rule = '';
       this.newMeasure={
         "name":this.name,
@@ -412,31 +443,17 @@ export class AcComponent implements OnInit {
     animateAcceleration: 1.2
   };
 
-  errorMessage = function(i, msg) {
-      var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source.', 'please complete the form in this step before proceeding'];
-      if (!msg) {
-          // toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
-      } else {
-          // toaster.pop('error', 'Error', msg, 0);
-      }
-  };
-
   nodeList:object[];
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
   };
 
-  // toast: Toast = {
-  //   type: 'success',
-  //   title: 'close button',
-  //   showCloseButton: true
-  // };
- 
-  // this.toasterService.pop(toast);
-
-  popToast() {
-      this.toasterService.pop('success', 'Args Title', 'Args Body');
-  }
+  // resizeWindow(){
+  //     var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
+  //                   $(stepSelection).css({
+  //                       height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+  //                   });
+  // }
 
   ngOnInit() {
     this.nodeList = new Array();

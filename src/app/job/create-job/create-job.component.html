@@ -6,7 +6,7 @@
     </div><!--//row-->
     <div class="row">
         <!-- <form name="Form" id="form" novalidate> -->
-        <form name= "Form" id="form" (ngSubmit)="submit(form)" #jobForm="ngForm" novalidate>
+        <form name= "Form" id="form" (ngSubmit)="submit(jobForm)" #jobForm="ngForm" novalidate>
             <div  class="formStep" >
                 <label class="stepDesc info">Please setup the job required information</label>
                 <div class="container-fluid">
@@ -30,7 +30,7 @@
                                                    pattern="YYYYMMdd-HH"
                                                    maxlength='11'>
                                             <!-- /i<span class="error text-small block " *ngIf="jobName.dirty && jobName.errors.Pattern">Please input partition like 'YYYYMMdd-HH'</span> jobName.dirty && jobName.errors.pattern-->
-                                            <span class="error text-small block " *ngIf="jobName.dirty&&jobName.errors.pattern">Please input partition like 'YYYYMMdd-HH'</span>
+                                            <span class="error text-small block " *ngIf="jobName.dirty&&jobName.invalid">Please input partition like 'YYYYMMdd-HH'</span>
                                         </div>
                                     </div>
                                 </div>

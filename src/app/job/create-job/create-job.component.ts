@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { MaxLengthValidator } from '@angular/forms';
-import { NgControlStatus } from '@angular/forms';
+import { NgControlStatus ,Validators} from '@angular/forms';
 import { PatternValidator } from '@angular/forms';
 import {MdDatepickerModule} from '@angular/material/@angular/material';
 
