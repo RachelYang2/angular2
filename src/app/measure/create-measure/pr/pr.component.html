@@ -128,6 +128,7 @@
                         <div class="col-md-4 col-lg-4 col-sm-4" *ngIf="item.type=='string'">
                           <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,3)'  [checked]="item.selectedRules[3]"/> 
                           <label>Regular Expression Detection Count</label>
+                          <input *ngIf="item.selectedRules[3]" name="RE" type="text" class="form-control" [(ngModel)]="item.RE"/>
                         </div>
 
                         <div class="col-md-4 col-lg-4 col-sm-4">
@@ -164,6 +165,7 @@
                         <div class="col-md-4 col-lg-4 col-sm-4">
                           <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,10)' [checked]="item.selectedRules[10]" /> 
                           <label>Groupby Count</label>
+                          <input *ngIf="item.selectedRules[10]" name="groupby" type="text" class="form-control" [(ngModel)]="item.groupby"/> 
                         </div>
                       </div>
                       </div>
@@ -209,16 +211,6 @@
                   </div>
                   <div class="col-md-12 col-lg-12 col-sm-12">
                     <div class="form-group">
-                      <label class="col-md-2 col-lg-2 col-sm-2 control-label">
-                        Measure Description:
-                      </label>
-                      <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" [(ngModel)]="desc" placeholder="Please input detailed description of your measure" name="desc">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 col-lg-12 col-sm-12">
-                    <div class="form-group">
                       <label for="typeSelector" class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Measure Type:
                       </label>
@@ -250,7 +242,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-12 col-lg-12 col-sm-12">
+                  <!-- <div class="col-md-12 col-lg-12 col-sm-12">
                     <div class="form-group">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Owner:
@@ -260,7 +252,7 @@
                         [(ngModel)]="owner" >
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
                 <div style="color:#b2c831">
                   <p>
@@ -308,14 +300,6 @@
                         </div>
                         <div class="row">
                           <label class="col-md-4 col-lg-4 col-sm-4">
-                            Measure Description:
-                          </label>
-                          <div class="col-md-8 col-lg-8 col-sm-8 ">
-                            {{desc}}
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label class="col-md-4 col-lg-4 col-sm-4">
                             Measure Type:
                           </label>
                           <div class="col-md-8 col-lg-8 col-sm-8 ">
@@ -346,9 +330,14 @@
                             {{owner}}
                           </div>
                         </div>
+                        
                       </div>
                     </div>
                   </div>
+                  <h5 class="row">Rules</h5>
+                    <div class="row">
+                      {{newMeasure.evaluateRule.rules[0].rule}}
+                    </div>
                   <br/>
                   <!-- <h5 class="row">Mapping rules</h5> -->
                   <!-- <div class="row">

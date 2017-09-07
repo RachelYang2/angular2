@@ -27,6 +27,8 @@ class Col{
   isNum:boolean;
   isExpanded:boolean;
   rules:string[];
+  groupby:string;
+  RE:string;
   // selectedRules:{[rule:string]:boolean};
   selectedRules:boolean[];
   constructor(name:string,type:string,comment:string,selected:boolean){
@@ -35,6 +37,8 @@ class Col{
     this.comment = comment;
     this.selected = false;
     this.isExpanded = false;
+    this.groupby = '';
+    this.RE = '';
     if(this.type=='bigint'||this.type=='int'||this.type=='smallint'||this.type==''||this.type=='double'
       ||this.type=='float'){
       this.isNum = true;
@@ -60,14 +64,11 @@ export class PrComponent implements OnInit {
   currentStep = 1;
   selection : Col[];
   selectedAll = false;
-  map = [];
-  mappings = [];
-  matches = [];
-  dataAsset = '';
   rules = '';
   currentDB = '';
   currentTable = '';
   schemaCollection:Col[];
+
 
   type = 'profiling';
   newMeasure = {
@@ -100,9 +101,6 @@ export class PrComponent implements OnInit {
     }
   };
   name:'';
-  desc:'';
-  org:'';
-  owner = 'test';
   createResult :any;
 
   ruleMap = [
@@ -110,7 +108,8 @@ export class PrComponent implements OnInit {
              'distinct count',
              'null detection count',
              'regular expression detection count',
-             'rule detection count','max','min','median','avg',
+             'rule detection count',
+             'max','min','median','avg',
              'enum detection group count',
              'groupby count']
 
@@ -129,10 +128,6 @@ export class PrComponent implements OnInit {
     }
   }
 
-  addMapping(x,i){   
-    this.mappings[i] = x;
-  }
-
   toggleSelection (row) {
       row.selected = !row.selected;
       console.log(row);
@@ -149,6 +144,7 @@ export class PrComponent implements OnInit {
   };
 
   toggleSelectionRules (row,index) {
+      
       row.selectedRules[index] = !row.selectedRules[index];
       var idx = row.rules.indexOf(this.ruleMap[index]);
       // is currently selected
@@ -172,6 +168,55 @@ export class PrComponent implements OnInit {
     }
   };
 
+  transferRule(rule,col){
+    switch(rule){
+      // case 'total count':
+      //   return 'count(source.'+col+')';
+      // case 'distinct count':
+      //   return 'distinct count(source.'+col+')';
+      // case 'null detection count':
+      //   return 'count(source.'+col+') where source.'+col+' is null';
+      // case 'regular expression detection count':
+      //   return 'count(source.'+col+') where source.'+col+' like ';
+      // case 'rule detection count':
+      //   return 'count(source.'+col+') where source.'+col+' like ';
+      // case 'max':
+      //   return 'max(source.'+col+')';
+      // case 'min':
+      //   return 'min(source.'+col+')';
+      // case 'median':
+      //   return 'median(source.'+col+')';
+      // case 'avg':
+      //   return 'average(source.'+col+')';
+      // case 'enum detection group count':
+      //   return 'source.'+col+' group by source.'+col+'';
+      // case 'groupby count':
+      //   return 'source.'+col+' group by source.'+col+'';
+      case 'total count':
+        return 'SELECT COUNT(*) FROM source';
+      case 'distinct count':
+        return 'SELECT DISTINCT COUNT(source.'+col.name+') FROM source';
+      case 'null detection count':
+        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' is null';
+      case 'regular expression detection count':
+        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like '+col.RE;
+      case 'rule detection count':
+        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like ';
+      case 'max':
+        return 'SELECT max(source.'+col.name+') FROM source';
+      case 'min':
+        return 'SELECT min(source.'+col.name+') FROM source';
+      case 'median':
+        return 'SELECT median(source.'+col.name+') FROM source';
+      case 'avg':
+        return 'SELECT average(source.'+col.name+') FROM source';
+      case 'enum detection group count':
+        return 'source.'+col.name+' group by source.'+col.name+'';
+      case 'groupby count':
+        return 'source.'+col.name+' group by source.'+col.name+' '+col.groupby;
+    }
+  }
+
   next (form) {
       this.currentStep++;
   }
@@ -183,54 +228,50 @@ export class PrComponent implements OnInit {
   }
   submit (form) {                
       // form.$setPristine();
-      var rule = '';
-      // this.newMeasure={
-      //   "name":this.name,
-      //   "description":this.desc,
-      //   "organization":this.org,
-      //   "type":this.type,
-      //   "source":{
-      //       "type":"HIVE",
-      //       "version":"1.2",
-      //       "config":{
-      //           "database":this.currentDB,
-      //           "table.name":this.currentTable,
-      //       },
-      //   },
-      //   "target":{
-      //       "type":"HIVE",
-      //       "version":"1.2",
-      //       "config":{
-      //           "database":'this.currentDBTarget',
-      //           "table.name":'this.currentTableTarget',
-      //       },
-      //   },
-      //   "evaluateRule":{
-      //       "rules":'',
-      //   },
-      //   "owner":this.owner,
-      //   mappings:[],
-      // };
-      var mappingRule = function(src, tgt, matches) {
-          return "$source['" + src + "'] " + matches + " $target['" + tgt + "']";
-      }
+      this.newMeasure = {
+        "name": this.name,
+        "process.type": "batch",
+        "data.sources": [
+          {
+            "name": "source",
+            "connectors": [
+              {
+                "type": "hive",
+                "version": "1.2",
+                "config": {
+                  "database": this.currentDB,
+                  "table.name":this.currentTable
+                }
+              }
+            ]
+          }
+        ],
+        "evaluateRule": {
+          "rules": [
+            {
+              "dsl.type": "griffin-dsl",
+              "dq.type": "profiling",
+              "rule": "",
+              "details": {}
+            }
+          ]
+        }
+      };
+     
       var self = this;
-      // var rules = this.selectionTarget.map(function(item, i) {
-      //     return mappingRule(self.selection[i], item, self.matches[i]);
-      // });
-      // rule = rules.join(" AND ");
-      // this.rules = rule;
-      // this.newMeasure.evaluateRule.rules = rule;
-      // for(var i =0; i < this.selectionTarget.length; i ++){
-      //   this.newMeasure.mappings.push({target:this.selectionTarget[i],
-      //                   src:this.mappings[i],
-      //                   matchMethod: this.matches[i]});
-      // }
+      var rule = '';
+      for(let item of this.selection){
+          for(let itemRule of item.rules){
+            rule = rule + this.transferRule(itemRule,item)+',';
+          }
+      }
+      this.newMeasure.evaluateRule.rules[0].rule = rule;
       this.visible = true;
       setTimeout(() => this.visibleAnimate = true, 100);
   }
 
   save() {
+    console.log(this.newMeasure);
     this.http
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {
@@ -403,6 +444,7 @@ export class PrComponent implements OnInit {
   nodeList:object[];
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
+    this.selection = [];
   };
 
   popToast() {
