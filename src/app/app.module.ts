@@ -1,12 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { TreeModule } from 'angular-tree-component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AngularEchartsModule } from 'ngx-echarts';
+import { MdDatepickerModule, MdNativeDateModule} from '@angular/material/@angular/material';
 
 import {ToasterModule, ToasterService} from 'angular2-toaster';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +22,8 @@ import { MeasureDetailComponent } from './measure/measure-detail/measure-detail.
 import { MetricComponent } from './metric/metric.component';
 import { DetailMetricComponent } from './metric/detail-metric/detail-metric.component';
 import { DataassetComponent } from './dataasset/dataasset.component';
+import { CreateJobComponent } from './job/create-job/create-job.component';
+
 
 const appRoutes: Routes = [
   { 
@@ -43,6 +46,11 @@ const appRoutes: Routes = [
     path: 'jobs',
     component: JobComponent,
     data: { title: 'Heroes List' }
+  },
+  {
+    path: 'createjob',
+    component: CreateJobComponent,
+    
   },
   {
     path: 'createmeasure',
@@ -85,6 +93,7 @@ const appRoutes: Routes = [
     MetricComponent,
     DetailMetricComponent,
     DataassetComponent,
+    CreateJobComponent
   ],
   imports: [
     BrowserModule,
@@ -94,6 +103,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     ToasterModule,
     FormsModule,
+    MdDatepickerModule,
+    MdNativeDateModule,
     AngularEchartsModule,
     RouterModule.forRoot(
       appRoutes,

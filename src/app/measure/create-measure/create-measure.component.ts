@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl} from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ToasterModule, ToasterService} from 'angular2-toaster';
+import { ToasterModule, ToasterService, ToasterConfig} from 'angular2-toaster';
 import * as $ from 'jquery';
 import { HttpClient} from '@angular/common/http';
 import { Router} from "@angular/router";
@@ -168,7 +168,12 @@ export class CreateMeasureComponent implements OnInit {
   };
 
   next (form) {
-      this.currentStep++;
+      if(this.formValidation(this.currentStep)){
+         this.currentStep++;
+      }else{
+      this.toasterService.pop('error', 'Error!', 'Please select at least one attribute!');
+      // return false;
+    }
   }
   prev (form) {
       this.currentStep--;
@@ -412,30 +417,39 @@ export class CreateMeasureComponent implements OnInit {
     animateAcceleration: 1.2
   };
 
-  errorMessage = function(i, msg) {
-      var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source.', 'please complete the form in this step before proceeding'];
-      if (!msg) {
-          // toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
-      } else {
-          // toaster.pop('error', 'Error', msg, 0);
-      }
-  };
 
   nodeList:object[];
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
   };
+  
+  existDuplicatedElement = function(arr){
+      for (var i = 0; i < arr.length; i++) {
+          for (var j = i+1; j < arr.length; j++) {
+              if(arr[i] == arr[j]){
+                  return true;
+              }
+          };
+      };
+      return false;
+   };
 
-  // toast: Toast = {
-  //   type: 'success',
-  //   title: 'close button',
-  //   showCloseButton: true
-  // };
- 
-  // this.toasterService.pop(toast);
-
-  popToast() {
-      this.toasterService.pop('success', 'Args Title', 'Args Body');
+  formValidation = function(step) {
+      if (step == undefined) {
+          step = this.currentStep;
+      }
+      if (step == 1) {
+          return this.selection && this.selection.length > 0;
+      } else if (step == 2) {
+          return (this.selectionTarget && this.selectionTarget.length > 0)//at least one target is selected
+                  && !((this.currentTable == this.currentTableTarget)&&(this.currentDB == this.currentDBTarget));//target and source should be different
+      } else if (step == 3) {
+          return this.selectionTarget && this.selectionTarget.length == this.mappings.length
+                  && this.mappings.indexOf('') == -1 
+                  /*&& $scope.selectionPK && $scope.selectionPK.length>0*/;
+      } else if (step == 4) {
+      }
+      return false;
   }
 
   ngOnInit() {

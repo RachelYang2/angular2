@@ -96,6 +96,7 @@
               </fieldset>
             </div>
             <div class="form-group btn-container">
+              <toaster-container></toaster-container>
               <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
               </button>
@@ -249,15 +250,17 @@
                 </legend>
                 <div class="y-scrollable">
                   <div class="col-md-12 col-lg-12 col-sm-12">
-                    <div class="form-group">
+                    <div class="form-group" [ngClass]="{'has-error':measureName.dirty&&measureName.invalid, 'has-success':measureName.valid}">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Measure Name<span class="symbol required"></span>:
                       </label>
 
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" [(ngModel)]="name" name="name" placeholder="Please input the measure name" required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
+                        <input type="text" class="form-control" [(ngModel)]="name" #measureName="ngModel" name="measureName" placeholder="Please input the measure name" required pattern="'([0-9a-zA-Z\\_\\-])+'">
                         <!-- <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.required">Measure Name is required</span>
                         <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.pattern">Only letter, number, "-" and "_" are allowed</span> -->
+                        <span class="error text-small block " *ngIf="measureName.dirty && (measureName.errors.required)">Measure Name is required</span>
+                        <span class="error text-small block " *ngIf="measureName.dirty&&measureName.errors.pattern">Only letter, number, "-" and "_" are allowed</span>
                       </div>
                     </div>
                   </div>
