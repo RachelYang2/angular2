@@ -1,0 +1,18 @@
+.icon{
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  top:20%;
+}
+
+#dataassetTable{
+	font-size:15px;
+}
+
+.ng2-st-actions-title .ng2-smart-title{
+	color:#1e6bb8;
+}
+
+#dataassetTable .ng2-smart-titles{
+	background-color:#7D95CC;
+}

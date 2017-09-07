@@ -8,7 +8,7 @@ import {MdDatepickerModule} from '@angular/material/@angular/material';
 
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ToasterModule, ToasterService} from 'angular2-toaster';
+import {ToasterModule, ToasterService, ToasterConfig} from 'angular2-toaster';
 import * as $ from 'jquery';
 import  {HttpClient,HttpParams} from '@angular/common/http';
 import  {Router} from "@angular/router";
@@ -24,8 +24,13 @@ export class CreateJobComponent implements OnInit {
     this.toasterService = toasterService;
   };
 
+  public toasterconfig : ToasterConfig = 
+        new ToasterConfig({
+            showCloseButton: true, 
+            tapToDismiss: false, 
+            timeout: 0
+        });
 
-  
   currentStep = 1;
   Times = ['seconds','minutes','hours'];
   timeType = 'seconds';
@@ -43,30 +48,15 @@ export class CreateJobComponent implements OnInit {
   createResult = '';
   jobStartTime : any;
 
+  Measures:object;
 
-  Measures = [
-     {
-     	id:'1',
-     	name:'test'
-
-     },
-     {
-     	id:'2',
-     	name:'ebay'
-
-     },
-     {
-     	id:'3',
-     	name:'sql'
-
-     }
-  ];
-  measure = 0;
+  measure:string;
+  measureid:string;
   ntAccount = 0;
   newJob={
         "sourcePattern":'',
         "targetPattern":'',
-        "StartTime":'',
+        "jobStartTime":0,
         "interval":'',
         "groupName":'',
       }
@@ -126,8 +116,8 @@ export class CreateJobComponent implements OnInit {
   	history.back();
   }
 
-  submit () { 
-      // form.$setPristine();
+  submit (jobForm) { 
+      // jobForm.markAsPristine();
       var period;
       if(this.timeType=='minutes')
           period = this.periodTime *60;
@@ -136,73 +126,59 @@ export class CreateJobComponent implements OnInit {
       else period = this.periodTime;
       var rule = '';
       var time :number;
-      var startTime = this.jobStartTime;
-      var year = this.jobStartTime.getFullYear();
-      var month = this.jobStartTime.getMonth();
-      var day = this.jobStartTime.getDay();
-      var standtime = month + '/' + day + '/' + year;
-      console.log(standtime);
-      // var year = this.jobStartTime.split('/')[2];
-      // var month = this.jobStartTime.split('/')[0];
-      // var day = this.jobStartTime.split('/')[1];
-      startTime = year +'-'+ month + '-'+ day + ' '+ this.timeDetail;
-      console.log(startTime);
-      time = Date.parse(this.jobStartTime);
-      if(isNaN(time)){
-         // toaster.pop('error','Please input the right format of start time');
-         console.log('erro');
-         this.toasterService.pop('error','Please input the right format of start time');
-          return;
+      if(this.jobStartTime){
+        var year = this.jobStartTime.getFullYear();
+        var month = this.jobStartTime.getMonth() + 1;
+        var day = this.jobStartTime.getDate();
+        var startTime = year +'-'+ month + '-'+ day + ' '+ this.timeDetail;
       }
+      
+      time = Date.parse(startTime);
+      if(isNaN(time)){
+         this.toasterService.pop('error','Error!','Please input the right format of start time');
+          return false;
+      }
+      if (!jobForm.valid) {
+        this.toasterService.pop('error', 'Error!', 'Please complete the form!');
+        return false;
+      }
+      
+
+      
       this.newJob={
         "sourcePattern":this.sourcePat,
         "targetPattern":this.targetPat,
-        "StartTime":startTime,
+        "jobStartTime":time,
         "interval":period,
         "groupName":'BA',
       },
       this.visible = true;
       setTimeout(() => this.visibleAnimate = true, 100);
   }
-
-  popToast() {
-        this.toasterService.pop('success', 'Args Title', 'Args Body');
-  }
-
   save() {
   	var date = new Date();
   	var datastr = date.toString();
     var month = date.getMonth()+1;
     var timestamp = Date.parse(datastr);
-    var jobName = this.Measures[this.measure].name + '-BA-' + this.ntAccount + '-' + timestamp;
-    // var newJob = 'http://localhost:8080/jobs' + '?group=' + this.newJob.groupName + '&jobName=' + jobName + '&measureId=' + this.Measures[this.measure].id;
+    var jobName = this.measure + '-BA-' + this.ntAccount + '-' + timestamp;
+    var newJob = 'http://localhost:8080/jobs' + '?group=' + this.newJob.groupName + '&jobName=' + jobName + '&measureId=' + this.measureid;
     this.http
-    .post('http://localhost:8080/jobs', this.newJob,{
-        params: new HttpParams().set('group', this.newJob.groupName).set('jobName', jobName).set('measureId', this.Measures[this.measure].id),
-    })
+    // .post('http://localhost:8080/jobs', this.newJob,{
+    //     params: new HttpParams().set('group', this.newJob.groupName).set('jobName', jobName).set('measureId', this.measureid),
+    // })
+    .post(newJob, this.newJob)
     .subscribe(data => {
-        this.createResult = data['results'];
+      this.createResult = data['results'];
+      this.hide();
+      this.router.navigate(['/jobs']);
     },
     err => {
       console.log('Error when creating job');
     });
-    this.hide();
-    this.router.navigate(['/jobs']);
+    
   }
 
-  data: { [key: string]: Array<object>; } = {
 
-  }
-
-  errorMessage = function(i, msg) {
-      var errorMsgs = ['Please complete the form!', 'please complete the form in this step before proceeding'];
-      if (!msg) {
-          // toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
-          this.toasterService.pop('error', 'Error', errorMsgs[i - 1], 0);
-      } else {
-          // toaster.pop('error', 'Error', msg, 0);
-      }
-  };
 
   setHeight(){
   	$('#md-datepicker-0').height(250);
@@ -210,14 +186,12 @@ export class CreateJobComponent implements OnInit {
 
   ngOnInit() {
      
-  // var getMeasureUrl = '...';
-  //       this.http.get(getMeasureUrl).subscribe(function successCallback(res){
-  //           // angular.forEach(res.data,function(measure){
-  //           //     this.Measures.push(measure);
-  //           })
-  //           this.measure = 0;
-  //       })
-
+    this.http.get('http://localhost:8080/measures').subscribe(data =>{
+      this.Measures = data;
+      // this.measure = 0;
+      this.measure = this.Measures[0].name;
+      this.measureid = this.Measures[0].id;
+    });
   }
 
 }

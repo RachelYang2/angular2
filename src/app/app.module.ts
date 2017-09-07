@@ -23,6 +23,9 @@ import { MetricComponent } from './metric/metric.component';
 import { DetailMetricComponent } from './metric/detail-metric/detail-metric.component';
 import { DataassetComponent } from './dataasset/dataasset.component';
 import { CreateJobComponent } from './job/create-job/create-job.component';
+import { AcComponent} from './measure/create-measure/ac/ac.component';
+import { PrComponent } from './measure/create-measure/pr/pr.component';
+
 
 
 const appRoutes: Routes = [
@@ -55,6 +58,14 @@ const appRoutes: Routes = [
   {
     path: 'createmeasure',
     component:CreateMeasureComponent
+  },
+  {
+    path: 'createmeasureac',
+    component:AcComponent
+  },
+    {
+    path: 'createmeasurepr',
+    component:PrComponent
   },
   {
     path: 'detailed/:name',
@@ -93,7 +104,9 @@ const appRoutes: Routes = [
     MetricComponent,
     DetailMetricComponent,
     DataassetComponent,
-    CreateJobComponent
+    CreateJobComponent,
+    AcComponent,
+    PrComponent,
   ],
   imports: [
     BrowserModule,

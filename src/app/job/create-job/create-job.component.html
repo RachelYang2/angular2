@@ -6,7 +6,7 @@
     </div><!--//row-->
     <div class="row">
         <!-- <form name="Form" id="form" novalidate> -->
-        <form name= "Form" id="form" (ngSubmit)="submit(form)" #jobForm="ngForm">
+        <form name= "Form" id="form" (ngSubmit)="submit(form)" #jobForm="ngForm" novalidate>
             <div  class="formStep" >
                 <label class="stepDesc info">Please setup the job required information</label>
                 <div class="container-fluid">
@@ -19,7 +19,8 @@
                             </legend>
                             <div class="y-scrollable">
                                 <div class="col-md-12 col-lg-12 col-sm-12">
-                                    <div class="form-group" [ngClass]="{'has-error':jobName.dirty&&jobName.invalid, 'has-success':jobName.valid}">
+                                    <div class="form-group" 
+                                    [ngClass]="{'has-error':jobName.dirty&&jobName.invalid, 'has-success':jobName.valid}">
                                         <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                                             Source Pattern<span class="symbol required"></span>:
                                         </label>
@@ -29,7 +30,7 @@
                                                    pattern="YYYYMMdd-HH"
                                                    maxlength='11'>
                                             <!-- /i<span class="error text-small block " *ngIf="jobName.dirty && jobName.errors.Pattern">Please input partition like 'YYYYMMdd-HH'</span> jobName.dirty && jobName.errors.pattern-->
-                                            <span class="error text-small block " *ngIf="jobName.dirty&&jobName.invalid">Please input partition like 'YYYYMMdd-HH'</span>
+                                            <span class="error text-small block " *ngIf="jobName.dirty&&jobName.errors.pattern">Please input partition like 'YYYYMMdd-HH'</span>
                                         </div>
                                     </div>
                                 </div>
@@ -52,8 +53,9 @@
                                         </label>
 
                                         <div class="col-md-10 col-lg-10 col-sm-10 ">
-                                            <select id="measureSelector" class="form-control"  [(ngModel)]="measure.name" ngControl="name" required name="measure.name">
-                                                <option *ngFor="let row of Measures" value="{{$index}}" >{{row.name}}</option>
+                                            <select id="measureSelector" class="form-control" 
+                                             ngControl="name" required name="measure.name" [(ngModel)]="measure">
+                                                <option *ngFor="let row of Measures" value="{{row.name}}" >{{row.name}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -146,7 +148,8 @@
                             <i class="fa fa-arrow-circle-left"></i> Back
                         </button>
                         <!-- <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="form.submit(Form)"> -->
-                        <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit()"
+                        <toaster-container></toaster-container>
+                        <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit(jobForm)"
                         >
                             <!-- <button class="btn btn-primary btn-o next-step btn-wide pull-right" data-toggle="modal" data-target="#confirm"> -->
                             Submit
@@ -194,15 +197,16 @@
     							                    Measure Name:
     							                </label>
     							                <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
-    							                    {{Measures[measure].name}}
+    							                    {{measure}}
+                                                    <!-- {{Measures}} -->
     							                </div>
     							            </div>
     							            <div class="row">
     							                <label for="systemSelector" class="col-md-4 col-lg-4 col-sm-4">
     							                    Start at:
     							                </label>
-    							                <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff">
-    							                    {{jobStartTime}}&nbsp; {{timeDetail}}
+    							                <div class="col-md-8 col-lg-8 col-sm-8 " style="color: #fff" *ngIf="jobStartTime">
+    							                    {{jobStartTime.toLocaleDateString("en-US")}}&nbsp; {{timeDetail}}
     							                </div>
     							            </div>
     							            <div class="row">

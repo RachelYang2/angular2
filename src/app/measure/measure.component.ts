@@ -95,7 +95,7 @@ export class MeasureComponent implements OnInit {
       if(deleteResult.code==202){
         var self = this;
         setTimeout(function () {
-          self.results.splice(this.deleteIndex,1);
+          self.results.splice(self.deleteIndex,1);
           self.source.load(self.results);
           self.hide();
         },200);

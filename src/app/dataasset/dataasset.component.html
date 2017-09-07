@@ -1,3 +1,72 @@
-<p>
-  dataasset works!
-</p>
+<div  class="bs-component" >
+	<div id="assetContainer" style="margin-top:40px">
+    <ng2-smart-table [settings]="settings" [source]="source" id="dataassetTable" (delete)="onDelete($event)"></ng2-smart-table>
+    <!-- <table st-table="displayed" st-pipe="paging" class="table table-striped">
+	  	<thead>
+	    	<tr style="background-color:#7D95CC">
+				<th st-ratio="10">Table Name</th>
+				<th st-ratio="10">DB Name</th>
+				<th st-ratio="20">Owner</th>
+				<th st-ratio="10">Creation Time</th>
+				<th st-ratio="20">Last Access Time</th>
+				<th st-ratio="20">Location</th>
+
+			</tr>
+	  	</thead> -->
+	  	<!-- <tbody>
+		    <tr *ngIf="!displayed">
+		     <td *ngIf="!displayed" colspan="7" style="text-align:center">
+		     No content.
+		     </td>
+		     <td class="icon">
+				 <span class="fa fa-spinner fa-spin fa-3x fa-fw"></span>
+			 </td>
+		    </tr>
+		</tbody>
+	  	<tbody *ngFor="let row of displayed" style="word-break:break-all;">
+	    	<tr>
+	    		<td [ngClass]="{accordion:true}" (click)="row.showDetail=!(row.showDetail)" style="cursor: pointer;">
+                    <i ng-show="!row.showDetail" class="fa fa-chevron-circle-right blue"></i>
+                    <i ng-show="row.showDetail" class="fa fa-chevron-circle-down blue"></i>
+                    {{row.tableName}}</td>
+	    		<td>{{row.dbName || 'N/A'}}</td>
+	        	<td>{{row.owner || 'N/A'}}</td>
+	    		<td>{{(row.createTime * 1000 | date: 'short') ||  'N/A'}}</td>
+	    		<td>{{(row.lastAccessTime * 1000 | date: 'short') || 'N/A' }}</td>
+	    		<td>{{row.sd.location || 'N/A'}}</td>
+	    	</tr>
+	    	<tr ng-show="row.showDetail">
+	    		<td colspan="7" style="padding:20px 30px 10px 30px;">
+				    <table st-table="rowCollection" class="table table-striped" style="word-wrap: break-word;">
+					  	<thead>
+					    	<tr style="background-color:#7D95CC">
+								<th st-ratio="15">Name</th>
+								<th st-ratio="15">Type</th>
+								<th st-ratio="15">Comment</th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					      <tr *ngIf="!row.sd.cols || row.sd.cols.length == 0">
+					        <td colspan="7" style="text-align:center">No content.</td>
+					      </tr>
+					    	<tr *ngFor="let item of row.sd.cols">
+					    		<td>{{item.name}}</td>
+					    		<td>{{item.type}}</td>
+						        <td>{{item.comment || 'N/A'}}</td>
+					    	</tr>
+					  	</tbody>
+				    </table>
+				</td>
+	    	</tr>
+	  	</tbody> -->
+	    <!-- <tfoot>
+	      <tr>
+	        <td colspan="8" class="text-right">
+	          <div  st-items-by-page="10" st-pagination="" st-displayed-pages="10"></div>
+	        </td>
+	      </tr>
+	    </tfoot>
+    </table> -->
+    </div>
+</div>
+
