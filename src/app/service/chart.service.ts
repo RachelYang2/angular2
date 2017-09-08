@@ -20,7 +20,6 @@ export class ChartService {
   getUTCTimeStamp(timestamp) {
     var TzOffset = new Date(timestamp).getTimezoneOffset()/60;
     return timestamp-TzOffset*60*60*1000;
-    //timestamp-(new Date(timestamp).getTimezoneOffset()/60)*60*60*1000
   }
 
   getTooltip(params) {
@@ -77,8 +76,7 @@ export class ChartService {
       tooltip : {
           trigger: 'axis',
           formatter : function(params) {
-            return new Date(self.getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                      '<br /> Value : ' + params[0].data[1];;
+            return self.getTooltip(params);
           }
       },
       xAxis : {
@@ -179,12 +177,8 @@ export class ChartService {
       },
       tooltip : {
           trigger: 'axis',
-          // formatter : function(params) {
-          //   return this.getTooltip(params);
-          // },
           formatter : function(params) {
-            return new Date(self.getUTCTimeStamp(params[0].data[0])).toUTCString().replace('GMT', '')+
-                      '<br /> Value : ' + params[0].data[1];;
+            return self.getTooltip(params);
           },
           position: function(point, params, dom) {
               return self.getTooltipPosition(point, params, dom);
@@ -241,6 +235,7 @@ export class ChartService {
 
   getOptionBig(metric) {
     var data = this.getMetricData(metric);
+    var self = this;
     var option = {
       title: {
         text:  metric.name,
@@ -268,8 +263,7 @@ export class ChartService {
       tooltip : {
           trigger: 'axis',
           formatter : function(params) {
-            return new Date(params[0].data[0]-(new Date(params[0].data[0]).getTimezoneOffset()/60)*60*60*1000).toUTCString().replace('GMT', '')+
-                      '<br /> Value : ' + params[0].data[1];
+            return self.getTooltip(params);
           }
       },
       xAxis : {

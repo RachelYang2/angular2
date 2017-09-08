@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule ,LocalDataSource} from 'ng2-smart-table';
 import { DatePipe } from '@angular/common';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-job',
@@ -107,36 +108,66 @@ export class JobComponent implements OnInit {
     });
   };
 
+  parseDate(time){
+    time = new Date(time);
+    var year = time.getFullYear();
+    var month = time.getMonth() + 1;
+    var day = time.getDate();
+    var hour = time.getHours();
+    if(hour<10)
+      hour = '0' + hour;
+    var minute = time.getMinutes();
+    if(minute<10)
+      minute = '0' + minute;
+    var second = time.getSeconds();
+    if(second<10)
+      second = '0' + second;
+    return  ( year +'/'+ month + '/'+ day + ' '+ hour + ':' + minute + ':' + second);
+  }
+
+  intervalFormat(second){
+     if(second<60)
+         return (second + 's');
+     else if(second<3600)
+     {
+         if(second%60==0)
+             return(second / 60 + 'min');
+         else 
+             return((second - second % 60) / 60 + 'min'+second % 60 + 's');
+     }
+     else 
+     {
+         if(second%3600==0)
+             return ( second / 3600 + 'h');
+         else
+         {
+             second = (second - second % 3600) / 3600 + 'h';
+             var s = second % 3600;
+             return ( second + (s-s%60)/60+'min'+s%60+'s');
+         }
+     }
+  }
+
   ngOnInit():void {
+    var self = this;
   	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{
+        $('.ng2-smart-sort-link').css('color','white');
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
-          console.log(job);
-          job.nextFireTime = new Date(job.nextFireTime);
-          var year = job.nextFireTime.getFullYear();
-          var month = job.nextFireTime.getMonth() + 1;
-          var day = job.nextFireTime.getDate();
-          var hour = job.nextFireTime.getHours();
-          var minute = job.nextFireTime.getMinutes();
-          var second = job.nextFireTime.getSeconds();
-          job.nextFireTime = year +'/'+ month + '/'+ day + ' '+ hour + ':' + minute + ':' + second + ':';
+          job.nextFireTime = self.parseDate(job.nextFireTime);
           if(job.previousFireTime != -1){
-              job.previousFireTime = new Date(job.previousFireTime);
-              var year = job.previousFireTime.getFullYear();
-              var month = job.previousFireTime.getMonth() + 1;
-              var day = job.previousFireTime.getDate();
-              var hour = job.previousFireTime.getHours();
-              var minute = job.previousFireTime.getMinutes();
-              var second = job.previousFireTime.getSeconds();
-              job.previousFireTime = year +'/'+ month + '/'+ day + ' '+ hour + ':' + minute + ':' + second + ':';
+              job.previousFireTime = self.parseDate(job.previousFireTime);
           }else{
               job.previousFireTime = '--/--/--/' + ' ' + '--:--';
           }
+          job.interval = self.intervalFormat(job.interval);
           return job;
         });      
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
-        // this.source.setPaging(3,2,true);
+    },
+    err =>{
+        $('.ng2-smart-sort-link').css('color','white');
     });
   };
 }

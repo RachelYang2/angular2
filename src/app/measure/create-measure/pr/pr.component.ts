@@ -69,7 +69,6 @@ export class PrComponent implements OnInit {
   currentTable = '';
   schemaCollection:Col[];
 
-
   type = 'profiling';
   newMeasure = {
     "name": "",
@@ -144,7 +143,6 @@ export class PrComponent implements OnInit {
   };
 
   toggleSelectionRules (row,index) {
-      
       row.selectedRules[index] = !row.selectedRules[index];
       var idx = row.rules.indexOf(this.ruleMap[index]);
       // is currently selected
@@ -276,11 +274,13 @@ export class PrComponent implements OnInit {
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {
         this.createResult = data;
-        var self = this;
-        setTimeout(function () {
-          self.hide();
-          self.router.navigate(['/measures']);
-        },0)
+        this.hide();
+        this.router.navigate(['/measures']);
+        // var self = this;
+        // setTimeout(function () {
+        //   self.hide();
+        //   self.router.navigate(['/measures']);
+        // },0)
     },
     err => {
       console.log('Something went wrong!');
