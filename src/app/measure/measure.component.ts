@@ -61,7 +61,6 @@ export class MeasureComponent implements OnInit {
     	deleteButtonContent:'<i class="fa fa-trash-o"></i>'
     },
     mode:'external'
-
   };
 
   public hide(): void {
@@ -111,7 +110,7 @@ export class MeasureComponent implements OnInit {
   	this.http.get('http://localhost:8080/measures').subscribe(data =>{
         for(let measure in data){
           data[measure].trueName = data[measure].name;
-          data[measure].name = '<a href="/measure/' + data[measure].id+'">'+data[measure].name;+'</a>';
+          // data[measure].name = '<a href="/measure/' + data[measure].id+'">'+data[measure].name;+'</a>';
         }
   		  this.results = Object.keys(data).map(function(index){
           let measure = data[index];
@@ -119,6 +118,7 @@ export class MeasureComponent implements OnInit {
         });
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
+        $('.ng2-smart-sort-link').css('color','white');
   	});
   };
 }

@@ -81,25 +81,24 @@ export class CreateJobComponent implements OnInit {
   changeTime(min,max,increase,time,type){
   	time = parseInt(time);
   	if(increase){
-                if(time==max)
-                    time = min;
-                else time = time + 1;
-            }
-            else{
-                if(time==min)
-                    time = max;
-                else time = time - 1;
-            }
-            if(time < 10)
-                time = '0' + time;
-
-            if(type==1)
-                this.hourDetail = time;
-            else if(type==2)
-                this.minuteDetail = time;
-            else
-                this.secondDetail = time;
-            this.timeDetail = this.hourDetail+':'+this.minuteDetail+':'+this.secondDetail;
+          if(time==max)
+              time = min;
+          else time = time + 1;
+      }
+      else{
+          if(time==min)
+              time = max;
+          else time = time - 1;
+      }
+      if(time < 10)
+          time = '0' + time;
+      if(type==1)
+          this.hourDetail = time;
+      else if(type==2)
+          this.minuteDetail = time;
+      else
+          this.secondDetail = time;
+      this.timeDetail = this.hourDetail+':'+this.minuteDetail+':'+this.secondDetail;
   }
   
   showTime(){
@@ -143,8 +142,6 @@ export class CreateJobComponent implements OnInit {
         return false;
       }
       
-
-      
       this.newJob={
         "sourcePattern":this.sourcePat,
         "targetPattern":this.targetPat,
@@ -162,10 +159,7 @@ export class CreateJobComponent implements OnInit {
     var timestamp = Date.parse(datastr);
     var jobName = this.measure + '-BA-' + this.ntAccount + '-' + timestamp;
     var newJob = 'http://localhost:8080/jobs' + '?group=' + this.newJob.groupName + '&jobName=' + jobName + '&measureId=' + this.measureid;
-    this.http
-    // .post('http://localhost:8080/jobs', this.newJob,{
-    //     params: new HttpParams().set('group', this.newJob.groupName).set('jobName', jobName).set('measureId', this.measureid),
-    // })
+    this.http   
     .post(newJob, this.newJob)
     .subscribe(data => {
       this.createResult = data['results'];
@@ -175,8 +169,8 @@ export class CreateJobComponent implements OnInit {
     err => {
       console.log('Error when creating job');
     });
-    
   }
+
 
   onResize(event){
    this.resizeWindow();
@@ -202,10 +196,8 @@ export class CreateJobComponent implements OnInit {
   }
 
   ngOnInit() {
-     
     this.http.get('http://localhost:8080/measures').subscribe(data =>{
       this.Measures = data;
-      // this.measure = 0;
       this.measure = this.Measures[0].name;
       this.measureid = this.Measures[0].id;
     });
