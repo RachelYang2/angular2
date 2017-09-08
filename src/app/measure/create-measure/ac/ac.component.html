@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" (window:resize)="onResize($event)">
   <div class="row">
     <h5 class="over-title margin-bottom-15">Create Measure</h5>
   </div>
@@ -75,7 +75,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <tr ng-if="!schemaCollection || schemaCollection.length == 0">
+                      <tr *ngIf="!schemaCollection || schemaCollection.length == 0">
                         <td colspan="5" style="text-align:center" ><span class="highlight">Please select a schema from the left tree first</span></td>
                       </tr>
                       <tr *ngFor="let row of schemaCollection">
@@ -131,7 +131,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <tr ng-if="!schemaCollectionTarget || schemaCollectionTarget.length == 0">
+                      <tr *ngIf="!schemaCollectionTarget || schemaCollectionTarget.length == 0">
                         <td colspan="5" style="text-align:center" ><span class="highlight">Please select a schema from the left tree first</span></td>
                       </tr>
                       <tr *ngFor="let row of schemaCollectionTarget">
@@ -335,7 +335,7 @@
                 <i class="fa fa-arrow-circle-left"></i> Back
               </button>
               <toaster-container></toaster-container>
-              <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit(acForm)">
+              <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right">
                 Submit
               </button>
             </div>

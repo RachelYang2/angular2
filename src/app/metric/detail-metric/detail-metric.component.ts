@@ -180,6 +180,15 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
   	console.log('after view init')
   }
 
+  onResize(event){
+   this.resizeTreeMap();
+  }
+
+  resizeTreeMap(){
+    $('#bigChartDiv').height( $('#mainWindow').height());
+    $('#bigChartDiv').width( $('#mainWindow').width());
+  }
+
   getData(metricName){
   	 var metricDetailUrl = '...';
       let data = this.metricData;

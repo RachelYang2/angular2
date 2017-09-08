@@ -5,7 +5,7 @@
     <h5 class="over-title margin-bottom-15">Create Measure</h5>
   </div>
   <div class="row">
-    <form name="Form" id="form" novalidate>
+    <form name="Form" id="form" (ngSubmit)="submit(prForm)" #prForm="ngForm" novalidate>
       <div id="wizard" class="swMain" >
         <ul>
           <li (click)="goTo(1)" >
@@ -69,7 +69,7 @@
                       </tr>
                       </thead>
                       <tbody>
-                      <tr ng-if="!schemaCollection || schemaCollection.length == 0">
+                      <tr *ngIf="!schemaCollection || schemaCollection.length == 0">
                         <td colspan="5" style="text-align:center" ><span class="highlight">Please select a schema from the left tree first</span></td>
                       </tr>
                       <tr *ngFor="let row of schemaCollection">
@@ -88,6 +88,7 @@
               </fieldset>
             </div>
             <div class="form-group btn-container">
+              <toaster-container></toaster-container>
               <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
               </button>
@@ -181,6 +182,7 @@
             <button class="btn btn-primary btn-o back-step btn-wide pull-left" (click)="prev(Form)">
                 <i class="fa fa-arrow-circle-left"></i> Back
             </button>
+            <toaster-container></toaster-container>
             <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="next(Form)">
                 Next <i class="fa fa-arrow-circle-right"></i>
             </button>
@@ -198,14 +200,14 @@
                 </legend>
                 <div class="y-scrollable">
                   <div class="col-md-12 col-lg-12 col-sm-12">
-                    <div class="form-group">
+                    <div class="form-group" [ngClass]="{'has-error':prName.dirty&&prName.invalid, 'has-success':prName.valid}">
                       <label class="col-md-2 col-lg-2 col-sm-2 control-label">
                         Measure Name<span class="symbol required"></span>:
                       </label>
                       <div class="col-md-10 col-lg-10 col-sm-10 ">
-                        <input type="text" class="form-control" [(ngModel)]="name" name="name" placeholder="Please input the measure name" required ng-pattern="'([0-9a-zA-Z\\_\\-])+'">
-                        <!-- <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.required">Measure Name is required</span>
-                        <span class="error text-small block " ng-if="Form.ruleName.$dirty && Form.ruleName.$error.pattern">Only letter, number, "-" and "_" are allowed</span> -->
+                        <input type="text" class="form-control" [(ngModel)]="name" #prName="ngModel" name="prName" placeholder="Please input the measure name" required pattern="^[a-zA-Z0-9_-]*$">
+                        <span class="error text-small block " *ngIf="prName.dirty && (prName.errors?.required)">Measure Name is required</span>
+                        <span class="error text-small block " *ngIf="prName.dirty && (prName.errors?.pattern)">Only letter, number, "-" and "_" are allowed</span>
                       </div>
                     </div>
                   </div>
@@ -266,7 +268,8 @@
               <button class="btn btn-primary btn-o back-step btn-wide pull-left" (click)="prev(Form)">
                 <i class="fa fa-arrow-circle-left"></i> Back
               </button>
-              <button class="btn btn-primary btn-o next-step btn-wide pull-right" (click)="submit(Form)">
+              <toaster-container></toaster-container>
+              <button type="submit" class="btn btn-primary btn-o next-step btn-wide pull-right">
                 Submit
               </button>
             </div>
@@ -322,14 +325,14 @@
                           {{currentTable}}
                           </div>
                         </div>
-                        <div class="row">
+<!--                         <div class="row">
                           <label class="col-md-4 col-lg-4 col-sm-4">
                             Owner:
                           </label>
                           <div class="col-md-8 col-lg-8 col-sm-8" >
                             {{owner}}
                           </div>
-                        </div>
+                        </div> -->
                         
                       </div>
                     </div>

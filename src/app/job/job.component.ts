@@ -107,11 +107,11 @@ export class JobComponent implements OnInit {
     });
   };
 
+
   ngOnInit():void {
   	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
-          console.log(job);
           job.nextFireTime = new Date(job.nextFireTime);
           var year = job.nextFireTime.getFullYear();
           var month = job.nextFireTime.getMonth() + 1;

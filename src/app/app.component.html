@@ -49,7 +49,7 @@
     <div class="col-md-9 col-xs-12" >
         <button type="button" class="btn btn-primary btn-circle" style="position: absolute; top: 0px; right: 10px; z-index:99" onclick="history.back();"><span style="margin-bottom:20px;">Back</span></button>
         <!-- main content goes here-->
-        <div id="mainWindow" class="row" ng-view style="overflow-y: auto;overflow-x:hidden; padding-right: 10px;" ng-controller="MainCtrl">
+        <div id="mainWindow" (window:resize)="onResize($event)" class="row" ng-view style="overflow-y: auto;overflow-x:hidden; padding-right: 10px;" ng-controller="MainCtrl">
         <router-outlet></router-outlet>
         </div>
     </div>

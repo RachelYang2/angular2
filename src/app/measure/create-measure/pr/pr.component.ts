@@ -68,6 +68,7 @@ export class PrComponent implements OnInit {
   currentDB = '';
   currentTable = '';
   schemaCollection:Col[];
+  totallen = 0;
 
 
   type = 'profiling';
@@ -218,8 +219,31 @@ export class PrComponent implements OnInit {
   }
 
   next (form) {
+      if(this.formValidation(this.currentStep)){
       this.currentStep++;
+    }else{
+      this.toasterService.pop('error','Error!','Please select at least one attribute!');
+          return false;
+    }
   }
+
+  formValidation = function(step) {
+       if (step == undefined) {
+           step = this.currentStep;
+       }
+       if (step == 1) {
+           return this.selection && this.selection.length > 0;
+       } else if (step == 2) {
+           for(let item of this.selection){
+             this.totallen = this.totallen + item.rules.length;
+           }
+           return (this.totallen > 0)
+       } else if (step == 3) {
+       }
+       return false;
+   } 
+
+
   prev (form) {
       this.currentStep--;
   }
@@ -228,6 +252,10 @@ export class PrComponent implements OnInit {
   }
   submit (form) {                
       // form.$setPristine();
+      if (!form.valid) {
+        this.toasterService.pop('error', 'Error!', 'please complete the form in this step before proceeding');
+        return false;
+      }
       this.newMeasure = {
         "name": this.name,
         "process.type": "batch",
@@ -432,24 +460,12 @@ export class PrComponent implements OnInit {
     animateAcceleration: 1.2
   };
 
-  errorMessage = function(i, msg) {
-      var errorMsgs = ['Please select at least one attribute!', 'Please select at least one attribute in target, make sure target is different from source!', 'Please make sure to map each target to a unique source.', 'please complete the form in this step before proceeding'];
-      if (!msg) {
-          // toaster.pop('error', 'Error', errorMsgs[i - 1], 0);
-      } else {
-          // toaster.pop('error', 'Error', msg, 0);
-      }
-  };
-
   nodeList:object[];
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
     this.selection = [];
   };
 
-  popToast() {
-      this.toasterService.pop('success', 'Args Title', 'Args Body');
-  }
 
   ngOnInit() {
     this.nodeList = new Array();

@@ -178,7 +178,24 @@ export class CreateJobComponent implements OnInit {
     
   }
 
+  onResize(event){
+   this.resizeWindow();
+  }
 
+  resizeWindow(){
+    var stepSelection = '.formStep';
+    $(stepSelection).css({
+        height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
+    });
+    $('fieldset').height($(stepSelection).height() - $(stepSelection + '>.stepDesc').height() - $('.btn-container').height() - 80);
+    $('.y-scrollable').css({
+        'max-height': $('fieldset').height()- $('.add-dataset').outerHeight()
+    });
+    $('#data-asset-pie').css({
+        height: $('#data-asset-pie').parent().width(),
+        width: $('#data-asset-pie').parent().width()
+    });
+  }
 
   setHeight(){
   	$('#md-datepicker-0').height(250);

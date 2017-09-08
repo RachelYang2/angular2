@@ -39,6 +39,29 @@ export class SidebarComponent implements OnInit {
           //this.sideBarList();
         },err => {});
   }
+  
+  onResize(event){
+    console.log('sidebar resize');
+    if(window.innerWidth < 992) {
+      $('#rightbar').css('display', 'none');
+    } else {
+      $('#rightbar').css('display', 'block');
+      this.resizeSideChart();
+    }
+  }
+
+  resizeSideChart(){
+    $('#side-bar-metrics').css({
+           height: $('#mainContent').height()-$('#side-bar-stats').outerHeight()+70
+       });
+       for(let i=0;i<this.finalData.length;i++){
+           for(let j=0;j<this.finalData[i].metrics.length;j++){
+             if (!this.finalData[i].metrics[j].tag) {
+             this.draw(this.finalData[i].metrics[j], i, j);
+           }
+           }
+       }
+  }
 
    draw (metric, parentIndex, index) {
    		$('#'+this.finalData[parentIndex].name+index).toggleClass('collapse');

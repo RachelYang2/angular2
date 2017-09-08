@@ -1,5 +1,6 @@
 import { Component ,Directive,ViewContainerRef} from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import * as $ from 'jquery';
 
 
 @Component({
@@ -9,4 +10,14 @@ import { RouterModule, Routes } from '@angular/router';
 })
 export class AppComponent {
   title = 'app';
+
+  onResize(event){
+   this.resizeMainWindow();
+  }
+
+  resizeMainWindow(){
+    $('#mainWindow').height(window.innerHeight-56-90);
+  }
 }
+
+

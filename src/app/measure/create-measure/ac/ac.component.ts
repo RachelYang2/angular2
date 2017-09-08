@@ -447,13 +447,18 @@ export class AcComponent implements OnInit {
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
     this.toasterService = toasterService;
   };
+  
+  onResize(event){
+    console.log("Width: " + event.target.innerWidth);
+   this.resizeWindow();
+  }
 
-  // resizeWindow(){
-  //     var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
-  //                   $(stepSelection).css({
-  //                       height: window.innerHeight - $(stepSelection).offset().top - $('#footerwrap').outerHeight()
-  //                   });
-  // }
+  resizeWindow(){
+      var stepSelection = '.formStep[id=step-' + this.currentStep + ']';
+                    $(stepSelection).css({
+                        height: window.innerHeight - $(stepSelection).offset().top
+                    });
+  }
 
   ngOnInit() {
     this.nodeList = new Array();
