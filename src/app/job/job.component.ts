@@ -154,6 +154,8 @@ export class JobComponent implements OnInit {
     var self = this;
   	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{
         $('.ng2-smart-sort-link').css('color','white');
+        $('.ng2-smart-titles').css('background','#7D95CC');
+        
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
 
@@ -172,6 +174,8 @@ export class JobComponent implements OnInit {
     },
     err =>{
         $('.ng2-smart-sort-link').css('color','white');
+        $('.ng2-smart-titles').css('background','#7D95CC');
+
     });
   };
 }

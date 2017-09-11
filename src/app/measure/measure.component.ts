@@ -119,6 +119,7 @@ export class MeasureComponent implements OnInit {
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
         $('.ng2-smart-sort-link').css('color','white');
+        $('.ng2-smart-titles').css('background','#7D95CC');
   	});
   };
 }

@@ -53,14 +53,14 @@ export class SidebarComponent implements OnInit {
   resizeSideChart(){
     $('#side-bar-metrics').css({
            height: $('#mainContent').height()-$('#side-bar-stats').outerHeight()+70
-       });
-       for(let i=0;i<this.finalData.length;i++){
-           for(let j=0;j<this.finalData[i].metrics.length;j++){
-             if (!this.finalData[i].metrics[j].tag) {
-             this.draw(this.finalData[i].metrics[j], i, j);
-           }
-           }
-       }
+    });
+    for(let i=0;i<this.finalData.length;i++){
+      for(let j=0;j<this.finalData[i].metrics.length;j++){
+        if (!this.finalData[i].metrics[j].tag) {
+          this.draw(this.finalData[i].metrics[j], i, j);
+        }
+      }
+    }
   }
 
    draw (metric, parentIndex, index) {
@@ -83,32 +83,6 @@ export class SidebarComponent implements OnInit {
     sideBarList(sysName){
     	this.finalData = this.getMetricService.renderData();
     }
-
-        // $(window).resize(function() {
-        //     console.log('sidebar resize');
-        //     if(window.innerWidth < 992) {
-        //       $('#rightbar').css('display', 'none');
-        //     } else {
-        //       $('#rightbar').css('display', 'block');
-        //       this.resizePieChart();
-        //       // this.dataAssetPieChart.resize();
-        //       resizeSideChart();
-        //     }
-        // });
-
-        // resizeSideChart() {
-        //     $('#side-bar-metrics').css({
-        //         height: $('#mainContent').height()-$('#side-bar-stats').outerHeight()+70
-        //     });
-        //     angular.forEach(this.finalData, function(sys, sysIndex) {
-        //     var sysIndex = sysIndex;
-        //     angular.forEach(sys.metrics, function(metric, index) {
-        //         if (!metric.tag) {
-        //           this.draw(metric, sysIndex, index);
-        //         }
-        //     })
-        //   });
-        // }
 
   ngOnInit() {
   	this.sideBarList(null);

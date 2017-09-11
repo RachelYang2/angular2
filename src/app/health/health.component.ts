@@ -231,13 +231,7 @@ export class HealthComponent implements OnInit {
     this.resizeTreeMap();
     this.chartOption = option;
   };
-        // this.$on('resizeHandler', function(e) {
-        //     if($route.current.$$route.controller == 'HealthCtrl'){
-        //         console.log('health resize');
-        //         resizeTreeMap();
-        //         this.myChart.resize();
-        //     }
-        // });
+
   ngOnInit() {
        this.renderTreeMap(this.getMetricService.renderData());
   };

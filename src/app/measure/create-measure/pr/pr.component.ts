@@ -169,50 +169,50 @@ export class PrComponent implements OnInit {
 
   transferRule(rule,col){
     switch(rule){
-      // case 'total count':
-      //   return 'count(source.'+col+')';
-      // case 'distinct count':
-      //   return 'distinct count(source.'+col+')';
-      // case 'null detection count':
-      //   return 'count(source.'+col+') where source.'+col+' is null';
-      // case 'regular expression detection count':
-      //   return 'count(source.'+col+') where source.'+col+' like ';
-      // case 'rule detection count':
-      //   return 'count(source.'+col+') where source.'+col+' like ';
-      // case 'max':
-      //   return 'max(source.'+col+')';
-      // case 'min':
-      //   return 'min(source.'+col+')';
-      // case 'median':
-      //   return 'median(source.'+col+')';
-      // case 'avg':
-      //   return 'average(source.'+col+')';
-      // case 'enum detection group count':
-      //   return 'source.'+col+' group by source.'+col+'';
-      // case 'groupby count':
-      //   return 'source.'+col+' group by source.'+col+'';
       case 'total count':
-        return 'SELECT COUNT(*) FROM source';
+        return 'count(source.'+col.name+')';
       case 'distinct count':
-        return 'SELECT DISTINCT COUNT(source.'+col.name+') FROM source';
+        return 'distinct count(source.'+col.name+')';
       case 'null detection count':
-        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' is null';
+        return 'count(source.'+col.name+') where source.'+col.name+' is null';
       case 'regular expression detection count':
-        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like '+col.RE;
+        return 'count(source.'+col.name+') where source.'+col.name+' like ';
       case 'rule detection count':
-        return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like ';
+        return 'count(source.'+col.name+') where source.'+col.name+' like ';
       case 'max':
-        return 'SELECT max(source.'+col.name+') FROM source';
+        return 'max(source.'+col.name+')';
       case 'min':
-        return 'SELECT min(source.'+col.name+') FROM source';
+        return 'min(source.'+col.name+')';
       case 'median':
-        return 'SELECT median(source.'+col.name+') FROM source';
+        return 'median(source.'+col.name+')';
       case 'avg':
-        return 'SELECT average(source.'+col.name+') FROM source';
+        return 'average(source.'+col.name+')';
       case 'enum detection group count':
         return 'source.'+col.name+' group by source.'+col.name+'';
       case 'groupby count':
-        return 'source.'+col.name+' group by source.'+col.name+' '+col.groupby;
+        return 'source.'+col.name+' group by source.'+col.name+'';
+      // case 'total count':
+      //   return 'SELECT COUNT(*) FROM source';
+      // case 'distinct count':
+      //   return 'SELECT DISTINCT COUNT(source.'+col.name+') FROM source';
+      // case 'null detection count':
+      //   return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' is null';
+      // case 'regular expression detection count':
+      //   return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like '+col.RE;
+      // case 'rule detection count':
+      //   return 'SELECT COUNT(source.'+col.name+') FROM source WHERE source.'+col.name+' like ';
+      // case 'max':
+      //   return 'SELECT max(source.'+col.name+') FROM source';
+      // case 'min':
+      //   return 'SELECT min(source.'+col.name+') FROM source';
+      // case 'median':
+      //   return 'SELECT median(source.'+col.name+') FROM source';
+      // case 'avg':
+      //   return 'SELECT average(source.'+col.name+') FROM source';
+      // case 'enum detection group count':
+      //   return 'source.'+col.name+' group by source.'+col.name+'';
+      // case 'groupby count':
+      //   return 'source.'+col.name+' group by source.'+col.name+' '+col.groupby;
     }
   }
 

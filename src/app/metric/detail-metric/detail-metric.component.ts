@@ -14,7 +14,15 @@ import * as $ from 'jquery';
 export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(public chartService:ChartService,private route: ActivatedRoute,
-  private router: Router,private http:HttpClient) {
+  private router: Router,private http:HttpClient,) {
+    //     var self = this;
+    // setTimeout(function () {
+    //     self.currentMeasure = self.route.snapshot.paramMap.get('name');
+    //     self.chartOption = self.chartService.getOptionBig(self.getData(self.currentMeasure));
+    //     $('#bigChartDiv').height(window.innerHeight-120+'px');
+    //     $('#bigChartDiv').width(window.innerWidth-400+'px');
+    //     $('#bigChartContainer').show();
+    // },200);
   };
   selectedMeasure:string;
   chartOption:{};
@@ -209,9 +217,4 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
        	return metric;
      // });
   }
-
-  closeBigChart(){
-  	$('#bigChartContainer').hide();
-  	$('#mainWindow').show();
-  };
 }
