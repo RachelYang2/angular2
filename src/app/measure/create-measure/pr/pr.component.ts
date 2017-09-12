@@ -39,8 +39,13 @@ class Col{
     this.isExpanded = false;
     this.groupby = '';
     this.RE = '';
-    if(this.type=='bigint'||this.type=='int'||this.type=='smallint'||this.type==''||this.type=='double'
-      ||this.type=='float'){
+    
+    var patt = new RegExp('int|double|float/i');
+    // if(this.type=='bigint'||this.type=='int'||this.type=='smallint'||this.type==''||this.type=='double'
+    //   ||this.type=='float'){
+    //   this.isNum = true;
+    // }
+    if(patt.test(this.type)){
       this.isNum = true;
     }
     this.selectedRules = [false,false,false,false,false,false,false,false,false,false,false];

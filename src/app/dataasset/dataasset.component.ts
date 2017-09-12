@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule ,LocalDataSource} from 'ng2-smart-table';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-dataasset',
@@ -14,6 +15,7 @@ export class DataassetComponent implements OnInit {
   public visibleAnimate = false;
   sourceTable :string;
   targetTable :string;
+  data:object;
 
   settings = {
     columns: {
@@ -60,7 +62,8 @@ export class DataassetComponent implements OnInit {
     pager : {
       display : true,
       // perPage:2
-    }
+    },
+    noDataMessage: ''
 
   };
 
@@ -92,6 +95,7 @@ export class DataassetComponent implements OnInit {
       second = '0' + second;
     return  ( year +'/'+ month + '/'+ day + ' '+ hour + ':' + minute + ':' + second);
   }
+
 
   ngOnInit() {
 //     var data={
@@ -212,7 +216,16 @@ export class DataassetComponent implements OnInit {
 //     ],
   
 // }
+
     this.http.get('http://localhost:8080/metadata/hive/allTables').subscribe(data =>{
+      this.data = data;
+        // $('*[_ngcontent-c]').css('display','none');
+        $('.ng2-smart-sort-link').css('color','white');
+        $('.ng2-smart-titles').css('background','#7D95CC');
+        if(!data){
+          $('#message').css('display','block');
+        }
+
         for (let db in data) {
             for(let table of data[db]){
             this.results.push(table);
@@ -223,6 +236,12 @@ export class DataassetComponent implements OnInit {
         }
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
+        $('.icon').hide();
+    },err =>{
+      $('.icon').hide();
+      $('#message').css('display','block');
+      $('.ng2-smart-sort-link').css('color','white');
+      $('.ng2-smart-titles').css('background','#7D95CC');
     });
   };
 }

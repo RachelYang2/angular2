@@ -126,7 +126,7 @@
                           <label>Null Detection Count</label>
                         </div>
 
-                        <div class="col-md-4 col-lg-4 col-sm-4" *ngIf="item.type=='string'">
+                        <div class="col-md-4 col-lg-4 col-sm-4" *ngIf="item.type=='string'||item.type=='varchar'||item.type=='char'">
                           <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,3)'  [checked]="item.selectedRules[3]"/> 
                           <label>Regular Expression Detection Count</label>
                           <input *ngIf="item.selectedRules[3]" name="RE" type="text" class="form-control" [(ngModel)]="item.RE"/>

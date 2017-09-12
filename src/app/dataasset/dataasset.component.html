@@ -1,6 +1,16 @@
 <div  class="bs-component" >
 	<div id="assetContainer" style="margin-top:40px">
-    <ng2-smart-table [settings]="settings" [source]="source" id="dataassetTable" (delete)="onDelete($event)"></ng2-smart-table>
+    <ng2-smart-table   [settings]="settings" [source]="source" id="dataassetTable" (delete)="onDelete($event)"></ng2-smart-table>
+    <table>
+        <tr>
+		  <td colspan="7" style="text-align:center;display: none" id="message">
+		     No content.
+		  </td>
+		  <td class="icon">
+			<span class="fa fa-spinner fa-spin fa-3x fa-fw"></span>
+		  </td>
+		</tr>
+    </table>
     <!-- <table st-table="displayed" st-pipe="paging" class="table table-striped">
 	  	<thead>
 	    	<tr style="background-color:#7D95CC">

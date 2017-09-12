@@ -2,11 +2,10 @@
   color: #fff;
   position: absolute;
   left: 50%;
-  top:20%;
 }
 
 #dataassetTable{
-	font-size:18px;
+	font-size:15px;
 }
 
 .ng2-st-actions-title .ng2-smart-title{
@@ -15,4 +14,11 @@
 
 #dataassetTable .ng2-smart-titles{
 	background-color:#7D95CC;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+     background-color: #1f1f1f; 
+}
+
+#dataassetTable .ng2-smart-sort-link{
+	color:#b2c831;
 }

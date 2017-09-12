@@ -63,7 +63,7 @@ export class AcComponent implements OnInit {
   currentTableTarget = '';
   schemaCollection:Col[];
   schemaCollectionTarget:Col[];
-  matchFunctions = ['==', '!==', '>', '>=','<',"<="];
+  matchFunctions = ['=', '!=', '>', '>=','<',"<="];
 
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
@@ -461,6 +461,7 @@ export class AcComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.matches[0]='='
     this.nodeList = new Array();
     let i = 1;
     for (let db in this.data) {
