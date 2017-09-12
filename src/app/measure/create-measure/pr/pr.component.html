@@ -104,14 +104,62 @@
               <div class="y-scrollable">
                 <div class="container col-md-12 col-lg-12 col-sm-12">
                   <div class="row">
-                    <div class="col-md-12 col-lg-12 col-sm-12" *ngFor="let item of selection" >
+                    <div class="col-md-12 col-lg-12 col-sm-12" *ngFor="let item of selection;let itemIndex = index" >
                     <p style="font-weight: bold;font-size: 120%;" (click)="item.isExpanded = !item.isExpanded">
                     <i *ngIf="!item.isExpanded" class="fa fa-chevron-circle-right blue"></i>
                     <i *ngIf="item.isExpanded" class="fa fa-chevron-circle-down blue"></i>&nbsp;{{currentDB}}.{{currentTable}}.{{item.name}}
                     <i>:{{item.rules.toString()}}</i>
                     </p>
-                    <div *ngIf="item.isExpanded">
-                      <h5>Simple Statistics</h5>
+                    <div *ngIf="item.isExpanded" id="expanded{{itemIndex}}">
+                      <div id="simple{{itemIndex}}">
+                        <h5>Simple Statistics</h5>
+                        <label>Rule:</label>
+                        <select class="form-control" style="width: 20%;display: inline-block;" 
+                        id="simpleRule" name='simpleRule' [(ngModel)]="simpleRule" >
+                          <option>Total Count</option>
+                          <option>Distinct Count</option>
+                          <option>Null Detection Count</option>
+                          <option *ngIf="item.type=='string'||item.type=='varchar'||item.type=='char'"> Regular Expression Detection Count</option>
+                          <option>Rule Detection Count</option>
+                          <option *ngIf='item.isNum'>Maximum</option>
+                          <option *ngIf='item.isNum'>Minimum</option>
+                          <option *ngIf='item.isNum'>Median</option>
+                          <option *ngIf='item.isNum'>Average</option>
+                        </select>
+                        <div id="Condition{{itemIndex}}" style="display: inline-block;">
+                          <label>Condition:</label>
+                          <select class="form-control" style="width: 25%;display: inline-block;" 
+                          id="simpleCondition" name='simpleCondition' >
+                            <option>where</option>
+                            <option>groupby</option>
+                            <option>orderby</option>
+                            <option>limit</option>
+                          </select>
+                          <input name="conditionDetail" type="text" class="form-control" 
+                          style="width: 20%;display: inline-block;" [(ngModel)]="conditionDetail"/>
+                          <a class="btn btn-primary btn-o btn-wide" style="background-color: #337ab7;" 
+                          (click)="addCond(item,itemIndex)">
+                            <i class="fa fa-plus"></i>
+                            condition
+                          </a>
+                          <br>
+                        </div>
+                        <br>
+                        <a class="btn btn-primary btn-o btn-wide" style="background-color: #337ab7;" 
+                        (click)="addRule(item)">
+                          <i class="fa fa-plus"></i>
+                            rule
+                        </a>
+                        <br>
+                      </div>
+                      <h5>Advanced Statistics</h5>
+                      <div class="container-fluid">
+                        <div class="col-md-4 col-lg-4 col-sm-4">
+                          <input name="vaType" type="checkbox" /> 
+                          <label>Enum Detection Group Count</label>
+                        </div>
+                      </div>
+                    <!--   <h5>Simple Statistics</h5>
                       <div class="container-fluid">
                         <div class="col-md-4 col-lg-4 col-sm-4">
                           <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,0)' [checked]="item.selectedRules[0]"/> 
@@ -163,12 +211,8 @@
                           <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,9)' [checked]="item.selectedRules[9]"/> 
                           <label>Enum Detection Group Count</label>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
-                          <input name="vaType" type="checkbox" (click)='toggleSelectionRules(item,10)' [checked]="item.selectedRules[10]" /> 
-                          <label>Groupby Count</label>
-                          <input *ngIf="item.selectedRules[10]" name="groupby" type="text" class="form-control" [(ngModel)]="item.groupby"/> 
-                        </div>
-                      </div>
+                        
+                      </div> -->
                       </div>
                     </div>
                     <!-- <div class="col-md-9 col-lg-9 col-sm-9" ng-include="'/pages/rules/va-explaination.html'">

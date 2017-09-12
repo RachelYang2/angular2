@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy,AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy,AfterViewInit,NgZone } from '@angular/core';
 import {ChartService} from '../../service/chart.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
@@ -11,10 +11,10 @@ import * as $ from 'jquery';
   styleUrls: ['./detail-metric.component.css'],
   providers:[ChartService]
 })
-export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DetailMetricComponent implements OnInit {
 
   constructor(public chartService:ChartService,private route: ActivatedRoute,
-  private router: Router,private http:HttpClient,) {
+  private router: Router,private http:HttpClient,private zone:NgZone) {
     //     var self = this;
     // setTimeout(function () {
     //     self.currentMeasure = self.route.snapshot.paramMap.get('name');
@@ -179,6 +179,13 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
     $('#bigChartDiv').width(window.innerWidth-400+'px');
   	$('#bigChartContainer').show();
   }
+  ngAfterContentInit (){
+    console.log('after content init');
+  }
+
+  ngAfterContentChecked(){
+    console.log('after content checked');
+  }
 
   ngOnDestroy(){
   	console.log('destroy');
@@ -186,6 +193,10 @@ export class DetailMetricComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(){
   	console.log('after view init')
+  }
+
+  ngAfterViewChecked(){
+    console.log('after view checked');
   }
 
   onResize(event){

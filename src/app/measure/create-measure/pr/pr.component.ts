@@ -41,10 +41,6 @@ class Col{
     this.RE = '';
     
     var patt = new RegExp('int|double|float/i');
-    // if(this.type=='bigint'||this.type=='int'||this.type=='smallint'||this.type==''||this.type=='double'
-    //   ||this.type=='float'){
-    //   this.isNum = true;
-    // }
     if(patt.test(this.type)){
       this.isNum = true;
     }
@@ -74,6 +70,8 @@ export class PrComponent implements OnInit {
   currentTable = '';
   schemaCollection:Col[];
   totallen = 0;
+
+
 
   type = 'profiling';
   newMeasure = {
@@ -221,6 +219,24 @@ export class PrComponent implements OnInit {
     }
   }
 
+  addCond(item,index){
+    let node = document.getElementById("Condition"+index);
+    let cloneNode = node.cloneNode(true);
+    console.log(node);
+    console.log(cloneNode);
+    $("#Condition"+index).append(`<label>Condition:</label>
+                      <select class="form-control" style="width: 10%;display: inline-block;" id="simpleCondition" name='simpleCondition' >
+                        <option>where</option>
+                        <option>groupby</option>
+                        <option>orderby</option>
+                        <option>limit</option>
+                      </select>
+                      <input name="conditionDetail" type="text" class="form-control" style="width: 20%;display: inline-block;" [(ngModel)]="conditionDetail"/>
+                      `);
+    // document.getElementById("simple"+index).appendChild(cloneNode);
+    // $("#Condition"+index).append('<br>');
+  }
+
   next (form) {
       if(this.formValidation(this.currentStep)){
       this.currentStep++;
@@ -309,11 +325,7 @@ export class PrComponent implements OnInit {
         this.createResult = data;
         this.hide();
         this.router.navigate(['/measures']);
-        // var self = this;
-        // setTimeout(function () {
-        //   self.hide();
-        //   self.router.navigate(['/measures']);
-        // },0)
+      
     },
     err => {
       console.log('Something went wrong!');

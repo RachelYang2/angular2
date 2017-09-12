@@ -115,6 +115,7 @@ export class HealthComponent implements OnInit {
   onChartClick($event){
     if($event.data.name){
         this.router.navigate(['/detailed/'+$event.data.name]);
+        // window.location.href = '/detailed/'+$event.data.name;
     }
   }
 
@@ -200,6 +201,7 @@ export class HealthComponent implements OnInit {
         tooltip: {
             formatter: function(info) {
                 var dqFormat = info.data.dq>100?'':'%';
+                if(info.data.dq)
                 return [
                     '<span style="font-size:1.8em;">' + info.data.sysName + ' &gt; </span>',
                     '<span style="font-size:1.5em;">' + info.data.name+'</span><br>',
