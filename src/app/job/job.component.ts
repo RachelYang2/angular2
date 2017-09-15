@@ -21,7 +21,7 @@ export class JobComponent implements OnInit {
   jobName:string;
   public visible = false;
   public visibleAnimate = false;
-  // showDetail = false;
+  showDetail :boolean;
 
   deletedRow : object;
   sourceTable :string;
@@ -78,18 +78,18 @@ export class JobComponent implements OnInit {
     });
   };
   
-  // showInstances(row){
-  //   let index  = this.results.indexOf(row);
-  //   console.log(index);
-  //   row.showDetail = !row.showDetail;
-  //   console.log(row.showDetail);
-  //   let getInstanceUrl = 'http://localhost:8080/jobs/instances'+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
-  //   this.http.get(getInstanceUrl).subscribe(data =>{       
-  //       this.allInstances = data;   
-  //       this.source = new LocalDataSource(this.allInstances);
-  //       this.source.load(this.allInstances);
-  //   });
-  // }
+  showInstances(row){
+    let index  = this.results.indexOf(row);
+    console.log(index);
+    row.showDetail = !row.showDetail;
+    console.log(row.showDetail);
+    let getInstanceUrl = 'http://localhost:8080/jobs/instances'+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
+    this.http.get(getInstanceUrl).subscribe(data =>{       
+        this.allInstances = data;   
+        this.source = new LocalDataSource(this.allInstances);
+        this.source.load(this.allInstances);
+    });
+  }
 
   intervalFormat(second){
      if(second<60)
@@ -116,17 +116,18 @@ export class JobComponent implements OnInit {
   
   
   ngOnInit():void {
-    // this.showDetail = false;
+    this.showDetail = false;
     var self = this;
   	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{       
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
-          // job.showDetail = false;
+          job.showDetail = false;
           job.interval = self.intervalFormat(job.interval);
           return job;
         });     
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
+
     });
   };
 }

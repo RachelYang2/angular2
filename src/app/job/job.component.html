@@ -26,8 +26,8 @@
                 <td colspan="7" style="text-align:center">No content!</td>
             </tr>
             </tbody>
-            <tbody >
-            <tr *ngFor="let row of mf.data">
+            <tbody *ngFor="let row of mf.data">
+            <tr (click) = "showInstances(row)">
                 <td [ngClass]="{accordion:true}" (click)="row.showDetail=!(row.showDetail)" style="cursor: pointer;">
                     <i *ngIf="!row.showDetail" class="fa fa-chevron-circle-right blue"></i>
                     <i *ngIf="row.showDetail" class="fa fa-chevron-circle-down blue"></i>
