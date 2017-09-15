@@ -28,7 +28,7 @@
             </tbody>
             <tbody *ngFor="let row of mf.data">
             <tr (click) = "showInstances(row)">
-                <td [ngClass]="{accordion:true}" (click)="row.showDetail=!(row.showDetail)" style="cursor: pointer;">
+                <td [ngClass]="{accordion:true}" style="cursor: pointer;">
                     <i *ngIf="!row.showDetail" class="fa fa-chevron-circle-right blue"></i>
                     <i *ngIf="row.showDetail" class="fa fa-chevron-circle-down blue"></i>
                     {{row.jobName}}
@@ -68,18 +68,16 @@
                             <td colspan="7" style="text-align:center">No content.</td>
                         </tr>
                         <tr *ngFor="let item of mf2.data" >
-                            <td><a href={{item.appUri}} target="_blank">{{item.appId}}</a></td>
+                            <td><a href={{item.appUri}} target="_blank" style="color:white">{{item.appId}}</a></td>
                             <td>{{item.timestamp | date: 'yyyy/MM/dd HH:mm:ss'}}</td>
                             <td>{{item.state}}</td>
-                        </tr>
-                        <br>
-
+                        </tr>                
                         </tbody>
                         <tfoot>
                           <tr>
-                              <td colspan="5" class="text-center">
-                                  <mfBootstrapPaginator></mfBootstrapPaginator>
-                              </td>
+                            <td class="text-center" colspan="8" style="background-color:#1f1f1f;">
+                              <mfBootstrapPaginator></mfBootstrapPaginator>
+                            </td>
                           </tr>
                         </tfoot>
                     </table>

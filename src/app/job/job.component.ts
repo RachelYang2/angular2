@@ -21,7 +21,8 @@ export class JobComponent implements OnInit {
   jobName:string;
   public visible = false;
   public visibleAnimate = false;
-  showDetail :boolean;
+  oldindex:number;
+
 
   deletedRow : object;
   sourceTable :string;
@@ -80,15 +81,17 @@ export class JobComponent implements OnInit {
   
   showInstances(row){
     let index  = this.results.indexOf(row);
-    console.log(index);
-    row.showDetail = !row.showDetail;
-    console.log(row.showDetail);
+    if (this.oldindex!=undefined &&this.oldindex != index){
+        this.results[this.oldindex].showDetail = false;}
     let getInstanceUrl = 'http://localhost:8080/jobs/instances'+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
-    this.http.get(getInstanceUrl).subscribe(data =>{       
+    this.http.get(getInstanceUrl).subscribe(data =>{      
+        row.showDetail = !row.showDetail;     
         this.allInstances = data;   
-        this.source = new LocalDataSource(this.allInstances);
-        this.source.load(this.allInstances);
+        // this.source = new LocalDataSource(this.allInstances);
+        // this.source.load(this.allInstances);
     });
+    this.oldindex = index;
+    console.log(this.oldindex);
   }
 
   intervalFormat(second){
@@ -116,7 +119,6 @@ export class JobComponent implements OnInit {
   
   
   ngOnInit():void {
-    this.showDetail = false;
     var self = this;
   	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{       
         this.results = Object.keys(data).map(function(index){
@@ -125,8 +127,8 @@ export class JobComponent implements OnInit {
           job.interval = self.intervalFormat(job.interval);
           return job;
         });     
-        this.source = new LocalDataSource(this.results);
-        this.source.load(this.results);
+        // this.source = new LocalDataSource(this.results);
+        // this.source.load(this.results);
 
     });
   };

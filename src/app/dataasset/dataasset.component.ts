@@ -47,155 +47,18 @@ export class DataassetComponent implements OnInit {
 
 
   ngOnInit() {
-//     var data={
-//     "default": [
-//         {
-//             "tableName": "ext",
-//             "dbName": "default",
-//             "owner": "hadoop",
-//             "createTime": 1488353464,
-//             "lastAccessTime": 0,
-//             "retention": 0,
-//             "sd": {
-//                 "cols": [
-//                     {
-//                         "name": "id",
-//                         "type": "int",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "name",
-//                         "type": "string",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "age",
-//                         "type": "int",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     }
-//                 ],
-//                 "location": "hdfs://10.9.246.187/user/hive/ext",
-//             },
-//         },
-//         {
-//             "tableName": "ext1",
-//             "dbName": "default",
-//             "owner": "hadoop",
-//             "createTime": 1489382943,
-//             "lastAccessTime": 0,
-//             "retention": 0,
-//             "sd": {
-//                 "cols": [
-//                     {
-//                         "name": "id",
-//                         "type": "int",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "name",
-//                         "type": "string",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "age",
-//                         "type": "int",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     }
-//                 ],
-//                 "location": "hdfs://10.9.246.187/user/hive/ext1",
-//             },
-//         }
-//     ],
-//     "griffin": [
-//         {
-//             "tableName": "avr_out",
-//             "dbName": "griffin",
-//             "owner": "hadoop",
-//             "createTime": 1493892603,
-//             "lastAccessTime": 0,
-//             "retention": 0,
-//             "sd": {
-//                 "cols": [
-//                     {
-//                         "name": "id",
-//                         "type": "bigint",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "age",
-//                         "type": "int",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     },
-//                     {
-//                         "name": "desc",
-//                         "type": "string",
-//                         "comment": null,
-//                         "setName": true,
-//                         "setComment": false,
-//                         "setType": true
-//                     }
-//                 ],
-//                 "location": "hdfs://10.9.246.187/griffin/data/batch/avr_out",
-//             },
-//         }
-//     ],
-  
-// }
-
     this.http.get('http://localhost:8080/metadata/hive/allTables').subscribe(data =>{
-        // if(!data){
-        //   $('#message').css('display','block');
-        // }
-        // this.results = data;
-        // for (let db in data) {
-        //     for(let table of data[db]){
-        //     this.results.push(table);
-        //     table.location = table.sd.location;
-        //     table.createTime = this.parseDate(table.createTime*1000);
-        //     // table.lastAccessTime = this.parseDate(table.lastAccessTime*1000);
-        //     }       
-        // }
-        // this.results = data;
         for (let db in data) {
-            for(let table of data[db]){
-            
+            for(let table of data[db]){           
             table.location = table.sd.location;
             this.results.push(table);
-            // table.lastAccessTime = this.parseDate(table.lastAccessTime*1000);
             }       
         }
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
         $('.icon').hide();
     },err =>{
-      $('.icon').hide();
-      // $('#message').css('display','block');
-      // $('.ng2-smart-sort-link').css('color','white');
-      // $('.ng2-smart-titles').css('background','#7D95CC');
+      
     });
   };
 }
