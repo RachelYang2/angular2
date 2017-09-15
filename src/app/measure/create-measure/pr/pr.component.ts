@@ -19,6 +19,21 @@ class node {
   parent:string;
 };
 
+class Rule{
+  type:string;
+  condition:[{
+    type :string,
+    content:string
+  }];
+  other:string;
+  constructor(type:string,conditionType:string,conditionContent:string,other:string){
+    this.type = type;
+    this.condition[this.condition.length].type = conditionType;
+    this.condition[this.condition.length].content = conditionContent;
+    this.other = other;
+  }
+}
+
 class Col{
   name:string;
   type:string;
@@ -29,6 +44,7 @@ class Col{
   rules:string[];
   groupby:string;
   RE:string;
+  newRules:Rule[];
   // selectedRules:{[rule:string]:boolean};
   selectedRules:boolean[];
   constructor(name:string,type:string,comment:string,selected:boolean){
@@ -39,6 +55,16 @@ class Col{
     this.isExpanded = false;
     this.groupby = '';
     this.RE = '';
+    this.newRules = [
+    // {
+    //   type:'',
+    //   condition:[{
+    //     type:'',
+    //     content:''
+    //   }],
+    //   other:''
+    // }
+    ];
     
     var patt = new RegExp('int|double|float/i');
     if(patt.test(this.type)){
@@ -70,9 +96,6 @@ export class PrComponent implements OnInit {
   currentTable = '';
   schemaCollection:Col[];
   totallen = 0;
-
-
-
   type = 'profiling';
   newMeasure = {
     "name": "",
@@ -146,18 +169,18 @@ export class PrComponent implements OnInit {
       }
   };
 
-  toggleSelectionRules (row,index) {
-      row.selectedRules[index] = !row.selectedRules[index];
-      var idx = row.rules.indexOf(this.ruleMap[index]);
-      // is currently selected
-      if (idx > -1) {
-          row.rules.splice(idx, 1);
-      }
-      // is newly selected
-      else {
-          row.rules.push(this.ruleMap[index]);
-      }
-  };
+  // toggleSelectionRules (row,index) {
+  //     row.selectedRules[index] = !row.selectedRules[index];
+  //     var idx = row.rules.indexOf(this.ruleMap[index]);
+  //     // is currently selected
+  //     if (idx > -1) {
+  //         row.rules.splice(idx, 1);
+  //     }
+  //     // is newly selected
+  //     else {
+  //         row.rules.push(this.ruleMap[index]);
+  //     }
+  // };
 
   toggleAll () {
     this.selectedAll = !this.selectedAll;
@@ -171,29 +194,31 @@ export class PrComponent implements OnInit {
   };
 
   transferRule(rule,col){
+    console.log(rule);
+    console.log(col);
     switch(rule){
-      case 'total count':
+      case 'Total Count':
         return 'count(source.'+col.name+')';
-      case 'distinct count':
+      case 'Distinct Count':
         return 'distinct count(source.'+col.name+')';
-      case 'null detection count':
+      case 'Null Detection Count':
         return 'count(source.'+col.name+') where source.'+col.name+' is null';
-      case 'regular expression detection count':
+      case 'Regular Expression Detection Count':
         return 'count(source.'+col.name+') where source.'+col.name+' like ';
-      case 'rule detection count':
+      case 'Rule Detection Count':
         return 'count(source.'+col.name+') where source.'+col.name+' like ';
-      case 'max':
+      case 'Maxium':
         return 'max(source.'+col.name+')';
-      case 'min':
+      case 'Minimum':
         return 'min(source.'+col.name+')';
-      case 'median':
+      case 'Median':
         return 'median(source.'+col.name+')';
-      case 'avg':
+      case 'Average':
         return 'average(source.'+col.name+')';
-      case 'enum detection group count':
+      case 'Enum Detection Count':
         return 'source.'+col.name+' group by source.'+col.name+'';
-      case 'groupby count':
-        return 'source.'+col.name+' group by source.'+col.name+'';
+      // case 'Groupby Count':
+      //   return 'source.'+col.name+' group by source.'+col.name+'';
       // case 'total count':
       //   return 'SELECT COUNT(*) FROM source';
       // case 'distinct count':
@@ -219,31 +244,33 @@ export class PrComponent implements OnInit {
     }
   }
 
-  addCond(item,index){
-    let node = document.getElementById("Condition"+index);
-    let cloneNode = node.cloneNode(true);
-    console.log(node);
-    console.log(cloneNode);
-    $("#Condition"+index).append(`<label>Condition:</label>
-                      <select class="form-control" style="width: 10%;display: inline-block;" id="simpleCondition" name='simpleCondition' >
-                        <option>where</option>
-                        <option>groupby</option>
-                        <option>orderby</option>
-                        <option>limit</option>
-                      </select>
-                      <input name="conditionDetail" type="text" class="form-control" style="width: 20%;display: inline-block;" [(ngModel)]="conditionDetail"/>
-                      `);
-    // document.getElementById("simple"+index).appendChild(cloneNode);
-    // $("#Condition"+index).append('<br>');
+  addCond(item,ruleIndex){
+    let newCond = {
+      type:'',
+      content:''
+    }
+    item.newRules[ruleIndex].condition.push(newCond);
+  }
+
+  addRule(item){
+    let newRule = {
+      type:'',
+      condition:[{
+        type :'',
+        content:''
+      }],
+      other:'',
+    }
+    item.newRules.push(newRule);
   }
 
   next (form) {
-      if(this.formValidation(this.currentStep)){
+      // if(this.formValidation(this.currentStep)){
       this.currentStep++;
-    }else{
-      this.toasterService.pop('error','Error!','Please select at least one attribute!');
-          return false;
-    }
+    // }else{
+      // this.toasterService.pop('error','Error!','Please select at least one attribute!');
+          // return false;
+    // }
   }
 
   formValidation = function(step) {
@@ -271,10 +298,10 @@ export class PrComponent implements OnInit {
   }
   submit (form) {                
       // form.$setPristine();
-      if (!form.valid) {
-        this.toasterService.pop('error', 'Error!', 'please complete the form in this step before proceeding');
-        return false;
-      }
+      // if (!form.valid) {
+      //   this.toasterService.pop('error', 'Error!', 'please complete the form in this step before proceeding');
+      //   return false;
+      // }
       this.newMeasure = {
         "name": this.name,
         "process.type": "batch",
@@ -308,8 +335,14 @@ export class PrComponent implements OnInit {
       var self = this;
       var rule = '';
       for(let item of this.selection){
-          for(let itemRule of item.rules){
-            rule = rule + this.transferRule(itemRule,item)+',';
+          for(let itemRule of item.newRules){
+            console.log(self.transferRule(itemRule.type,item));
+            rule = rule + self.transferRule(itemRule.type,item)+',';
+
+            for(let condition of itemRule.condition){
+              rule = rule + condition;
+
+            }
           }
       }
       this.newMeasure.evaluateRule.rules[0].rule = rule;
