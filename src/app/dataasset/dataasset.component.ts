@@ -17,56 +17,6 @@ export class DataassetComponent implements OnInit {
   targetTable :string;
   data:object;
 
-  settings = {
-    columns: {
-      tableName: {
-        title: 'Table Name',
-        editable:false,
-        type:'html',
-        // width:''
-      },
-      dbName: {
-        title: 'DB Name',
-        editable:false,
-        width:'10%'
-      },
-      owner: {
-        title: 'Owner',
-        editable:false,
-        width:'10%'
-      },
-      createTime: {
-        title: 'Creation Time',
-        editable:false,
-        width:'16%'
-      },
-      lastAccessTime: {
-        title: 'Last Access Time',
-        editable:false,
-        width:'16%'
-      },
-      location: {
-        title: 'Location',
-        editable:false
-      },
-    },
-    actions:{
-      position:'right',
-      add:false,
-      columnTitle:'Action',
-      edit:false,
-      delete:false
-    },
-    hideSubHeader:true,
-    mode:'external',
-    pager : {
-      display : true,
-      // perPage:2
-    },
-    noDataMessage: ''
-
-  };
-
   public hide(): void {
     this.visibleAnimate = false;
     setTimeout(() => this.visible = false, 300);
@@ -78,7 +28,6 @@ export class DataassetComponent implements OnInit {
     }
   }
   constructor(private http:HttpClient) { }
-
   parseDate(time){
     time = new Date(time);
     var year = time.getFullYear();
@@ -218,19 +167,24 @@ export class DataassetComponent implements OnInit {
 // }
 
     this.http.get('http://localhost:8080/metadata/hive/allTables').subscribe(data =>{
-      this.data = data;
-        // $('*[_ngcontent-c]').css('display','none');
-        $('.ng2-smart-sort-link').css('color','white');
-        $('.ng2-smart-titles').css('background','#7D95CC');
-        if(!data){
-          $('#message').css('display','block');
-        }
-
+        // if(!data){
+        //   $('#message').css('display','block');
+        // }
+        // this.results = data;
+        // for (let db in data) {
+        //     for(let table of data[db]){
+        //     this.results.push(table);
+        //     table.location = table.sd.location;
+        //     table.createTime = this.parseDate(table.createTime*1000);
+        //     // table.lastAccessTime = this.parseDate(table.lastAccessTime*1000);
+        //     }       
+        // }
+        // this.results = data;
         for (let db in data) {
             for(let table of data[db]){
-            this.results.push(table);
+            
             table.location = table.sd.location;
-            table.createTime = this.parseDate(table.createTime*1000);
+            this.results.push(table);
             // table.lastAccessTime = this.parseDate(table.lastAccessTime*1000);
             }       
         }
@@ -239,9 +193,9 @@ export class DataassetComponent implements OnInit {
         $('.icon').hide();
     },err =>{
       $('.icon').hide();
-      $('#message').css('display','block');
-      $('.ng2-smart-sort-link').css('color','white');
-      $('.ng2-smart-titles').css('background','#7D95CC');
+      // $('#message').css('display','block');
+      // $('.ng2-smart-sort-link').css('color','white');
+      // $('.ng2-smart-titles').css('background','#7D95CC');
     });
   };
 }

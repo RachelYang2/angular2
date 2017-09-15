@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule ,LocalDataSource} from 'ng2-smart-table';
+import {DataTableModule} from "angular2-datatable";
+
 import { DatePipe } from '@angular/common';
+import { Router} from "@angular/router";
 import * as $ from 'jquery';
 
 @Component({
@@ -10,10 +13,15 @@ import * as $ from 'jquery';
   styleUrls: ['./job.component.css']
 })
 export class JobComponent implements OnInit {
-  results:object[];
+  // results:object[];
+  allInstances:any;
+  results:any;
   source:LocalDataSource;
+  deletedBriefRow:object;
+  jobName:string;
   public visible = false;
   public visibleAnimate = false;
+  // showDetail = false;
 
   deletedRow : object;
   sourceTable :string;
@@ -21,57 +29,11 @@ export class JobComponent implements OnInit {
   deleteId : string;
   deleteIndex:number;
   deleteGroup :string;
+  deleteJob :string;
 
-  settings = {
-    columns: {
-      jobName: {
-        title: 'Job Name',
-        editable:false,
-        type:'html'
-      },
-      sourcePattern: {
-        title: 'Source Pattern',
-      },
-      targetPattern: {
-        title: 'Target Pattern',
-        editable:false
-      },
-      previousFireTime: {
-        title: 'Previous Fire Time',
-        editable:false
-      },
-      nextFireTime: {
-        title: 'Next Fire Time',
-        editable:false
-      },
-      triggerState: {
-        title: 'Trigger State',
-        editable:false
-      },
-      interval: {
-        title: 'Interval'
-      },
-    },
-    actions:{
-    	position:'right',
-    	add:false,
-    	edit:false,
-    	columnTitle:'Action',
-    	delete:true
-    },
 
-    hideSubHeader:true,
-    delete:{
-    	deleteButtonContent:'<i class="fa fa-trash-o"></i>'
-    },
-    mode:'external',
-    pager : {
-      display : true,
-      perPage:2
-    }
-
-  };
-  constructor(private http:HttpClient) { };
+  
+  constructor(private http:HttpClient,private router:Router) { };
 
   public hide(): void {
     this.visibleAnimate = false;
@@ -83,20 +45,24 @@ export class JobComponent implements OnInit {
       this.hide();
     }
   }
+  
 
-  onDelete($event){
+  remove(row){
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
-    this.deleteId = $event.data.jobName;
-    this.deleteGroup = $event.data.groupName;
-    this.deleteIndex = $event.index;
-    this.deletedRow = $event.data;
+    this.deletedRow = row;
+    this.deleteIndex = this.results.indexOf(row);
+    this.deletedBriefRow = row;
+    this.deleteGroup = row.groupName;
+    this.deleteJob = row.jobName;
   }
 
   confirmDelete(){
-    let deleteUrl = 'http://localhost:8080/jobs/'+ '?group=' + this.deleteGroup+'&jobName='+this.deleteId;
+    // let row = this.deletedBriefRow;
+    let deleteUrl = 'http://localhost:8080/jobs'+ '?group=' + this.deleteGroup + '&jobName=' + this.deleteJob;
     this.http.delete(deleteUrl).subscribe(data => {
       let deleteResult:any = data;
+      console.log(deleteResult.code);
       if(deleteResult.code==206){
         var self = this;
         setTimeout(function () {
@@ -105,26 +71,25 @@ export class JobComponent implements OnInit {
           self.hide();
         },0);
       }
+    },
+    err =>{
+        console.log('Error when deleting record');
+
     });
   };
-
-
-  parseDate(time){
-    time = new Date(time);
-    var year = time.getFullYear();
-    var month = time.getMonth() + 1;
-    var day = time.getDate();
-    var hour = time.getHours();
-    if(hour<10)
-      hour = '0' + hour;
-    var minute = time.getMinutes();
-    if(minute<10)
-      minute = '0' + minute;
-    var second = time.getSeconds();
-    if(second<10)
-      second = '0' + second;
-    return  ( year +'/'+ month + '/'+ day + ' '+ hour + ':' + minute + ':' + second);
-  }
+  
+  // showInstances(row){
+  //   let index  = this.results.indexOf(row);
+  //   console.log(index);
+  //   row.showDetail = !row.showDetail;
+  //   console.log(row.showDetail);
+  //   let getInstanceUrl = 'http://localhost:8080/jobs/instances'+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
+  //   this.http.get(getInstanceUrl).subscribe(data =>{       
+  //       this.allInstances = data;   
+  //       this.source = new LocalDataSource(this.allInstances);
+  //       this.source.load(this.allInstances);
+  //   });
+  // }
 
   intervalFormat(second){
      if(second<60)
@@ -148,34 +113,20 @@ export class JobComponent implements OnInit {
          }
      }
   }
-
-
+  
+  
   ngOnInit():void {
+    // this.showDetail = false;
     var self = this;
-  	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{
-        $('.ng2-smart-sort-link').css('color','white');
-        $('.ng2-smart-titles').css('background','#7D95CC');
-        
+  	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{       
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
-
-          job.nextFireTime = self.parseDate(job.nextFireTime);
-
-          if(job.previousFireTime != -1){
-              job.previousFireTime = self.parseDate(job.previousFireTime);
-          }else{
-              job.previousFireTime = '--/--/--/' + ' ' + '--:--';
-          }
+          // job.showDetail = false;
           job.interval = self.intervalFormat(job.interval);
           return job;
-        });      
+        });     
         this.source = new LocalDataSource(this.results);
         this.source.load(this.results);
-    },
-    err =>{
-        $('.ng2-smart-sort-link').css('color','white');
-        $('.ng2-smart-titles').css('background','#7D95CC');
-
     });
   };
 }

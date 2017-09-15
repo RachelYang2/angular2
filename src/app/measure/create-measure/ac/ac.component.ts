@@ -67,36 +67,93 @@ export class AcComponent implements OnInit {
 
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
+  // newMeasure = {
+  //   "name":'',
+  //   "description":'',
+  //   "organization":'',
+  //   "type":'',
+  //   "source":{
+  //       "type":"HIVE",
+  //       "version":"1.2",
+  //       "config":{
+  //           "database":'',
+  //           "table.name":'',
+  //       },
+  //   },
+  //   "target":{
+  //       "type":"HIVE",
+  //       "version":"1.2",
+  //       "config":{
+  //           "database":'',
+  //           "table.name":'',
+  //       },
+  //   },
+  //   "evaluateRule":{
+  //       "rules":'',
+  //   },
+  //   "owner":'',
+  //   "mappings":[],
+  // };
   newMeasure = {
     "name":'',
-    "description":'',
-    "organization":'',
-    "type":'',
-    "source":{
-        "type":"HIVE",
-        "version":"1.2",
-        "config":{
+    "process.type": "batch",
+    "data.sources": [
+    {
+      "name": "source",
+      "connectors": [
+        {
+          "type": "HIVE",
+          "version": "1.2",
+          "config":{
             "database":'',
             "table.name":'',
-        },
-    },
-    "target":{
-        "type":"HIVE",
-        "version":"1.2",
-        "config":{
+          }
+        }
+      ]
+    }, {
+      "name": "target",
+      "connectors": [
+        {
+          "type": "HIVE",
+          "version": "1.2",
+          "config":{
             "database":'',
             "table.name":'',
-        },
-    },
+          }
+        }
+      ]
+    }
+    ],
+
     "evaluateRule":{
-        "rules":'',
-    },
-    "owner":'',
-    "mappings":[],
+        "rules": [
+          {
+            "dsl.type": "griffin-dsl",
+            "dq.type": "accuracy",
+            "rule": "",
+            "details": {
+              "source": "source",
+              "target": "target",
+              "miss.records": {
+                "name": "miss.records",
+                "persist.type": "record"
+              },
+              "accuracy": {
+                "name": "accu",
+                "persist.type": "metric"
+              },
+              "miss": "miss",
+              "total": "total",
+              "matched": "matched"
+            }
+          }
+        ]
+    }
   };
   name:'';
-  desc:'';
-  org:'';
+  evaluateRule:any;
+  // desc:'';
+  // org:'';
   owner = 'test';
   createResult :any;
 
@@ -208,35 +265,93 @@ export class AcComponent implements OnInit {
         return false;
       }
       var rule = '';
-      this.newMeasure={
-        "name":this.name,
-        "description":this.desc,
-        "organization":this.org,
-        "type":this.type,
-        "source":{
-            "type":"HIVE",
-            "version":"1.2",
-            "config":{
-                "database":this.currentDB,
-                "table.name":this.currentTable,
-            },
-        },
-        "target":{
-            "type":"HIVE",
-            "version":"1.2",
-            "config":{
-                "database":this.currentDBTarget,
-                "table.name":this.currentTableTarget,
-            },
-        },
-        "evaluateRule":{
-            "rules":'',
-        },
-        "owner":this.owner,
-        mappings:[],
+      // this.newMeasure={
+      //   "name":this.name,
+      //   "description":this.desc,
+      //   "organization":this.org,
+      //   "type":this.type,
+      //   "source":{
+      //       "type":"HIVE",
+      //       "version":"1.2",
+      //       "config":{
+      //           "database":this.currentDB,
+      //           "table.name":this.currentTable,
+      //       },
+      //   },
+      //   "target":{
+      //       "type":"HIVE",
+      //       "version":"1.2",
+      //       "config":{
+      //           "database":this.currentDBTarget,
+      //           "table.name":this.currentTableTarget,
+      //       },
+      //   },
+      //   "evaluateRule":{
+      //       "rules":'',
+      //   },
+      //   "owner":this.owner,
+      //   mappings:[],
+      // };
+      this.newMeasure = {
+         "name":this.name,
+         "process.type": "batch",
+         "data.sources": [
+         {
+           "name": "source",
+           "connectors": [
+             {
+               "type": "HIVE",
+               "version": "1.2",
+               "config":{
+                 "database":this.currentDBTarget,
+                 "table.name":this.currentTableTarget,
+               }
+             }
+           ]
+         }, {
+           "name": "target",
+           "connectors": [
+             {
+               "type": "HIVE",
+               "version": "1.2",
+               "config":{
+                 "database":this.currentDBTarget,
+                 "table.name":this.currentTableTarget,
+               }
+             }
+           ]
+         }
+         ],
+     
+         "evaluateRule":{
+             "rules": [
+               {
+                 "dsl.type": "griffin-dsl",
+                 "dq.type": "accuracy",
+                 "rule": "",
+                 "details": {
+                   "source": "source",
+                   "target": "target",
+                   "miss.records": {
+                     "name": "miss.records",
+                     "persist.type": "record"
+                   },
+                   "accuracy": {
+                     "name": "accu",
+                     "persist.type": "metric"
+                   },
+                   "miss": "miss",
+                   "total": "total",
+                   "matched": "matched"
+                 }
+               }
+             ]
+         }
       };
       var mappingRule = function(src, tgt, matches) {
-          return "$source['" + src + "'] " + matches + " $target['" + tgt + "']";
+          var rules;
+          rules = 'source.' + src  + matches + 'target.' + tgt
+          return rules;
       }
       var self = this;
       var rules = this.selectionTarget.map(function(item, i) {
@@ -244,12 +359,12 @@ export class AcComponent implements OnInit {
       });
       rule = rules.join(" AND ");
       this.rules = rule;
-      this.newMeasure.evaluateRule.rules = rule;
-      for(var i =0; i < this.selectionTarget.length; i ++){
-        this.newMeasure.mappings.push({target:this.selectionTarget[i],
-                        src:this.mappings[i],
-                        matchMethod: this.matches[i]});
-      }
+      this.newMeasure.evaluateRule.rules[0].rule = rule;
+      // for(var i =0; i < this.selectionTarget.length; i ++){
+      //   this.newMeasure.mappings.push({target:this.selectionTarget[i],
+      //                   // src:this.mappings[i],
+      //                   matchMethod: this.matches[i]});
+      // }
       this.visible = true;
       setTimeout(() => this.visibleAnimate = true, 100);
   }

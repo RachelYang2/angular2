@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule} from '@angular/common/http';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import {DataTableModule} from "angular2-datatable";
 import { TreeModule } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AngularEchartsModule } from 'ngx-echarts';
@@ -48,7 +49,6 @@ const appRoutes: Routes = [
   {
     path: 'jobs',
     component: JobComponent,
-    data: { title: 'Heroes List' }
   },
   {
     path: 'createjob',
@@ -119,6 +119,7 @@ const appRoutes: Routes = [
     MdDatepickerModule,
     MdNativeDateModule,
     AngularEchartsModule,
+    DataTableModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
