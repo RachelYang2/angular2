@@ -303,8 +303,8 @@ export class AcComponent implements OnInit {
                "type": "HIVE",
                "version": "1.2",
                "config":{
-                 "database":this.currentDBTarget,
-                 "table.name":this.currentTableTarget,
+                 "database":this.currentDB,
+                 "table.name":this.currentTable,
                }
              }
            ]
@@ -370,6 +370,7 @@ export class AcComponent implements OnInit {
   }
 
   save() {
+    console.log(this.newMeasure);
     this.http
     .post('http://localhost:8080/measure', this.newMeasure)
     .subscribe(data => {

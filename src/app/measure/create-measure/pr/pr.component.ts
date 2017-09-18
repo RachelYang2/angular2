@@ -89,6 +89,7 @@ class Col{
 export class PrComponent implements OnInit {
 
   currentStep = 1;
+  firstCond = false;
   selection : Col[];
   selectedAll = false;
   rules = '';
@@ -129,16 +130,6 @@ export class PrComponent implements OnInit {
   name:'';
   createResult :any;
 
-  ruleMap = [
-             'total count',
-             'distinct count',
-             'null detection count',
-             'regular expression detection count',
-             'rule detection count',
-             'max','min','median','avg',
-             'enum detection group count',
-             'groupby count']
-
   private toasterService: ToasterService;
   public visible = false;
   public visibleAnimate = false;
@@ -168,19 +159,6 @@ export class PrComponent implements OnInit {
           this.selection.push(row);
       }
   };
-
-  // toggleSelectionRules (row,index) {
-  //     row.selectedRules[index] = !row.selectedRules[index];
-  //     var idx = row.rules.indexOf(this.ruleMap[index]);
-  //     // is currently selected
-  //     if (idx > -1) {
-  //         row.rules.splice(idx, 1);
-  //     }
-  //     // is newly selected
-  //     else {
-  //         row.rules.push(this.ruleMap[index]);
-  //     }
-  // };
 
   toggleAll () {
     this.selectedAll = !this.selectedAll;
@@ -252,16 +230,23 @@ export class PrComponent implements OnInit {
     item.newRules[ruleIndex].condition.push(newCond);
   }
 
+  removeCond(item,ruleIndex,conditionIndex){
+    // item.newRules[ruleIndex].condition.splice(item.newRules[ruleIndex].condition.length-1,1);
+    item.newRules[ruleIndex].condition[conditionIndex] = null;
+  }
+
   addRule(item){
     let newRule = {
       type:'',
-      condition:[{
-        type :'',
-        content:''
-      }],
+      condition:[],
       other:'',
     }
     item.newRules.push(newRule);
+  }
+
+  removeRule(item,ruleIndex){
+    // item.newRules.splice(ruleIndex,1);
+    item.newRules[ruleIndex] = null;
   }
 
   next (form) {
@@ -337,11 +322,19 @@ export class PrComponent implements OnInit {
       for(let item of this.selection){
           for(let itemRule of item.newRules){
             console.log(self.transferRule(itemRule.type,item));
-            rule = rule + self.transferRule(itemRule.type,item)+',';
-
             for(let condition of itemRule.condition){
-              rule = rule + condition;
-
+              if(condition.type=='where'){
+                let whereRule = '';
+                whereRule = self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
+                self.newMeasure.evaluateRule.rules.push({
+                  "dsl.type": "griffin-dsl",
+                  "dq.type": "profiling",
+                  "rule": whereRule,
+                  "details": {}
+                });
+              }
+              else 
+                rule = rule + self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
             }
           }
       }
