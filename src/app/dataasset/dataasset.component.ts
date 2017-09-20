@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule ,LocalDataSource} from 'ng2-smart-table';
 import * as $ from 'jquery';
+import {ServiceService} from '../service/service.service';
 
 @Component({
   selector: 'app-dataasset',
   templateUrl: './dataasset.component.html',
+  providers:[ServiceService],
   styleUrls: ['./dataasset.component.css']
 })
 export class DataassetComponent implements OnInit {
@@ -27,7 +29,7 @@ export class DataassetComponent implements OnInit {
       this.hide();
     }
   }
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,public servicecService:ServiceService) { }
   parseDate(time){
     time = new Date(time);
     var year = time.getFullYear();
@@ -47,7 +49,8 @@ export class DataassetComponent implements OnInit {
 
 
   ngOnInit() {
-    this.http.get('http://localhost:8080/metadata/hive/allTables').subscribe(data =>{
+    var allDataassets = this.servicecService.config.uri.dataassetlist;
+    this.http.get(allDataassets).subscribe(data =>{
         for (let db in data) {
             for(let table of data[db]){           
             table.location = table.sd.location;

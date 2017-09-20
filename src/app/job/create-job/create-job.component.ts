@@ -5,6 +5,7 @@ import { MaxLengthValidator } from '@angular/forms';
 import { NgControlStatus ,Validators} from '@angular/forms';
 import { PatternValidator } from '@angular/forms';
 import {MdDatepickerModule} from '@angular/material/@angular/material';
+import {ServiceService} from '../../service/service.service';
 
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -16,11 +17,12 @@ import  {Router} from "@angular/router";
 @Component({
   selector: 'app-create-job',
   templateUrl: './create-job.component.html',
+  providers:[ServiceService],
   styleUrls: ['./create-job.component.css']
 })
 export class CreateJobComponent implements OnInit {
 
-  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
+  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router,public servicecService:ServiceService) {
     this.toasterService = toasterService;
   };
 
@@ -158,7 +160,8 @@ export class CreateJobComponent implements OnInit {
     var month = date.getMonth()+1;
     var timestamp = Date.parse(datastr);
     var jobName = this.measure + '-BA-' + this.ntAccount + '-' + timestamp;
-    var newJob = 'http://localhost:8080/jobs' + '?group=' + this.newJob.groupName + '&jobName=' + jobName + '&measureId=' + this.measureid;
+    var addJobs = this.servicecService.config.uri.addJobs;
+    var newJob = addJobs + '?group=' + this.newJob.groupName + '&jobName=' + jobName + '&measureId=' + this.measureid;
     this.http   
     .post(newJob, this.newJob)
     .subscribe(data => {
@@ -196,7 +199,8 @@ export class CreateJobComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('http://localhost:8080/measures').subscribe(data =>{
+    var allModels = this.servicecService.config.uri.allModels;
+    this.http.get(allModels).subscribe(data =>{
       this.Measures = data;
       this.measure = this.Measures[0].name;
       this.measureid = this.Measures[0].id;

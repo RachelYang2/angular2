@@ -18,6 +18,9 @@ export class AppComponent {
   resizeMainWindow(){
     $('#mainWindow').height(window.innerHeight-56-90);
   }
+  logout(){
+    window.location.href = 'login.html';
+  }
 }
 
 
