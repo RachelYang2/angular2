@@ -322,7 +322,9 @@ export class AcComponent implements OnInit {
   }
 
   save() {
+
     var addModels = this.servicecService.config.uri.addModels;
+
     this.http
     .post(addModels, this.newMeasure)
     .subscribe(data => {

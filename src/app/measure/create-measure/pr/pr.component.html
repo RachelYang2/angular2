@@ -115,9 +115,14 @@
                         <div id="simple{{itemIndex}}">
                           <h5>Simple Statistics</h5>
                           <div *ngFor="let rule of item.newRules;let ruleIndex = index" >
+                            <div *ngIf="rule!=null">
+                             <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
+                          (click)="removeRule(item,ruleIndex)">
+                              <i class="fa fa-minus"></i>
+                            </a>
                             <label style="width: 7%;text-align:center;">Rule:</label>
-                            <select class="form-control" style="width: 83.5%;display: inline-block;" 
-                            id="simpleRule" name='simpleRule' [(ngModel)]='rule.type'>
+                            <select class="form-control" style="width: 25%;display: inline-block;" 
+                            id="simpleRule" name='simpleRule-{{itemIndex}}{{ruleIndex}}' [(ngModel)]='rule.type'>
                               <option>Total Count</option>
                               <option>Distinct Count</option>
                               <option>Null Detection Count</option>
@@ -129,47 +134,46 @@
                               <option *ngIf='item.isNum'>Average</option>
                               <option>Enum Detection Count</option>
                             </select>
-                           <!--  <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
-                          (click)="addRule(item)">
-                            <i class="fa fa-plus"></i>
-                          </a>
-                          <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
-                          (click)="deleteRule(item)">
-                            <i class="fa fa-minus"></i>
-                          </a> -->
-                            <br>
-                            <div id="Condition{{itemIndex}}" *ngFor="let condition of rule.condition;let conditionIndex = index" style="display: inline-block;width:100%;margin-left:8%;">
+                            <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
+                            (click)="addCond(item,ruleIndex)">
+                              <i class="fa fa-plus"></i>
+                            </a>
+                            <div id="Condition{{itemIndex}}" *ngFor="let condition of rule.condition;let conditionIndex = index" style="display: inline-block;width:80%;margin-left:8%;">
+                            <!-- <div *ngIf="condition!=null"> -->
                               <label>Condition:</label>
-                              <select class="form-control" style="width: 25%;display: inline-block;" 
-                              id="simpleCondition" name='simpleCondition' >
+                              <select class="form-control" style="width: 21%;display: inline-block;" 
+                              id="simpleCondition" name='simpleCondition-{{itemIndex}}{{ruleIndex}}{{conditionIndex}}' [(ngModel)]="condition.type">
                                 <option>where</option>
                                 <option>groupby</option>
                                 <option>orderby</option>
                                 <option>limit</option>
                               </select>
-                              <input name="conditionDetail" type="text" class="form-control" 
-                              style="width: 50%;display: inline-block;" [(ngModel)]="condition.content"/>
-                              <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
-                            (click)="addCond(item,ruleIndex)">
-                              <i class="fa fa-plus"></i>
-                          </a>
-                          <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
-                            (click)="deleteCond(item,ruleIndex)">
+                              <label>{{condition.type}}</label>
+                              <input name="conditionDetail-{{itemIndex}}{{ruleIndex}}{{conditionIndex}}" type="text" class="form-control" 
+                              style="width: 40%;display: inline-block;" [(ngModel)]="condition.content"/>
+                              <a *ngIf="rule.condition.length" class="btn btn-primary btn-o" style="background-color: #337ab7;margin-left: 2%;"
+                            (click)="removeCond(item,ruleIndex,conditionIndex)">
                               <i class="fa fa-minus"></i>
-                          </a>
+                            </a>
+                            <!-- </div> -->
                             </div>
-                            <br>
+
+
+                            <div style="display: inline-block;">
+                              <label *ngIf="!rule.condition.length">Condition</label>
+                              <br>
+                            </div>
+                            <br>   
+                            
+                           
+                            </div> 
 
                           </div>
-                          
-                          <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
+                         
+                           <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
                           (click)="addRule(item)">
-                            <i class="fa fa-plus"></i>
-                          </a>
-                          <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
-                          (click)="deleteRule(item)">
-                            <i class="fa fa-minus"></i>
-                          </a>
+                              <i class="fa fa-plus"></i>
+                            </a>
                         <br>
                       </div>
                       </div>
@@ -341,8 +345,8 @@
                     </div>
                   </div>
                   <h5 class="row">Rules</h5>
-                    <div class="row">
-                      {{newMeasure.evaluateRule.rules[0].rule}}
+                    <div class="row" *ngFor = "let newRule of newMeasure.evaluateRule.rules">
+                      {{newRule.rule}}
                     </div>
                   <br/>
                   <!-- <h5 class="row">Mapping rules</h5> -->
