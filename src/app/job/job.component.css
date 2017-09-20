@@ -1,3 +1,6 @@
 .table-striped > tbody > tr{
      background-color: #1f1f1f; 
 }
+a{
+	color: white;
+}

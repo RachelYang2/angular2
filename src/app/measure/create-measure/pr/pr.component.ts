@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import {ServiceService} from '../../../service/service.service';
 
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -84,6 +85,7 @@ class Col{
 @Component({
   selector: 'app-pr',
   templateUrl: './pr.component.html',
+  providers:[ServiceService],
   styleUrls: ['./pr.component.css']
 })
 export class PrComponent implements OnInit {
@@ -120,8 +122,8 @@ export class PrComponent implements OnInit {
         {
           "dsl.type": "griffin-dsl",
           "dq.type": "profiling",
-          "rule": "",
-          "details": {}
+          "rule": ""
+          // "details": {}
         }
       ]
     }
@@ -325,8 +327,8 @@ export class PrComponent implements OnInit {
             {
               "dsl.type": "griffin-dsl",
               "dq.type": "profiling",
-              "rule": "",
-              "details": {}
+              "rule": ""
+              // "details": {}
             }
           ]
         }
@@ -352,8 +354,9 @@ export class PrComponent implements OnInit {
 
   save() {
     console.log(this.newMeasure);
+    var addModels = this.servicecService.config.uri.addModels;
     this.http
-    .post('http://localhost:8080/measure', this.newMeasure)
+    .post(addModels, this.newMeasure)
     .subscribe(data => {
         this.createResult = data;
         this.hide();
@@ -511,7 +514,7 @@ export class PrComponent implements OnInit {
   };
 
   nodeList:object[];
-  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
+  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router,public servicecService:ServiceService) {
     this.toasterService = toasterService;
     this.selection = [];
   };

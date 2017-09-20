@@ -27,7 +27,7 @@
                 </h4>
                 </div>
                 <div class="col-sm-3 col-lg-3 col-md-3 " style="display: flex;justify-content: center;height:46px;">
-                <div [ngClass]="outerItems.dq >=90 ? 'led-green':'led-yellow'" style="align-self: center;"></div>
+                <!-- <div [ngClass]="outerItems.dq >=90 ? 'led-green':'led-yellow'" style="align-self: center;"></div> -->
                 </div>
                 <!-- <div class="col-sm-5 col-lg-5 col-md-5 " style="display: flex;justify-content: center;height:46px;"><a style="align-self: center;" class="btn btn-primary" href="https://github.com/eBay/DQSolution/issues" target="_blank">Report&nbsp;issue</a></div> -->
             </div>
@@ -52,7 +52,7 @@
                             </h4>
                         </div>
                         <div id={{outerItems.name+i}} class="panel-collapse collapse" >
-                            <div class="panel-body" style="cursor:pointer;padding:0px 15px;">
+                            <div class="panel-body" style="cursor:pointer;padding:0px 15px;border-top-width: 0;">
                                 <div id="chart{{parent}}-{{i}}" class="side-chart" echarts [options]="getOption(parent,i)" 
                                 ></div>
                             </div>

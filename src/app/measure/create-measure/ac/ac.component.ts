@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormsModule, Validator} from '@angular/forms';
+import {ServiceService} from '../../../service/service.service';
 // import { PatternValidator } from '@angular/forms';
 
 
@@ -42,6 +43,7 @@ class Col{
 @Component({
   selector: 'app-ac',
   templateUrl: './ac.component.html',
+  providers:[ServiceService],
   styleUrls: ['./ac.component.css']
 })
 
@@ -67,33 +69,6 @@ export class AcComponent implements OnInit {
 
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
-  // newMeasure = {
-  //   "name":'',
-  //   "description":'',
-  //   "organization":'',
-  //   "type":'',
-  //   "source":{
-  //       "type":"HIVE",
-  //       "version":"1.2",
-  //       "config":{
-  //           "database":'',
-  //           "table.name":'',
-  //       },
-  //   },
-  //   "target":{
-  //       "type":"HIVE",
-  //       "version":"1.2",
-  //       "config":{
-  //           "database":'',
-  //           "table.name":'',
-  //       },
-  //   },
-  //   "evaluateRule":{
-  //       "rules":'',
-  //   },
-  //   "owner":'',
-  //   "mappings":[],
-  // };
   newMeasure = {
     "name":'',
     "process.type": "batch",
@@ -130,22 +105,22 @@ export class AcComponent implements OnInit {
           {
             "dsl.type": "griffin-dsl",
             "dq.type": "accuracy",
-            "rule": "",
-            "details": {
-              "source": "source",
-              "target": "target",
-              "miss.records": {
-                "name": "miss.records",
-                "persist.type": "record"
-              },
-              "accuracy": {
-                "name": "accu",
-                "persist.type": "metric"
-              },
-              "miss": "miss",
-              "total": "total",
-              "matched": "matched"
-            }
+            "rule": ""
+            // "details": {
+            //   "source": "source",
+            //   "target": "target",
+            //   "miss.records": {
+            //     "name": "miss.records",
+            //     "persist.type": "record"
+            //   },
+            //   "accuracy": {
+            //     "name": "accu",
+            //     "persist.type": "metric"
+            //   },
+            //   "miss": "miss",
+            //   "total": "total",
+            //   "matched": "matched"
+            // }
           }
         ]
     }
@@ -202,6 +177,9 @@ export class AcComponent implements OnInit {
       else {
           this.selectionTarget.push(row.name);
       }
+      let l = this.selectionTarget.length;
+      for(let i =0;i<l;i++)
+        this.matches[i] = "=";
   };
 
   toggleAll () {
@@ -211,6 +189,7 @@ export class AcComponent implements OnInit {
       this.schemaCollection[i].selected = this.selectedAll;
       if (this.selectedAll) {
           this.selection.push(this.schemaCollection[i].name);
+          this.matches[i] = "=";
       }
     }
   };
@@ -265,33 +244,6 @@ export class AcComponent implements OnInit {
         return false;
       }
       var rule = '';
-      // this.newMeasure={
-      //   "name":this.name,
-      //   "description":this.desc,
-      //   "organization":this.org,
-      //   "type":this.type,
-      //   "source":{
-      //       "type":"HIVE",
-      //       "version":"1.2",
-      //       "config":{
-      //           "database":this.currentDB,
-      //           "table.name":this.currentTable,
-      //       },
-      //   },
-      //   "target":{
-      //       "type":"HIVE",
-      //       "version":"1.2",
-      //       "config":{
-      //           "database":this.currentDBTarget,
-      //           "table.name":this.currentTableTarget,
-      //       },
-      //   },
-      //   "evaluateRule":{
-      //       "rules":'',
-      //   },
-      //   "owner":this.owner,
-      //   mappings:[],
-      // };
       this.newMeasure = {
          "name":this.name,
          "process.type": "batch",
@@ -303,8 +255,8 @@ export class AcComponent implements OnInit {
                "type": "HIVE",
                "version": "1.2",
                "config":{
-                 "database":this.currentDBTarget,
-                 "table.name":this.currentTableTarget,
+                 "database":this.currentDB,
+                 "table.name":this.currentTable,
                }
              }
            ]
@@ -328,22 +280,22 @@ export class AcComponent implements OnInit {
                {
                  "dsl.type": "griffin-dsl",
                  "dq.type": "accuracy",
-                 "rule": "",
-                 "details": {
-                   "source": "source",
-                   "target": "target",
-                   "miss.records": {
-                     "name": "miss.records",
-                     "persist.type": "record"
-                   },
-                   "accuracy": {
-                     "name": "accu",
-                     "persist.type": "metric"
-                   },
-                   "miss": "miss",
-                   "total": "total",
-                   "matched": "matched"
-                 }
+                 "rule": ""
+                 // "details": {
+                 //   "source": "source",
+                 //   "target": "target",
+                 //   "miss.records": {
+                 //     "name": "miss.records",
+                 //     "persist.type": "record"
+                 //   },
+                 //   "accuracy": {
+                 //     "name": "accu",
+                 //     "persist.type": "metric"
+                 //   },
+                 //   "miss": "miss",
+                 //   "total": "total",
+                 //   "matched": "matched"
+                 // }
                }
              ]
          }
@@ -370,8 +322,9 @@ export class AcComponent implements OnInit {
   }
 
   save() {
+    var addModels = this.servicecService.config.uri.addModels;
     this.http
-    .post('http://localhost:8080/measure', this.newMeasure)
+    .post(addModels, this.newMeasure)
     .subscribe(data => {
         this.createResult = data;
         this.hide();
@@ -559,7 +512,7 @@ export class AcComponent implements OnInit {
   };
 
   nodeList:object[];
-  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router) {
+  constructor(toasterService: ToasterService,private http: HttpClient,private router:Router,public servicecService:ServiceService) {
     this.toasterService = toasterService;
   };
   
@@ -576,7 +529,6 @@ export class AcComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.matches[0]='='
     this.nodeList = new Array();
     let i = 1;
     for (let db in this.data) {

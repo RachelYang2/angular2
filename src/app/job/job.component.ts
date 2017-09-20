@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { Ng2SmartTableModule ,LocalDataSource} from 'ng2-smart-table';
 import {DataTableModule} from "angular2-datatable";
+import {ServiceService} from '../service/service.service';
 
 import { DatePipe } from '@angular/common';
 import { Router} from "@angular/router";
@@ -10,6 +11,7 @@ import * as $ from 'jquery';
 @Component({
   selector: 'app-job',
   templateUrl: './job.component.html',
+  providers:[ServiceService],
   styleUrls: ['./job.component.css']
 })
 export class JobComponent implements OnInit {
@@ -34,7 +36,7 @@ export class JobComponent implements OnInit {
 
 
   
-  constructor(private http:HttpClient,private router:Router) { };
+  constructor(private http:HttpClient,private router:Router,public servicecService:ServiceService) { };
 
   public hide(): void {
     this.visibleAnimate = false;
@@ -47,7 +49,7 @@ export class JobComponent implements OnInit {
     }
   }
   
-
+  resultData = [{"jobName":"i-BA-0-1504837194000","measureId":"22","groupName":"BA","targetPattern":"YYYYMMdd-HH","triggerState":"NORMAL","nextFireTime":1505875500000,"previousFireTime":1504864200000,"interval":"300","sourcePattern":"YYYYMMdd-HH","jobStartTime":"1504800000000"}];
   remove(row){
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
@@ -59,17 +61,17 @@ export class JobComponent implements OnInit {
   }
 
   confirmDelete(){
-    // let row = this.deletedBriefRow;
-    let deleteUrl = 'http://localhost:8080/jobs'+ '?group=' + this.deleteGroup + '&jobName=' + this.deleteJob;
+    let deleteJob = this.servicecService.config.uri.deleteJob;
+    let deleteUrl = deleteJob + '?group=' + this.deleteGroup + '&jobName=' + this.deleteJob;
     this.http.delete(deleteUrl).subscribe(data => {
       let deleteResult:any = data;
       console.log(deleteResult.code);
       if(deleteResult.code==206){
         var self = this;
+        self.hide();
         setTimeout(function () {
           self.results.splice(self.deleteIndex,1);
           self.source.load(self.results);
-          self.hide();
         },0);
       }
     },
@@ -80,10 +82,15 @@ export class JobComponent implements OnInit {
   };
   
   showInstances(row){
+    if(row.showDetail){
+        row.showDetail = !row.showDetail;     
+      return;
+    }
     let index  = this.results.indexOf(row);
     if (this.oldindex!=undefined &&this.oldindex != index){
         this.results[this.oldindex].showDetail = false;}
-    let getInstanceUrl = 'http://localhost:8080/jobs/instances'+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
+    let getInstances = this.servicecService.config.uri.getInstances;
+    let getInstanceUrl = getInstances+ '?group=' + 'BA' + '&jobName=' + row.jobName +'&page='+'0'+'&size='+'200';
     this.http.get(getInstanceUrl).subscribe(data =>{      
         row.showDetail = !row.showDetail;     
         this.allInstances = data;   
@@ -91,7 +98,6 @@ export class JobComponent implements OnInit {
         // this.source.load(this.allInstances);
     });
     this.oldindex = index;
-    console.log(this.oldindex);
   }
 
   intervalFormat(second){
@@ -119,17 +125,16 @@ export class JobComponent implements OnInit {
   
   
   ngOnInit():void {
-    var self = this;
-  	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{       
-        this.results = Object.keys(data).map(function(index){
-          let job = data[index];
-          job.showDetail = false;
-          job.interval = self.intervalFormat(job.interval);
-          return job;
-        });     
-        // this.source = new LocalDataSource(this.results);
-        // this.source.load(this.results);
-
-    });
+   //  var self = this;
+   //  let allJobs = this.servicecService.config.uri.allJobs;
+  	// this.http.get(allJobs).subscribe(data =>{       
+   //      this.results = Object.keys(data).map(function(index){
+   //        let job = data[index];
+   //        job.showDetail = false;
+   //        job.interval = self.intervalFormat(job.interval);
+   //        return job;
+   //      });    
+   //  });
+   this.results = this.resultData;
   };
 }

@@ -343,3 +343,6 @@ fieldset legend{
 .delete-alert{
   text-align: left;color: white;font-size: 150%;
 }
+a{
+  color: white;
+}

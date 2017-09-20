@@ -184,12 +184,12 @@
                       <tr *ngFor="let item of selectionTarget; let i=index" >
                         <td>{{currentDBTarget}}.{{currentTableTarget}}.{{item}}</td>
                         <td style="text-align:center;">
-                          <select class="form-control" style="background:#00FFFF;font-weight:bold" id="mapRule" name='mapRule' [(ngModel)]="matches[i]" value="matches[i]">
-                            <option *ngFor="let func of matchFunctions" >{{func}}</option>
+                          <select class="form-control" style="background:#00FFFF;font-weight:bold" id="mapRule" name='mapRule-{{i}}' [(ngModel)]="matches[i]" value="matches[i]">
+                            <option *ngFor="let func of matchFunctions">{{func}}</option>
                           </select>
                         </td>
                         <td>
-                          <select class="form-control" [(ngModel)] = 'mappings[i]' name="mappings"
+                          <select class="form-control" [(ngModel)] = 'mappings[i]' name="mappings{{i}}"
                           (ngModelChange)="addMapping($event,i)" value="mappings[i]">
                             <option  
                             *ngFor="let itemSrc of selection"  
@@ -305,7 +305,7 @@
                       </label>
                       <div class="col-md-10 col-lg-10 col-sm-10">
                         <input type="text" class="form-control" name="DataAsset"
-                        value="{{currentTable}}.{{currentTableTarget}}" disabled>
+                        value="{{currentTable}},{{currentTableTarget}}" disabled>
                       </div>
                     </div>
                   </div>
@@ -395,7 +395,7 @@
                           <label class="col-md-4 col-lg-4 col-sm-4">
                             DataAsset:
                           </label>
-                          <div class="col-md-8 col-lg-8 col-sm-8">{{currentTable}}.{{currentTableTarget}}
+                          <div class="col-md-8 col-lg-8 col-sm-8">{{currentTable}},{{currentTableTarget}}
                           </div>
                         </div>
                         <div class="row">

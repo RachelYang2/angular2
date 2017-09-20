@@ -33,6 +33,7 @@
 .panel-default{
 	position:relative;
 	background:transparent;
+	border-color: #262626;
 }
 
 .side-bar-scroll{
