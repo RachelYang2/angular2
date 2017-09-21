@@ -1,3 +1,4 @@
+@import url('../../node_modules/bootstrap/dist/css/bootstrap.css');
 *{
 	color:white;
 }
@@ -7,3 +8,7 @@
 	border-color: #282828;
 }
 
+.navbar-default[_ngcontent-c0] .navbar-nav[_ngcontent-c0] > li[_ngcontent-c0] > a[_ngcontent-c0]:hover, .navbar-default[_ngcontent-c0] .navbar-nav[_ngcontent-c0] > li[_ngcontent-c0] > a[_ngcontent-c0]:focus {
+    color: #fff;
+    background-color: transparent;
+}

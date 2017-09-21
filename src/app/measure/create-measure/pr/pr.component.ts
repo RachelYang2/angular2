@@ -332,7 +332,7 @@ export class PrComponent implements OnInit {
                   "dsl.type": "griffin-dsl",
                   "dq.type": "profiling",
                   "rule": whereRule,
-                  "details": {}
+                  // "details": {}
                 });
               }
               else 
