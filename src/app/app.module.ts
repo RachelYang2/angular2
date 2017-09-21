@@ -45,7 +45,7 @@ const appRoutes: Routes = [
   },
   { 
     path: 'mydashboard', 
-    component: MydashboardComponent 
+    component: MetricComponent 
   },
   {
     path: 'jobs',

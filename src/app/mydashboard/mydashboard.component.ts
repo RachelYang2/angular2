@@ -11,7 +11,6 @@ export class MydashboardComponent implements OnInit {
   constructor(public router: Router) { }
 
   ngOnInit() {
-  	this.router.navigateByUrl("/metrics", { skipLocationChange: true });
   }
 
 }
