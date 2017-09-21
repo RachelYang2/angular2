@@ -320,6 +320,7 @@ export class PrComponent implements OnInit {
       for(let item of this.selection){
           for(let itemRule of item.newRules){
             console.log(self.transferRule(itemRule.type,item));
+
             for(let condition of itemRule.conditionGroup){
               if(condition.chosen){
                 if(condition.type=='where'){
@@ -335,6 +336,7 @@ export class PrComponent implements OnInit {
                 else 
                   rule = rule + self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
               }
+
             }
           }
       }

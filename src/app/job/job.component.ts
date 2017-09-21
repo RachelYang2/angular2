@@ -49,7 +49,7 @@ export class JobComponent implements OnInit {
     }
   }
   
-  resultData = [{"jobName":"i-BA-0-1504837194000","measureId":"22","groupName":"BA","targetPattern":"YYYYMMdd-HH","triggerState":"NORMAL","nextFireTime":1505875500000,"previousFireTime":1504864200000,"interval":"300","sourcePattern":"YYYYMMdd-HH","jobStartTime":"1504800000000"}];
+  resultData = [{"jobName":"i-BA-0-1504837194000","measureId":"22","groupName":"BA","targetPattern":"YYYYMMdd-HH","triggerState":"NORMAL","nextFireTime":1505875500000,"previousFireTime":1504864200000,"interval":"300","sourcePattern":"YYYYMMdd-HH","jobStartTime":"1504800000000"},{"jobName":"i-BA-0-1504837194000","measureId":"22","groupName":"BA","targetPattern":"YYYYMMdd-HH","triggerState":"NORMAL","nextFireTime":1505875500000,"previousFireTime":1504864200000,"interval":"300","sourcePattern":"YYYYMMdd-HH","jobStartTime":"1504800000000"},{"jobName":"i-BA-0-1504837194000","measureId":"22","groupName":"BA","targetPattern":"YYYYMMdd-HH","triggerState":"NORMAL","nextFireTime":1505875500000,"previousFireTime":1504864200000,"interval":"300","sourcePattern":"YYYYMMdd-HH","jobStartTime":"1504800000000"}];
   remove(row){
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
