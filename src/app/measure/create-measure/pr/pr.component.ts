@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-
-import { NgClass } from '@angular/common';
-
 import {ServiceService} from '../../../service/service.service';
-
-
 import { TREE_ACTIONS, KEYS, IActionMapping, ITreeOptions } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ToasterModule, ToasterService,ToasterContainerComponent} from 'angular2-toaster';
@@ -26,24 +21,38 @@ class node {
 
 class Rule{
   type:string;
-  // condition:{
-  //   cond:object[];
-  //   length:0;
-  // };
-  condition:any;
-  // {
-    // type :string,
-    // content:string
-  //   cond:object[],
-  //   length:number
-  // };
-  newCond:{};
-  constructor(type:string,conditionType:string,conditionContent:string,other:string){
-    // this.type = type;
-    // this.condition[this.condition.length].type = conditionType;
-    // this.condition[this.condition.length].content = conditionContent;
-    // this.other = other;
-  }
+  conditionGroup = [
+    {
+      'type':'where',
+      'content':'',
+      'chosen':false,
+      'avaliable':true
+    },
+    {
+      'type':'groupby',
+      'content':'',
+      'chosen':false,
+      'avaliable':true
+    },
+    {
+      'type':'having',
+      'content':'',
+      'chosen':false,
+      'avaliable':false
+    },
+    {
+      'type':'orderby',
+      'content':'',
+      'chosen':false,
+      'avaliable':true
+    },
+    {
+      'type':'limit',
+      'content':'',
+      'chosen':false,
+      'avaliable':true
+    }
+  ];
 }
 
 class Col{
@@ -57,8 +66,6 @@ class Col{
   groupby:string;
   RE:string;
   newRules:Rule[];
-  // selectedRules:{[rule:string]:boolean};
-  selectedRules:boolean[];
   constructor(name:string,type:string,comment:string,selected:boolean){
     this.name = name;
     this.type = type;
@@ -68,37 +75,15 @@ class Col{
     this.groupby = '';
     this.RE = '';
     this.newRules = [
-    // {
-    //   type:'',
-    //   condition:[{
-    //     type:'',
-    //     content:''
-    //   }],
-    //   other:''
-    // }
     ];
     
     var patt = new RegExp('int|double|float/i');
     if(patt.test(this.type)){
       this.isNum = true;
     }
-    // this.selectedRules = [false,false,false,false,false,false,false,false,false,false,false];
     this.rules = [];
   }
-  getSelected(){
-    return this.selected;
-  }
-  setSelected(selected){
-    this.selected = selected;
-  }
 }
-
-// @Directive({ selector: '[ngClass]' })
-// class NgClass implements DoCheck {
-//   set klass(v: string)
-//   set ngClass(v: string|string[]|Set<string>|{[klass: string]: any})
-//   ngDoCheck(): void
-// }
 
 @Component({
   selector: 'app-pr',
@@ -164,6 +149,14 @@ export class PrComponent implements OnInit {
     if ((<HTMLElement>event.target).classList.contains('modal')) {
       this.hide();
     }
+  }
+
+  toggleSelectionCond(cond,condIndex,ruleIndex,item){
+    cond.chosen = !cond.chosen;
+    if(condIndex==1&&cond.chosen)
+      item.newRules[ruleIndex].conditionGroup[2].avaliable = true;
+    if(condIndex==1&&!cond.chosen)
+      item.newRules[ruleIndex].conditionGroup[2].avaliable = false;
   }
 
   toggleSelection (row) {
@@ -243,93 +236,14 @@ export class PrComponent implements OnInit {
     }
   }
 
-  addCond(item,ruleIndex){
-    // let newCond = {
-    //   type:'',
-    //   content:''
-    // }
-    item.newRules[ruleIndex].newCond = {
-      'type':'where',
-      'content':''
-    }
-    item.newRules[ruleIndex].condition.cond.push(item.newRules[ruleIndex].newCond);
-    item.newRules[ruleIndex].condition.length++;
-    // if(item.newRules[ruleIndex].condition.length==0){
-    // item.newRules[ruleIndex].condition = 
-    //     {
-    //       'cond':[
-    //                 {
-    //                   'type':'where',
-    //                   'content':''
-    //                 },
-    //                 {
-    //                   'type':'groupby',
-    //                   'content':'         having'
-    //                 },
-    //                 {
-    //                   'type':'orderby',
-    //                   'content':''
-    //                 },
-    //                 {
-    //                   'type':'limit',
-    //                   'content':''
-    //                 }
-    //               ],
-    //       'length':4
-    //     }
-    // }
-    // else {
-    //   item.newRules[ruleIndex].condition.length++;
-    //   for(let i = 0;i<4;i++){
-    //     if(item.newRules[ruleIndex].condition.cond[i]==undefined){
-    //       switch(i){
-    //         case 0:
-    //         item.newRules[ruleIndex].condition.cond[i] = {'type':'where', 'content':''};
-    //         break;
-    //         case 1:
-    //         item.newRules[ruleIndex].condition.cond[i] = {'type':'groupby', 'content':'   having'};
-    //         break;
-    //         case 2:
-    //         item.newRules[ruleIndex].condition.cond[i] = {'type':'orderby', 'content':''};
-    //         break;
-    //         case 3:
-    //         item.newRules[ruleIndex].condition.cond[i] = {'type':'limit', 'content':''};
-    //         break;
-    //       }
-    //     }
-    //   }
-    // }
-
-  }
-
-  removeCond(item,ruleIndex,conditionIndex){
-    item.newRules[ruleIndex].condition.length--;
-    // item.newRules[ruleIndex].condition.splice(item.newRules[ruleIndex].condition[conditionIndex],1);
-    item.newRules[ruleIndex].condition.cond[conditionIndex] = undefined;
-  }
+  addCond(item,ruleIndex){  }
 
   addRule(item){
-    let newRule = {
-      type:'',
-      condition:{
-        'cond':[],
-        'length':0
-      },
-      other:'',
-      newCond:{
-        'type':'',
-        'content':''
-      }
-    }
-    // item.newRules[0].newCond = {
-    //   // 'type':'where',
-    //   // 'content':''
-    // }
+    let newRule = new Rule();
     item.newRules.push(newRule);
   }
 
   removeRule(item,ruleIndex){
-    // item.newRules.splice(ruleIndex,1);
     item.newRules[ruleIndex] = null;
   }
 
@@ -406,8 +320,8 @@ export class PrComponent implements OnInit {
       for(let item of this.selection){
           for(let itemRule of item.newRules){
             console.log(self.transferRule(itemRule.type,item));
-            for(let condition of itemRule.condition.cond){
-              // if(condition.length!=0){
+            for(let condition of itemRule.conditionGroup){
+              if(condition.chosen){
                 if(condition.type=='where'){
                   let whereRule = '';
                   whereRule = self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
@@ -420,7 +334,7 @@ export class PrComponent implements OnInit {
                 }
                 else 
                   rule = rule + self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
-              // }
+              }
             }
           }
       }

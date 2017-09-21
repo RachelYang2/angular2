@@ -136,7 +136,7 @@
                       </tr>
                       <tr *ngFor="let row of schemaCollectionTarget">
                         <td>
-                        <input type="checkbox" type="checkbox" (click)='toggleSelectionTarget(row)'  [checked]="row.selected"/>
+                        <input type="checkbox" (click)='toggleSelectionTarget(row)'  [checked]="row.selected"/>
                         </td>
                         <td>{{row.name}}</td>
                         <td>{{row.type}}</td>

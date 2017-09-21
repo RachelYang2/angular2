@@ -118,7 +118,7 @@
                             <div *ngIf="rule!=null">
                               <a class="btn btn-primary btn-o" style="background-color: #337ab7;" 
                           (click)="removeRule(item,ruleIndex)">
-                                <i class="fa fa-minus"></i>
+                                <i class="fa fa-times"></i>
                               </a>
                               <label style="width: 7%;text-align:center;">Rule:</label>
                               <select class="form-control" style="width: 25%;display: inline-block;" 
@@ -134,43 +134,21 @@
                                 <option *ngIf='item.isNum'>Average</option>
                                 <option>Enum Detection Count</option>
                               </select>
-                              <a *ngIf="rule.condition.length<4" class="btn btn-primary btn-o" style="background-color: #337ab7;"
+                              <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
                               (click)="addCond(item,ruleIndex)">
                                 <i class="fa fa-plus"></i>
                               </a>
-                              <select *ngIf="rule.newCond.type&&rule.condition.length<4" class="form-control" style="width: 21%;display: inline-block;" id="simpleCondition" name='simpleCondition-{{itemIndex}}{{ruleIndex}}{{conditionIndex}}' [(ngModel)]="rule.newCond.type">
-                                <option>where</option>
-                                <option>groupby</option>
-                                <option>orderby</option>
-                                <option>limit</option>
-                              </select>
-                              <div *ngFor="let condition of rule.condition.cond;let conditionIndex = index" style="width:80%;margin-left:8%;" 
-                              [style.display]='condition?inline-block:none'>
-                                <div *ngIf="condition!=undefined">
-                                  <label style="width: 7%;">{{condition.type}}</label>
-                                  <input name="conditionDetail-{{itemIndex}}{{ruleIndex}}{{conditionIndex}}" type="text" class="form-control" 
-                                  style="width: 40%;display: inline-block;" [(ngModel)]="condition.content"/>
-                                  <a *ngIf="rule.condition.length" class="btn btn-primary btn-o" style="background-color: #337ab7;margin-left: 2%;"
-                                  (click)="removeCond(item,ruleIndex,conditionIndex)">
-                                    <i class="fa fa-minus"></i>
-                                  </a>
-                                </div>
-                              </div>
-                              <!-- <label style="width: 7%;">{{rule.newCond.type}}</label>
-                              <input name="conditionDetail-{{itemIndex}}{{ruleIndex}}{{conditionIndex}}" type="text" class="form-control" style="width: 40%;display: inline-block;" [(ngModel)]="rule.newCond.content"/>
-                              <a *ngIf="rule.condition.length" class="btn btn-primary btn-o" style="background-color: #337ab7;margin-left: 2%;"
-                                  (click)="removeCond(item,ruleIndex,conditionIndex)">
-                                    <i class="fa fa-minus"></i>
-                              </a> -->
-
-
-                              <div *ngIf="!rule.condition.length" style="display: inline-block;">
-                                <label >Condition</label>
+                              <div style="display: inline-block;" *ngFor="let cond of rule.conditionGroup;let condIndex=index">
+                                <input type="checkbox" value="cond.type" (click)='toggleSelectionCond(cond,condIndex,ruleIndex,item)'  [disabled]="!cond.avaliable" [(ngModel)]="cond.chosen">
+                                <label>{{cond.type}}</label>
                                 <br>
                               </div>
-                            <!-- <br>    -->
-                            
-                           
+                              <div *ngFor="let cond of rule.conditionGroup;let condIndex=index" style="margin-left:12%;">
+                                <label style="width: 7%;" *ngIf="cond.chosen">{{cond.type}}</label>
+                                <input *ngIf="cond.chosen" 
+                                name="conditionDetail-{{itemIndex}}{{ruleIndex}}{{condIndex}}" type="text" class="form-control" style="width: 40%;display: inline-block;" [(ngModel)]="cond.content"/>
+                              </div>
+                        
                             </div> 
 
                           </div>

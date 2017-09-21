@@ -72,23 +72,18 @@ export class MeasureComponent implements OnInit {
   };
 
   ngOnInit():void {
-   //  var allModels = this.servicecService.config.uri.allModels;
-  	// this.http.get(allModels).subscribe(data =>{
-   //      for(let measure in data){
-   //        data[measure].trueName = data[measure].name;
-   //      }
-  	// 	  this.results = Object.keys(data).map(function(index){
-   //        let measure = data[index];
-   //        return measure;
-//         });
-//   	});
-//   };
+    var allModels = this.servicecService.config.uri.allModels;
+  	this.http.get(allModels).subscribe(data =>{
+        for(let measure in data){
+          data[measure].trueName = data[measure].name;
+        }
+  		  this.results = Object.keys(data).map(function(index){
+          let measure = data[index];
+          return measure;
+        });
+  	});
+  // };
 // }
-
-   // for(let measure in this.measureData){
-   //   this.results = this.measureData[measure];
-   //   console.log(this.results);
-   // }
-   this.results = this.measureData;
+   // this.results = this.measureData;
   }
 }

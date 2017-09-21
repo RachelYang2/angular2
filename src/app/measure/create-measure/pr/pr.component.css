@@ -11,6 +11,10 @@ div.tree::before {
     left: 12px
 }
 
+tree-root{
+    color: #999; 
+}
+
 div.tree {
     padding-left: 0;
     margin-left: -5px

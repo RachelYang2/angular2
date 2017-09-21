@@ -94,6 +94,11 @@ export class JobComponent implements OnInit {
     this.http.get(getInstanceUrl).subscribe(data =>{      
         row.showDetail = !row.showDetail;     
         this.allInstances = data;   
+        setTimeout(function(){
+          console.log($('.pagination'));
+          $('.pagination').css("marginBottom","-10px");
+        },0);
+
         // this.source = new LocalDataSource(this.allInstances);
         // this.source.load(this.allInstances);
     });
