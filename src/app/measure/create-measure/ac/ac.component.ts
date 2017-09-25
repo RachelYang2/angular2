@@ -514,6 +514,7 @@ export class AcComponent implements OnInit {
   };
 
   nodeList:object[];
+  nodeListTarget:object[];
   constructor(toasterService: ToasterService,private http: HttpClient,private router:Router,public servicecService:ServiceService) {
     this.toasterService = toasterService;
   };
@@ -556,5 +557,6 @@ export class AcComponent implements OnInit {
         }
         this.nodeList.push(new_node);
     }
+    this.nodeListTarget = JSON.parse(JSON.stringify(this.nodeList));
   };
 }

@@ -53,7 +53,6 @@ class Rule{
       'avaliable':true
     }
   ];
-
 }
 
 class Col{
@@ -160,7 +159,6 @@ export class PrComponent implements OnInit {
     if(condIndex==1&&!cond.chosen){
       item.newRules[ruleIndex].conditionGroup[2].avaliable = false;
       item.newRules[ruleIndex].conditionGroup[2].chosen = false;
-
     }
   }
 
@@ -191,13 +189,11 @@ export class PrComponent implements OnInit {
   };
 
   transferRule(rule,col){
-    console.log(rule);
-    console.log(col);
     switch(rule){
       case 'Total Count':
-        return 'count(source.'+col.name+')';
+        return 'count(source.'+col.name+') ';
       case 'Distinct Count':
-        return 'distinct count(source.'+col.name+')';
+        return 'distinct count(source.'+col.name+') ';
       case 'Null Detection Count':
         return 'count(source.'+col.name+') where source.'+col.name+' is null';
       case 'Regular Expression Detection Count':
@@ -205,13 +201,13 @@ export class PrComponent implements OnInit {
       case 'Rule Detection Count':
         return 'count(source.'+col.name+') where source.'+col.name+' like ';
       case 'Maxium':
-        return 'max(source.'+col.name+')';
+        return 'max(source.'+col.name+') ';
       case 'Minimum':
-        return 'min(source.'+col.name+')';
+        return 'min(source.'+col.name+') ';
       case 'Median':
-        return 'median(source.'+col.name+')';
+        return 'median(source.'+col.name+') ';
       case 'Average':
-        return 'average(source.'+col.name+')';
+        return 'average(source.'+col.name+') ';
       case 'Enum Detection Count':
         return 'source.'+col.name+' group by source.'+col.name+'';
       // case 'Groupby Count':
@@ -255,30 +251,29 @@ export class PrComponent implements OnInit {
   }
 
   next (form) {
-    // if(this.formValidation(this.currentStep)){
+    if(this.formValidation(this.currentStep)){
       this.currentStep++;
-    // }else{
-    //   this.toasterService.pop('error','Error!','Please select at least one attribute!');
-    //       return false;
-    // }
+    }else{
+      this.toasterService.pop('error','Error!','Please select at least one attribute!');
+          return false;
+    }
   }
 
   formValidation = function(step) {
-       if (step == undefined) {
-           step = this.currentStep;
-       }
-       if (step == 1) {
-           return this.selection && this.selection.length > 0;
-       } else if (step == 2) {
-           for(let item of this.selection){
-             this.totallen = this.totallen + item.newRules.length;
-           }
-           return (this.totallen > 0)
-       } else if (step == 3) {
-       }
-       return false;
-   } 
-
+    if (step == undefined) {
+        step = this.currentStep;
+    }
+    if (step == 1) {
+        return this.selection && this.selection.length > 0;
+    } else if (step == 2) {
+        for(let item of this.selection){
+          this.totallen = this.totallen + item.newRules.length;
+        }
+        return (this.totallen > 0)
+    } else if (step == 3) {
+    }
+    return false;
+  } 
 
   prev (form) {
       this.currentStep--;
@@ -327,27 +322,36 @@ export class PrComponent implements OnInit {
       for(let item of this.selection){
           for(let itemRule of item.newRules){
             console.log(self.transferRule(itemRule.type,item));
-
-            for(let condition of itemRule.conditionGroup){
-              if(condition.chosen){
-                if(condition.type=='where'){
-                  let whereRule = '';
-                  whereRule = self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
-                  self.newMeasure.evaluateRule.rules.push({
-                    "dsl.type": "griffin-dsl",
-                    "dq.type": "profiling",
-                    "rule": whereRule,
-                    // "details": {}
-                  });
-                }
-                else 
-                  rule = rule + self.transferRule(itemRule.type,item)+ ' '+condition.type + ' ' + condition.content+',';
+            if(itemRule.conditionGroup[0].chosen==true){
+              let whereRule = self.transferRule(itemRule.type,item);
+              for(let condition of itemRule.conditionGroup){
+                if(condition.content!='')
+                  whereRule = whereRule + condition.type + ' ' + condition.content + ',';
               }
-
+              self.newMeasure.evaluateRule.rules.push({
+                "dsl.type": "griffin-dsl",
+                "dq.type": "profiling",
+                "rule": whereRule,
+                // "details": {}
+              });
+            }
+            else {
+              let normalRule = self.transferRule(itemRule.type,item);
+              for(let condition of itemRule.conditionGroup){
+                if(condition.content!='')
+                  normalRule = normalRule + ' '+ condition.type + ' ' + condition.content + ',';
+              }
+              rule = rule + normalRule;
             }
           }
       }
-      this.newMeasure.evaluateRule.rules[0].rule = rule;
+      // this.newMeasure.evaluateRule.rules[0].rule = rule;
+      self.newMeasure.evaluateRule.rules.push({
+        "dsl.type": "griffin-dsl",
+        "dq.type": "profiling",
+        "rule": rule,
+        // "details": {}
+      });
       this.visible = true;
       setTimeout(() => this.visibleAnimate = true, 100);
   }
@@ -361,12 +365,10 @@ export class PrComponent implements OnInit {
         this.createResult = data;
         this.hide();
         this.router.navigate(['/measures']);
-      
     },
     err => {
       console.log('Something went wrong!');
     });
-    
   }
 
   data: { [key: string]: Array<object>; } = {

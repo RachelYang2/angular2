@@ -114,8 +114,8 @@ export class HealthComponent implements OnInit {
   
   onChartClick($event){
     if($event.data.name){
-        this.router.navigate(['/detailed/'+$event.data.name]);
-        // window.location.href = '/detailed/'+$event.data.name;
+        // this.router.navigate(['/detailed/'+$event.data.name]);
+        window.location.href = '/detailed/'+$event.data.name;
     }
   }
 

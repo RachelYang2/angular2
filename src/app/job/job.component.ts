@@ -142,8 +142,8 @@ export class JobComponent implements OnInit {
         });     
         console.log(data);
         console.log(this.results);
-        // this.source = new LocalDataSource(this.results);
-        // this.source.load(this.results);
+        this.source = new LocalDataSource(this.results);
+        this.source.load(this.results);
 
     });
 
@@ -157,7 +157,7 @@ export class JobComponent implements OnInit {
    //        return job;
    //      });    
    //  });
-   this.results = this.resultData;
+   // this.results = this.resultData;
 
   };
 }
