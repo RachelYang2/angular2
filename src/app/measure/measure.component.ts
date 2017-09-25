@@ -76,6 +76,7 @@ export class MeasureComponent implements OnInit {
   	this.http.get(allModels).subscribe(data =>{
         for(let measure in data){
           data[measure].trueName = data[measure].name;
+          data[measure].type = data[measure].evaluateRule.rules[0]["dq.type"];
         }
   		  this.results = Object.keys(data).map(function(index){
           let measure = data[index];
