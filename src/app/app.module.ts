@@ -84,11 +84,11 @@ const appRoutes: Routes = [
     path: 'login',
     component:LoginComponent
   },
-  { 
-    path: '',
-    redirectTo: 'health',
-    pathMatch: 'full'
-  },
+  // { 
+  //   path: '',
+  //   redirectTo: 'health',
+  //   pathMatch: 'full'
+  // },
   // { 
   //   path: '**',
   //   component: AppComponent 
@@ -128,7 +128,7 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     ),
-    MdNativeDateModule,
+    // MdNativeDateModule,
     MdDatepickerModule
     
     
