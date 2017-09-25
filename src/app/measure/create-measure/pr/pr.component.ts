@@ -53,6 +53,7 @@ class Rule{
       'avaliable':true
     }
   ];
+
 }
 
 class Col{
@@ -62,10 +63,11 @@ class Col{
   selected :boolean;
   isNum:boolean;
   isExpanded:boolean;
-  rules:string[];
+  // rules:string[];
   groupby:string;
   RE:string;
   newRules:Rule[];
+  ruleLength = 0;
   constructor(name:string,type:string,comment:string,selected:boolean){
     this.name = name;
     this.type = type;
@@ -81,7 +83,7 @@ class Col{
     if(patt.test(this.type)){
       this.isNum = true;
     }
-    this.rules = [];
+    // this.rules = [];
   }
 }
 
@@ -155,8 +157,11 @@ export class PrComponent implements OnInit {
     cond.chosen = !cond.chosen;
     if(condIndex==1&&cond.chosen)
       item.newRules[ruleIndex].conditionGroup[2].avaliable = true;
-    if(condIndex==1&&!cond.chosen)
+    if(condIndex==1&&!cond.chosen){
       item.newRules[ruleIndex].conditionGroup[2].avaliable = false;
+      item.newRules[ruleIndex].conditionGroup[2].chosen = false;
+
+    }
   }
 
   toggleSelection (row) {
@@ -239,20 +244,22 @@ export class PrComponent implements OnInit {
   addCond(item,ruleIndex){  }
 
   addRule(item){
+    item.ruleLength++;
     let newRule = new Rule();
     item.newRules.push(newRule);
   }
 
   removeRule(item,ruleIndex){
+    item.ruleLength--;
     item.newRules[ruleIndex] = null;
   }
 
   next (form) {
-      // if(this.formValidation(this.currentStep)){
+    // if(this.formValidation(this.currentStep)){
       this.currentStep++;
     // }else{
-      // this.toasterService.pop('error','Error!','Please select at least one attribute!');
-          // return false;
+    //   this.toasterService.pop('error','Error!','Please select at least one attribute!');
+    //       return false;
     // }
   }
 
@@ -264,7 +271,7 @@ export class PrComponent implements OnInit {
            return this.selection && this.selection.length > 0;
        } else if (step == 2) {
            for(let item of this.selection){
-             this.totallen = this.totallen + item.rules.length;
+             this.totallen = this.totallen + item.newRules.length;
            }
            return (this.totallen > 0)
        } else if (step == 3) {

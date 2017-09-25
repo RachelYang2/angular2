@@ -59,7 +59,7 @@
          <app-sidebar></app-sidebar>
     </div>
 
-    <div id="footerwrap" class="navbar-fixed-bottom">
+    <div id="footerwrap" class="navbar-fixed-bottom" style="display: none;">
         <div class="container-fluid" class="ng-cloak">
             <div class="row " *ngIf="timestamp|date:'short'">
                 <p *ngIf="!notifications">{{timestamp|date:'short'}} - Welcome <label>{{fullName}}</label>!</p>

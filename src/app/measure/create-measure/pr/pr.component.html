@@ -109,7 +109,7 @@
                       (click)="item.isExpanded = !item.isExpanded">
                       <i *ngIf="!item.isExpanded" class="fa fa-chevron-circle-right blue"></i>
                       <i *ngIf="item.isExpanded" class="fa fa-chevron-circle-down blue"></i>&nbsp;{{currentDB}}.{{currentTable}}.{{item.name}}
-                      <i>:{{item.rules.toString()}}</i>
+                      <i>:{{item.ruleLength}}&nbsp;rules</i>
                       </p>
                       <div *ngIf="item.isExpanded">
                         <div id="simple{{itemIndex}}">
@@ -134,12 +134,17 @@
                                 <option *ngIf='item.isNum'>Average</option>
                                 <option>Enum Detection Count</option>
                               </select>
-                              <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
+                              <!-- <a class="btn btn-primary btn-o" style="background-color: #337ab7;"
                               (click)="addCond(item,ruleIndex)">
                                 <i class="fa fa-plus"></i>
-                              </a>
-                              <div style="display: inline-block;" *ngFor="let cond of rule.conditionGroup;let condIndex=index">
-                                <input type="checkbox" value="cond.type" (click)='toggleSelectionCond(cond,condIndex,ruleIndex,item)'  [disabled]="!cond.avaliable" [(ngModel)]="cond.chosen">
+                              </a> -->
+                              <div style="display: inline-block;font-size: 130%;vertical-align: middle;" *ngFor="let cond of rule.conditionGroup;let condIndex=index">
+                                <input type="checkbox" 
+                                name="condition-{{itemIndex}}{{ruleIndex}}{{condIndex}}" 
+                                value="cond.type" 
+                                (click)='toggleSelectionCond(cond,condIndex,ruleIndex,item)'  
+                                [disabled]="!cond.avaliable" [(ngModel)]="cond.chosen" style="width:18px;height: 18px;">
+                                <!-- <span class="badge">&check;</span> -->
                                 <label>{{cond.type}}</label>
                                 <br>
                               </div>
