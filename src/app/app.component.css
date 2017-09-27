@@ -27,6 +27,9 @@ body {
 h3{
     font-size: 34px;
 }
+input[_ngcontent-c0]{
+    margin: 12px;
+}
 #content {
     /*background-color: transparent;*/
     background-color: #1A237E;

@@ -103,6 +103,10 @@ div.tree>treenode>div>.node-wrapper>treenodeexpander>.toggle-children-wrapper {
 label{
     font-weight: normal;
 }
+.container{
+    max-height: 40vh;
+    overflow-y:scroll;
+}
 
 .badgebox
 {
