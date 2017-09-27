@@ -8,7 +8,7 @@ import {DataTableModule} from "angular2-datatable";
 import { TreeModule } from 'angular-tree-component';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AngularEchartsModule } from 'ngx-echarts';
-import { MdDatepickerModule, MdNativeDateModule} from '@angular/material/@angular/material';
+import { MdDatepickerModule, MdNativeDateModule} from '@angular/material';
 
 import {ToasterModule, ToasterService} from 'angular2-toaster';
 import { FormsModule } from '@angular/forms';
@@ -128,7 +128,7 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     ),
-    // MdNativeDateModule,
+    MdNativeDateModule,
     MdDatepickerModule
     
     

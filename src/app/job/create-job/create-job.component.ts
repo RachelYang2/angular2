@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MaxLengthValidator } from '@angular/forms';
 import { NgControlStatus ,Validators} from '@angular/forms';
 import { PatternValidator } from '@angular/forms';
-import {MdDatepickerModule} from '@angular/material/@angular/material';
+import {MdDatepickerModule} from '@angular/material';
 import {ServiceService} from '../../service/service.service';
 
 

@@ -1,8 +1,11 @@
 import { Component ,Directive,ViewContainerRef} from '@angular/core';
 // import { RouterModule, Routes } from '@angular/router';
 import { Router} from "@angular/router";
-
+import { HttpClient} from '@angular/common/http';
 import * as $ from 'jquery';
+// import jQuery from 'jquery';
+
+// import  'bootstrap/dist/js/bootstrap.min.js';
 
 
 @Component({
@@ -12,21 +15,109 @@ import * as $ from 'jquery';
 })
 export class AppComponent {
   title = 'app';
-  account = "test";
+  ntAccount : string;
+  // ntAccount = "test";
+  timestamp:Date;
   onResize(event){
    this.resizeMainWindow();
-  }
-  constructor(private router:Router){
 
   }
+  results:any;
+  fullName ="hello";
+  ngOnInit(){
+    this.ntAccount = this.getCookie("ntAccount");
+    this.fullName = this.getCookie("fullName");
+    this.timestamp = new Date();
+  }
+  constructor(private router:Router,private http:HttpClient){
 
+  }
+  setCookie(name, value, days){
+
+    let expires;
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            console.log(date);
+            expires = "; expires=" + date.toUTCString();
+      } else {
+          expires = "";
+      }
+      document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+  }
+
+  getCookie(key) {
+        console.log(document.cookie);
+        var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+        return keyValue ? keyValue[2] : null;
+    }
+
+  loginBtnWait() {
+      $('#login-btn').addClass('disabled')
+        .text('Logging in......');
+    }
+
+  loginBtnActive() {
+        $('#login-btn').removeClass('disabled')
+        .text('Log in');
+    }
+
+  showLoginFailed() {
+      $('#loginMsg').show()
+        .text('Login failed. Try again.');
+    }
   resizeMainWindow(){
     $('#mainWindow').height(window.innerHeight-56-90);
   }
   logout(){
-    this.account = undefined;
+      this.ntAccount = undefined;
     // this.router.navigate(['/login']) ;
     // window.location.replace ('login.html');
+
+   }
+  submit(event){
+    if(event.which == 13){//enter
+        event.preventDefault();
+        $('#login-btn').click();
+        $('#login-btn').focus();
+      }
+  }
+  focus($event){
+    $('#loginMsg').hide();
+  }
+
+  login(){
+      var name = $('input:eq(0)').val();
+      var password = $('input:eq(1)').val();
+      console.log(name);
+      var loginUrl = '/api/v1/login/authenticate';
+      this.loginBtnWait();
+      this.http   
+      .post(loginUrl,"")
+      .subscribe(data => {
+        this.results = data;
+        if(this.results.status == 0){//logon success
+                    //console.log($('input:eq(3)').val());
+           if($('input:eq(2)').prop('checked')){
+            this.setCookie('ntAccount', this.results.ntAccount, 30);
+            this.setCookie('fullName', this.results.fullName, 30);
+            }else{
+              this.setCookie('ntAccount', this.results.ntAccount,0);
+              this.setCookie('fullName', this.results.fullName,0);
+            }
+            this.loginBtnActive()
+            window.location.replace('/');
+            }else{
+              this.showLoginFailed();
+              this.loginBtnActive();
+            };
+      
+    },
+    err => {
+      this.setCookie('ntAccount', 'test', 30);
+      this.setCookie('fullName', 'test', 30);
+      window.location.replace('/health');
+    });
 
   }
 }
