@@ -26,7 +26,6 @@ import { DataassetComponent } from './dataasset/dataasset.component';
 import { CreateJobComponent } from './job/create-job/create-job.component';
 import { AcComponent} from './measure/create-measure/ac/ac.component';
 import { PrComponent } from './measure/create-measure/pr/pr.component';
-import { LoginComponent } from './login/login.component';
 
 
 
@@ -80,15 +79,11 @@ const appRoutes: Routes = [
     path: 'metrics',
     component:MetricComponent
   },
-  {
-    path: 'login',
-    component:LoginComponent
+  { 
+    path: '',
+    redirectTo: 'health',
+    pathMatch: 'full'
   },
-  // { 
-  //   path: '',
-  //   redirectTo: 'health',
-  //   pathMatch: 'full'
-  // },
   // { 
   //   path: '**',
   //   component: AppComponent 
@@ -112,7 +107,6 @@ const appRoutes: Routes = [
     CreateJobComponent,
     AcComponent,
     PrComponent,
-    LoginComponent,
   ],
   imports: [
     BrowserModule,

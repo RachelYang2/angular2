@@ -50,6 +50,8 @@ class Col{
 export class AcComponent implements OnInit {
 
   currentStep = 1;
+  org:string;
+  desc:string;
   selection = [];
   selectedAll = false;
   selectedAllTarget = false;
@@ -66,12 +68,16 @@ export class AcComponent implements OnInit {
   schemaCollection:Col[];
   schemaCollectionTarget:Col[];
   matchFunctions = ['=', '!=', '>', '>=','<',"<="];
+  data:any;
 
   measureTypes = ['accuracy','validity','anomaly detection','publish metrics'];
   type = 'accuracy';
   newMeasure = {
     "name":'',
     "process.type": "batch",
+    "owner":"",
+    "description":"",
+    "organization":"",
     "data.sources": [
     {
       "name": "source",
@@ -247,6 +253,9 @@ export class AcComponent implements OnInit {
       this.newMeasure = {
          "name":this.name,
          "process.type": "batch",
+         "owner":this.owner,
+         "description":this.desc,
+         "organization":this.org,
          "data.sources": [
          {
            "name": "source",
@@ -343,123 +352,123 @@ export class AcComponent implements OnInit {
     
   }
 
-  data: { [key: string]: Array<object>; } = {
-    "default": [
-        {
-            "tableName": "ext",
-            "dbName": "default",
-            "owner": "hadoop",
-            "createTime": 1488353464,
-            "lastAccessTime": 0,
-            "retention": 0,
-            "sd": {
-                "cols": [
-                    {
-                        "name": "id",
-                        "type": "int",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "name",
-                        "type": "string",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "age",
-                        "type": "int",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    }
-                ],
-                "location": "hdfs://10.9.246.187/user/hive/ext",
-            },
-        },
-        {
-            "tableName": "ext1",
-            "dbName": "default",
-            "owner": "hadoop",
-            "createTime": 1489382943,
-            "lastAccessTime": 0,
-            "retention": 0,
-            "sd": {
-                "cols": [
-                    {
-                        "name": "id",
-                        "type": "int",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "name",
-                        "type": "string",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "age",
-                        "type": "int",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    }
-                ],
-                "location": "hdfs://10.9.246.187/user/hive/ext1",
-            },
-        }
-    ],
-    "griffin": [
-        {
-            "tableName": "avr_out",
-            "dbName": "griffin",
-            "owner": "hadoop",
-            "createTime": 1493892603,
-            "lastAccessTime": 0,
-            "retention": 0,
-            "sd": {
-                "cols": [
-                    {
-                        "name": "id",
-                        "type": "bigint",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "age",
-                        "type": "int",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    },
-                    {
-                        "name": "desc",
-                        "type": "string",
-                        "comment": null,
-                        "setName": true,
-                        "setComment": false,
-                        "setType": true
-                    }
-                ],
-                "location": "hdfs://10.9.246.187/griffin/data/batch/avr_out",
-            },
-        }
-    ],
-  };
+  // data: { [key: string]: Array<object>; } = {
+  //   "default": [
+  //       {
+  //           "tableName": "ext",
+  //           "dbName": "default",
+  //           "owner": "hadoop",
+  //           "createTime": 1488353464,
+  //           "lastAccessTime": 0,
+  //           "retention": 0,
+  //           "sd": {
+  //               "cols": [
+  //                   {
+  //                       "name": "id",
+  //                       "type": "int",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "name",
+  //                       "type": "string",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "age",
+  //                       "type": "int",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   }
+  //               ],
+  //               "location": "hdfs://10.9.246.187/user/hive/ext",
+  //           },
+  //       },
+  //       {
+  //           "tableName": "ext1",
+  //           "dbName": "default",
+  //           "owner": "hadoop",
+  //           "createTime": 1489382943,
+  //           "lastAccessTime": 0,
+  //           "retention": 0,
+  //           "sd": {
+  //               "cols": [
+  //                   {
+  //                       "name": "id",
+  //                       "type": "int",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "name",
+  //                       "type": "string",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "age",
+  //                       "type": "int",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   }
+  //               ],
+  //               "location": "hdfs://10.9.246.187/user/hive/ext1",
+  //           },
+  //       }
+  //   ],
+  //   "griffin": [
+  //       {
+  //           "tableName": "avr_out",
+  //           "dbName": "griffin",
+  //           "owner": "hadoop",
+  //           "createTime": 1493892603,
+  //           "lastAccessTime": 0,
+  //           "retention": 0,
+  //           "sd": {
+  //               "cols": [
+  //                   {
+  //                       "name": "id",
+  //                       "type": "bigint",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "age",
+  //                       "type": "int",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   },
+  //                   {
+  //                       "name": "desc",
+  //                       "type": "string",
+  //                       "comment": null,
+  //                       "setName": true,
+  //                       "setComment": false,
+  //                       "setType": true
+  //                   }
+  //               ],
+  //               "location": "hdfs://10.9.246.187/griffin/data/batch/avr_out",
+  //           },
+  //       }
+  //   ],
+  // };
   
   options: ITreeOptions = {
     displayField: 'name',
@@ -532,9 +541,12 @@ export class AcComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.nodeList = new Array();
-    let i = 1;
-    for (let db in this.data) {
+    var allDataassets = this.servicecService.config.uri.dataassetlist;
+    this.http.get(allDataassets).subscribe(data =>{
+      this.nodeList = new Array();
+      let i = 1;
+      this.data = data;
+      for (let db in this.data) {
         let new_node = new node();
         new_node.name = db;
         new_node.id = i;
@@ -558,5 +570,7 @@ export class AcComponent implements OnInit {
         this.nodeList.push(new_node);
     }
     this.nodeListTarget = JSON.parse(JSON.stringify(this.nodeList));
+    });
+    
   };
 }

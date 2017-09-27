@@ -3,6 +3,8 @@ import { Component ,Directive,ViewContainerRef} from '@angular/core';
 import { Router} from "@angular/router";
 import { HttpClient} from '@angular/common/http';
 import * as $ from 'jquery';
+import {ServiceService} from './service/service.service';
+
 // import jQuery from 'jquery';
 
 // import  'bootstrap/dist/js/bootstrap.min.js';
@@ -12,6 +14,7 @@ import * as $ from 'jquery';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  providers:[ServiceService]
 })
 export class AppComponent {
   title = 'app';
@@ -29,7 +32,7 @@ export class AppComponent {
     this.fullName = this.getCookie("fullName");
     this.timestamp = new Date();
   }
-  constructor(private router:Router,private http:HttpClient){
+  constructor(private router:Router,private http:HttpClient,public servicecService:ServiceService){
 
   }
   setCookie(name, value, days){
@@ -93,24 +96,26 @@ export class AppComponent {
       var loginUrl = '/api/v1/login/authenticate';
       this.loginBtnWait();
       this.http   
-      .post(loginUrl,"")
+      .post(loginUrl,JSON.stringify({username:name, password:password}))
       .subscribe(data => {
         this.results = data;
-        if(this.results.status == 0){//logon success
-                    //console.log($('input:eq(3)').val());
+        if(this.results.status == 0)
+          {//logon success
            if($('input:eq(2)').prop('checked')){
             this.setCookie('ntAccount', this.results.ntAccount, 30);
             this.setCookie('fullName', this.results.fullName, 30);
-            }else{
+           }else
+           {
               this.setCookie('ntAccount', this.results.ntAccount,0);
               this.setCookie('fullName', this.results.fullName,0);
-            }
+           }
             this.loginBtnActive()
             window.location.replace('/');
-            }else{
+          }
+          else{
               this.showLoginFailed();
               this.loginBtnActive();
-            };
+          };
       
     },
     err => {

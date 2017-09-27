@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
+import {ServiceService} from './service.service';
+import {HttpClient} from '@angular/common/http';
+
+
 
 @Injectable()
 export class GetMetricService {
 
-  constructor() { }
+  constructor(private http:HttpClient,public servicecService:ServiceService) { }
 
   orgs = [];
   finalData = [];
@@ -15,171 +19,170 @@ export class GetMetricService {
   chartOption = new Map();
   // var formatUtil = echarts.format;
   metricData = [];
-  originalData = [];
+  originalData :any;
   metricName = [];
   metricNameUnique = [];
   myData = [];
-  allData = {
-  "hits" : {
-    "hits" : [
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493962623461,
-          "total" : 8043288,
-          "matched" : 8034775
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493973423461,
-          "total" : 9479698,
-          "matched" : 9476094
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493987823461,
-          "total" : 9194117,
-          "matched" : 9164237
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1493995023461,
-          "total" : 9429018,
-          "matched" : 9375324
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493959023461,
-          "total" : 1086389,
-          "matched" : 1083336
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493973423461,
-          "total" : 1090650,
-          "matched" : 1090445
-        }
-      },
-      {
-        "_source" : {
-          "name" : "xixi",
-          "tmst" : 1494009423461,
-          "total" : 8029660,
-          "matched" : 7979653
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493980623461,
-          "total" : 1088940,
-          "matched" : 1079003
-        }
-      },
-      {
-        "_source" : {
-          "name" : "haha",
-          "tmst" : 1493995023461,
-          "total" : 1048833,
-          "matched" : 1047890
-        }
-      },
-      {
-        "_source" : {
-          "name" : "search_hourly",
-          "tmst" : 1493948223461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948224461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "search_hourly",
-          "tmst" : 1493948225461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948226461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948223461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "hh",
-          "tmst" : 1493948224461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948225461,
-          "total" : 100,
-          "matched" : 99
-        }
-      },
-      {
-        "_source" : {
-          "name" : "buy_hourly",
-          "tmst" : 1493948226461,
-          "total" : 100,
-          "matched" : 99
-        }
-      }
-    ]
-  }
-};
+//   allData = {
+//   "hits" : {
+//     "hits" : [
+//       {
+//         "_source" : {
+//           "name" : "xixi",
+//           "tmst" : 1493962623461,
+//           "total" : 8043288,
+//           "matched" : 8034775
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "xixi",
+//           "tmst" : 1493973423461,
+//           "total" : 9479698,
+//           "matched" : 9476094
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "xixi",
+//           "tmst" : 1493987823461,
+//           "total" : 9194117,
+//           "matched" : 9164237
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "xixi",
+//           "tmst" : 1493995023461,
+//           "total" : 9429018,
+//           "matched" : 9375324
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "haha",
+//           "tmst" : 1493959023461,
+//           "total" : 1086389,
+//           "matched" : 1083336
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "haha",
+//           "tmst" : 1493973423461,
+//           "total" : 1090650,
+//           "matched" : 1090445
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "xixi",
+//           "tmst" : 1494009423461,
+//           "total" : 8029660,
+//           "matched" : 7979653
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "haha",
+//           "tmst" : 1493980623461,
+//           "total" : 1088940,
+//           "matched" : 1079003
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "haha",
+//           "tmst" : 1493995023461,
+//           "total" : 1048833,
+//           "matched" : 1047890
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "search_hourly",
+//           "tmst" : 1493948223461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "hh",
+//           "tmst" : 1493948224461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "search_hourly",
+//           "tmst" : 1493948225461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "hh",
+//           "tmst" : 1493948226461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "buy_hourly",
+//           "tmst" : 1493948223461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "hh",
+//           "tmst" : 1493948224461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "buy_hourly",
+//           "tmst" : 1493948225461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       },
+//       {
+//         "_source" : {
+//           "name" : "buy_hourly",
+//           "tmst" : 1493948226461,
+//           "total" : 100,
+//           "matched" : 99
+//         }
+//       }
+//     ]
+//   }
+// };
+     // let orgWithMeasure = {"waq":["waq","search_hourly"],"xi":["xixi","haha"],"hadoop":["viewitem_hourly","buy_hourly","hh"]};
 
   renderData(){
-  	 var url_organization = 'http://localhost:8080/orgWithMetricsName';
-    // this.http.get(url_organization).subscribe(data => {
-     let orgWithMeasure = {"waq":["waq","search_hourly"],"xi":["xixi","haha"],"hadoop":["viewitem_hourly","buy_hourly","hh"]};
-     var orgNode = null;
-       	for(let orgName in orgWithMeasure){
-            orgNode = new Object();
-            orgNode.name = orgName;
-            orgNode.measureMap = orgWithMeasure[orgName];
-            this.orgs.push(orgNode);
-       }
-       this.originalOrgs = this.orgs;
-         // $http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).then(function successCallback(data) {
-        // $http.get(url_dashboard).then(function successCallback(data){
-        	// this.http.get(url_dashboard).subscribe(data => {
-            // this.originalData = angular.copy(data.data);
-            // this.myData = angular.copy(this.originalData.hits.hits);
-            this.myData = this.allData.hits.hits;
+  	var url_organization = 'http://localhost:8080/orgWithMetricsName';
+    this.http.get(url_organization).subscribe(data => {
+      let orgWithMeasure = data;
+      var orgNode = null;
+      for(let orgName in orgWithMeasure){
+        orgNode = new Object();
+        orgNode.name = orgName;
+        orgNode.measureMap = orgWithMeasure[orgName];
+        this.orgs.push(orgNode);
+      }
+      this.originalOrgs = this.orgs;
+      let url_dashboard = this.servicecService.config.uri.dashboard;
+      this.http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe(data => {
+            this.originalData = JSON.parse(JSON.stringify(data));
+            this.myData = JSON.parse(JSON.stringify(this.originalData.hits.hits));
             this.metricName = [];
             for(var i = 0;i<this.myData.length;i++){
                 this.metricName.push(this.myData[i]._source.name);
@@ -220,7 +223,10 @@ export class GetMetricService {
                     }
                 }
                 this.finalData.push(node);
-  			}
-  			return JSON.parse(JSON.stringify(this.finalData));
-		};
+  			    }
+            console.log(this.finalData);
+            return JSON.parse(JSON.stringify(this.finalData));
+      });
+    });
+	};
 }

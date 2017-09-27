@@ -8,7 +8,9 @@ export class ServiceService {
     public BACKEND_SERVER = 'http://localhost:8080';
     // public this.BACKEND_SERVER = '';
     public API_ROOT_PATH = '/api/v1';
-    public ES_SERVER = "http://" + location.host.replace("8080", "9200");
+    // public ES_SERVER = "http://" + location.host.replace("8080", "9200");
+    public ES_SERVER = "http://10.64.222.80:39200" ;
+
     public config = {
           // URI paths, always have a trailing /
           uri: {
@@ -17,6 +19,7 @@ export class ServiceService {
               dbtree:this.BACKEND_SERVER + '/metadata/hive/allTables',
               schemadefinition: this.BACKEND_SERVER + '/metadata/hive/table',
               dataassetlist: this.BACKEND_SERVER + '/metadata/hive/allTables',
+
 
               // adddataasset: this.BACKEND_SERVER + this.API_ROOT_PATH + '/dataassets',
               // updatedataasset: this.BACKEND_SERVER + this.API_ROOT_PATH + '/dataassets',

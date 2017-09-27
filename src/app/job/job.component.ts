@@ -132,32 +132,16 @@ export class JobComponent implements OnInit {
   ngOnInit():void {
 
     var self = this;
-  	this.http.get('http://localhost:8080/jobs/').subscribe(data =>{   
-
+    let allJobs = this.servicecService.config.uri.allJobs;
+  	this.http.get(allJobs).subscribe(data =>{       
         this.results = Object.keys(data).map(function(index){
           let job = data[index];
           job.showDetail = false;
           job.interval = self.intervalFormat(job.interval);
           return job;
-        });     
-        console.log(data);
-        console.log(this.results);
-        this.source = new LocalDataSource(this.results);
-        this.source.load(this.results);
-
+        });    
     });
-
-   //  var self = this;
-   //  let allJobs = this.servicecService.config.uri.allJobs;
-  	// this.http.get(allJobs).subscribe(data =>{       
-   //      this.results = Object.keys(data).map(function(index){
-   //        let job = data[index];
-   //        job.showDetail = false;
-   //        job.interval = self.intervalFormat(job.interval);
-   //        return job;
-   //      });    
-   //  });
-   // this.results = this.resultData;
+   this.results = this.resultData;
 
   };
 }
