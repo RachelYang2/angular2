@@ -1,5 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy,AfterViewInit,NgZone } from '@angular/core';
 import {ChartService} from '../../service/chart.service';
+import {ServiceService} from '../../service/service.service';
+
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import {HttpClient} from '@angular/common/http';
@@ -9,12 +11,13 @@ import * as $ from 'jquery';
   selector: 'app-detail-metric',
   templateUrl: './detail-metric.component.html',
   styleUrls: ['./detail-metric.component.css'],
-  providers:[ChartService]
+  providers:[ChartService,ServiceService]
 })
 export class DetailMetricComponent implements OnInit {
 
   constructor(public chartService:ChartService,private route: ActivatedRoute,
-  private router: Router,private http:HttpClient,private zone:NgZone) {
+  private router: Router,private http:HttpClient,private zone:NgZone,public servicecService:ServiceService
+) {
     //     var self = this;
     // setTimeout(function () {
     //     self.currentMeasure = self.route.snapshot.paramMap.get('name');
@@ -28,6 +31,7 @@ export class DetailMetricComponent implements OnInit {
   chartOption:{};
   data:any;
   currentMeasure:string;
+  finalData:any;
 //   metricData = {
 // "hits" : {
 //     "hits" : [
@@ -175,10 +179,37 @@ export class DetailMetricComponent implements OnInit {
   ngOnInit() {
   	console.log('init');
   	this.currentMeasure = this.route.snapshot.paramMap.get('name');
-  	this.chartOption = this.chartService.getOptionBig(this.getData(this.currentMeasure));
-    $('#bigChartDiv').height(window.innerHeight-120+'px');
+    // this.finalData = this.getData(this.currentMeasure);
+    var self = this;
+      // let url_dashboard = this.servicecService.config.uri.dashboard;
+    var metricDetailUrl = this.servicecService.config.uri.dashboard;
+      // let data = this.metricData;
+      this.http.post(metricDetailUrl, {"query": {  "bool":{"filter":[ {"term" : {"name": this.currentMeasure }}]}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe( data=> {
+         var metric = {
+           'name':'',
+           'timestamp':0,
+           'dq':0,
+           'details':[]
+         };
+        this.data = data;
+         metric.name = this.data.hits.hits[0]._source.name;
+         metric.timestamp =this.data.hits.hits[this.data.hits.hits.length-1]._source.tmst;
+         metric.dq = this.data.hits.hits[this.data.hits.hits.length-1]._source.matched/this.data.hits.hits[this.data.hits.hits.length-1]._source.matched*100;
+         metric.details = new Array();
+         for(let point of this.data.hits.hits){
+             metric.details.push(point);
+         };
+         this.chartOption = this.chartService.getOptionBig(metric);
+      $('#bigChartDiv').height(window.innerHeight-120+'px');
     $('#bigChartDiv').width(window.innerWidth-400+'px');
-  	$('#bigChartContainer').show();
+    $('#bigChartContainer').show();
+         // return metric;
+     });
+    // setTimeout(function function_name(argument) {
+    //   // body...
+    
+    // })
+    
   }
   ngAfterContentInit (){
     console.log('after content init');
@@ -210,24 +241,6 @@ export class DetailMetricComponent implements OnInit {
   }
 
   getData(metricName){
-  	 var metricDetailUrl = '...';
-      // let data = this.metricData;
-      this.http.post(metricDetailUrl, {"query": {  "bool":{"filter":[ {"term" : {"name": metricName }}]}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe( data=> {
-       	var metric = {
-       		'name':'',
-       		'timestamp':0,
-       		'dq':0,
-       		'details':[]
-       	};
-        this.data = data;
-       	metric.name = this.data.hits.hits[0]._source.name;
-       	metric.timestamp =this.data.hits.hits[this.data.hits.hits.length-1]._source.tmst;
-       	metric.dq = this.data.hits.hits[this.data.hits.hits.length-1]._source.matched/this.data.hits.hits[this.data.hits.hits.length-1]._source.matched*100;
-       	metric.details = new Array();
-       	for(let point of this.data.hits.hits){
-       	    metric.details.push(point);
-       	};
-       	return metric;
-     });
+  	 
   }
 }

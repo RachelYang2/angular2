@@ -1,60 +1,4 @@
-@import url('../../node_modules/bootstrap/dist/css/bootstrap.css');
-*{
-	color:white;
-}
-
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-    color: #ffffff;
-    background-color: transparent;
-}
-.navbar-default{
-	background-color: #060606;
-	border-color: #282828;
-}
-#toggle{
-    background: #060606;
-    color:#fff;
-}
-#toggle:hover{
-    color: #fff;
-    background-color: #060606;
-}
-.re:hover{
-    cursor: pointer;
-}
-
-
-h3{
-    font-size: 34px;
-}
-input{
-    margin: 12px;
-}
-
-
-
-.dropdown-menu{
-    background-color: #222222;
-}
-.dropdown-menu > li > a{
-    color: #ffffff;
-}
-.dropdown-menu > li > a:hover{
-    text-decoration: none;
-    color: #ffffff;
-    background-color: #2a9fd6;
-}
-.navbar-default .navbar-nav > .open > a {
-    background-color: #333;
-}
-.btn-circle{
-    font-size: 16px;
-    border-radius: 15px 15px 15px 15px;
-}
-.btn-primary{
-    background-color: #2a9fd6;
-}
-
+@import url('../../../node_modules/bootstrap/dist/css/bootstrap.css');
 #content {
     background-color: #1A237E;
     background-position: center center;
@@ -119,6 +63,3 @@ hr {
     border-radius: 4px;
     text-align:center;
 }
-
-
-

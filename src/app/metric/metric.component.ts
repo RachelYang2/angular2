@@ -2,24 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import  {HttpClient} from '@angular/common/http';
 import  {Router} from "@angular/router";
 import {ChartService} from '../service/chart.service';
-import {GetMetricService} from '../service/get-metric.service';
+// import {GetMetricService} from '../service/get-metric.service';
+import {ServiceService} from '../service/service.service';
 import * as $ from 'jquery';
 
 @Component({
   selector: 'app-metric',
   templateUrl: './metric.component.html',
   styleUrls: ['./metric.component.css'],
-  providers:[ChartService,GetMetricService]
+  providers:[ChartService,ServiceService]
 })
 export class MetricComponent implements OnInit {
 
   constructor(
   	public chartService:ChartService,
-  	public getMetricService:GetMetricService,
+  	// public getMetricService:GetMetricService,
+    public servicecService:ServiceService,
   	private http: HttpClient,
   	private router:Router) { }
   orgs = [];
-  finalData :any;
+  // finalData :any;
+  data :any;
+  finalData = [];
   originalOrgs = [];
   status:{
   	'health':number,
@@ -28,7 +32,8 @@ export class MetricComponent implements OnInit {
   chartOption = new Map();
   // var formatUtil = echarts.format;
   dataData = [];
-  originalData = [];
+  // originalData = [];
+  originalData:any;
   metricName = [];
   metricNameUnique = [];
   myData = [];
@@ -36,6 +41,8 @@ export class MetricComponent implements OnInit {
   selectedMeasureIndex = 0;
   chartHeight:any;
   selectedOrgIndex = 0;
+  // var formatUtil = echarts.format;
+  metricData = [];
 
   // metricData = {
   // "hits" : {
@@ -135,18 +142,97 @@ export class MetricComponent implements OnInit {
   }
 
   ngOnInit() {
-  	var self = this;
-    self.finalData = self.getMetricService.renderData();
-    self.originalData = JSON.parse(JSON.stringify(self.finalData));
-  	setTimeout(function(){
-  		// body...
-      // if(self.getMetricService.renderData()){
+    this.renderData();
+  	// var self = this;
+   //  // self.finalData = self.getMetricService.renderData();
+   //  // self.finalData = self.renderData();
+   //  // self.originalData = JSON.parse(JSON.stringify(self.finalData));
+   //  self.data = self.renderData();
+  	// setTimeout(function(){
+  	// 	// body...
+   //    // if(self.getMetricService.renderData()){
       
-  		self.redraw(self.finalData);
-      // }
-  	},0);
+  	// 	// self.redraw(self.finalData);
+   //    // self.redraw(self.renderData());
+   //    self.redraw(self.data);
+   //    // }
+  	// },0);
   	
   }
+  
+
+  renderData(){
+    var url_organization = this.servicecService.config.uri.organization;
+    this.http.get(url_organization).subscribe(data => {
+      let orgWithMeasure = data;
+      var orgNode = null;
+      for(let orgName in orgWithMeasure){
+        orgNode = new Object();
+        orgNode.name = orgName;
+        orgNode.measureMap = orgWithMeasure[orgName];
+        this.orgs.push(orgNode);
+      }
+      this.originalOrgs = this.orgs;
+      let url_dashboard = this.servicecService.config.uri.dashboard;
+      this.http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe(data => {
+            // this.originalData = JSON.parse(JSON.stringify(data));
+            this.originalData = data;
+            this.myData = JSON.parse(JSON.stringify(this.originalData.hits.hits));
+            this.metricName = [];
+            for(var i = 0;i<this.myData.length;i++){
+                this.metricName.push(this.myData[i]._source.name);
+            }
+            this.metricNameUnique = [];
+            for(let name of this.metricName){
+                if(this.metricNameUnique.indexOf(name) === -1){
+                    this.metricData[this.metricNameUnique.length] = new Array();
+                    this.metricNameUnique.push(name);
+                }
+            };
+            for(var i = 0;i<this.myData.length;i++){
+                for(var j = 0 ;j<this.metricNameUnique.length;j++){
+                    if(this.myData[i]._source.name==this.metricNameUnique[j]){
+                        this.metricData[j].push(this.myData[i]);
+                    }
+                }
+            }
+            for(let sys of this.originalOrgs){
+                var node = null;
+                node = new Object();
+                node.name = sys.name;
+                node.dq = 0;
+                node.metrics = new Array();
+                for (let metric of this.metricData){
+                    if(sys.measureMap.indexOf(metric[metric.length-1]._source.name)!= -1){
+                        var metricNode = {
+                            'name':'',
+                            'timestamp':'',
+                            'dq':0,
+                            'details':[]
+                        }
+                        metricNode.name = metric[metric.length-1]._source.name;
+                        metricNode.timestamp = metric[metric.length-1]._source.tmst;
+                        metricNode.dq = metric[metric.length-1]._source.matched/metric[metric.length-1]._source.total*100;
+                        metricNode.details = metric;
+                        node.metrics.push(metricNode);
+                    }
+                }
+                this.finalData.push(node);
+            }
+            this.originalData = JSON.parse(JSON.stringify(this.finalData));
+            var self = this;
+            setTimeout(function function_name(argument) {
+              // body...
+              self.redraw(self.finalData);
+
+            },0)
+            console.log(this.finalData);
+            // return JSON.parse(JSON.stringify(this.finalData));
+            return this.finalData;
+      });
+    });
+  };
+
 
   getOption(parent,i){
    	return this.chartOption.get('thumbnail'+parent+'-'+i);
@@ -207,7 +293,9 @@ export class MetricComponent implements OnInit {
         }
       }
       var self = this;
+      // self.data = self.renderData();
       setTimeout(function() {
+          // self.redraw(self.finalData);
           self.redraw(self.finalData);
       }, 0);
       console.log(this.originalData);
@@ -237,7 +325,9 @@ export class MetricComponent implements OnInit {
         };
       }
       var self = this;
+      // self.data = self.renderData();
       setTimeout(function() {
+          // self.redraw(self.finalData);
           self.redraw(self.finalData);
       }, 0);
       console.log(this.originalData);

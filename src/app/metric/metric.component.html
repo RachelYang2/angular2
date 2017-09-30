@@ -6,7 +6,7 @@
 	            <label>Organization: </label>
 	            <select ng-disabled="orgSelectDisabled" class="form-control"  (change)="changeOrg()" id="orgSelector" [(ngModel)]="selectedOrgIndex">
                    <option value="0">-- All --</option>
-                   <option *ngFor="let opt of originalData;let m = index" value="{{m+1}}"  >{{opt.name}}</option>
+                   <option *ngFor="let opt of originalOrgs;let m = index" value="{{m+1}}"  >{{opt.name}}</option>
 	            </select>
 	      	</span>
 				<span style="padding-left:30px;">

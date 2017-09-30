@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import  {HttpClient} from '@angular/common/http';
 import  {Router} from "@angular/router";
-import {GetMetricService} from '../service/get-metric.service'
+// import {GetMetricService} from '../service/get-metric.service'
+import {ServiceService} from '../service/service.service';
 
 import * as $ from 'jquery';
 
@@ -9,22 +10,32 @@ import * as $ from 'jquery';
   selector: 'app-health',
   templateUrl: './health.component.html',
   styleUrls: ['./health.component.css'],
-  providers:[GetMetricService]
+  // providers:[GetMetricService]
 })
 export class HealthComponent implements OnInit {
 
-  constructor(private http: HttpClient,private router:Router,
-    public getMetricService: GetMetricService) { };
+  constructor(private http: HttpClient,private router:Router,public servicecService:ServiceService) { };
   chartOption:object;
   // var formatUtil = echarts.format;
   orgs = [];
   dataData = [];
   finalData = [];
-  originalData = [];
+  // originalData = [];
+  originalData:any;
   metricName = [];
   metricNameUnique = [];
   myData = [];
   originalOrgs = [];
+
+
+  status:{
+    'health':number,
+    'invalid':number
+  };
+  // var formatUtil = echarts.format;
+  metricData = [];
+
+
 //   metricData = {
 //   "hits" : {
 //     "hits" : [
@@ -233,8 +244,84 @@ export class HealthComponent implements OnInit {
     this.resizeTreeMap();
     this.chartOption = option;
   };
+  
+
+  renderData(){
+    var url_organization = this.servicecService.config.uri.organization;
+    this.http.get(url_organization).subscribe(data => {
+      let orgWithMeasure = data;
+      var orgNode = null;
+      for(let orgName in orgWithMeasure){
+        orgNode = new Object();
+        orgNode.name = orgName;
+        orgNode.measureMap = orgWithMeasure[orgName];
+        this.orgs.push(orgNode);
+      }
+      this.originalOrgs = this.orgs;
+      let url_dashboard = this.servicecService.config.uri.dashboard;
+      this.http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe(data => {
+            this.originalData = JSON.parse(JSON.stringify(data));
+            this.myData = JSON.parse(JSON.stringify(this.originalData.hits.hits));
+            this.metricName = [];
+            for(var i = 0;i<this.myData.length;i++){
+                this.metricName.push(this.myData[i]._source.name);
+            }
+            this.metricNameUnique = [];
+            for(let name of this.metricName){
+                if(this.metricNameUnique.indexOf(name) === -1){
+                    this.metricData[this.metricNameUnique.length] = new Array();
+                    this.metricNameUnique.push(name);
+                }
+            };
+            for(var i = 0;i<this.myData.length;i++){
+                for(var j = 0 ;j<this.metricNameUnique.length;j++){
+                    if(this.myData[i]._source.name==this.metricNameUnique[j]){
+                        this.metricData[j].push(this.myData[i]);
+                    }
+                }
+            }
+            for(let sys of this.originalOrgs){
+                var node = null;
+                node = new Object();
+                node.name = sys.name;
+                node.dq = 0;
+                node.metrics = new Array();
+                for (let metric of this.metricData){
+                    if(sys.measureMap.indexOf(metric[metric.length-1]._source.name)!= -1){
+                        var metricNode = {
+                            'name':'',
+                            'timestamp':'',
+                            'dq':0,
+                            'details':[]
+                        }
+                        metricNode.name = metric[metric.length-1]._source.name;
+                        metricNode.timestamp = metric[metric.length-1]._source.tmst;
+                        metricNode.dq = metric[metric.length-1]._source.matched/metric[metric.length-1]._source.total*100;
+                        metricNode.details = metric;
+                        node.metrics.push(metricNode);
+                    }
+                }
+                this.finalData.push(node);
+            }
+            console.log(this.finalData);
+            var self = this;
+            setTimeout(function function_name(argument) {
+              // body...
+              self.renderTreeMap(self.finalData);
+            })
+            return JSON.parse(JSON.stringify(this.finalData));
+      });
+    });
+  };
 
   ngOnInit() {
-       this.renderTreeMap(this.getMetricService.renderData());
+    var self = this;
+    this.renderData();
+       // this.renderTreeMap(this.getMetricService.renderData());
+       // setTimeout(function function_name(argument) {
+       //   // body...
+       //     self.renderTreeMap(self.renderData());
+
+       // })
   };
 }

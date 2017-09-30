@@ -32,11 +32,11 @@ export class AppComponent {
     this.fullName = this.getCookie("fullName");
     this.timestamp = new Date();
   }
-  constructor(private router:Router,private http:HttpClient,public servicecService:ServiceService){
+  constructor(private router:Router,private http:HttpClient,public serviceService:ServiceService){
 
   }
   setCookie(name, value, days){
-
+    
     let expires;
         if (days) {
             var date = new Date();
@@ -46,7 +46,8 @@ export class AppComponent {
       } else {
           expires = "";
       }
-      document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+      // document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+      document.cookie = name + "=" + value + expires + "; path=/";
   }
 
   getCookie(key) {
@@ -93,10 +94,11 @@ export class AppComponent {
       var name = $('input:eq(0)').val();
       var password = $('input:eq(1)').val();
       console.log(name);
-      var loginUrl = '/api/v1/login/authenticate';
+      var loginUrl = 'http://localhost:8080/api/v1/login/authenticate';
       this.loginBtnWait();
+
       this.http   
-      .post(loginUrl,JSON.stringify({username:name, password:password}))
+      .post(loginUrl,{username:name, password:password})
       .subscribe(data => {
         this.results = data;
         if(this.results.status == 0)
@@ -119,9 +121,8 @@ export class AppComponent {
       
     },
     err => {
-      this.setCookie('ntAccount', 'test', 30);
-      this.setCookie('fullName', 'test', 30);
-      window.location.replace('/health');
+          this.showLoginFailed();
+          this.loginBtnActive();
     });
 
   }

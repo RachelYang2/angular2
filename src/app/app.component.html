@@ -31,7 +31,7 @@
                         <li><a href="https://github.com/eBay/griffin/blob/master/griffin-doc/userguide.md" target="_blank"><i class="fa fa-question-circle fa-fw"></i> User Guide</a></li>
                         <li><a href="mailto://ebay-griffin-devs@googlegroups.com" ><i class="fa fa-envelope fa-fw"></i> Contact us</a></li>
                         <li class="divider"></li>
-                        <li><a  (click)="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a (click)="logout()" class="re"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                 </li>
@@ -73,7 +73,7 @@
     </div>
 </div>
 </div>
-
+<!-- <app-login></app-login> -->
 <div *ngIf="!ntAccount" id="content" class="container-fluid">
         <div class="row" id="content-row">
 
@@ -141,5 +141,4 @@
         </div>
 
 </div>
-
 

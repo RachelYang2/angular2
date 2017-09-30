@@ -7,7 +7,7 @@
     </p>
 
     <div id="modelContainer">
-        <table class="table table-striped" [mfData]="results" #mf="mfDataTable" [mfRowsOnPage]="5">
+        <table class="table table-striped" [mfData]="results" #mf="mfDataTable" [mfRowsOnPage]="10">
             <thead>
             <tr style="background-color:#7D95CC">
                 <th st-ratio="15">Job Name</th>
@@ -56,7 +56,7 @@
             </tr>
             <tr *ngIf="row.showDetail">
                 <td colspan="7" style="padding:20px 30px 10px 30px;">
-                    <table class="table table-striped" [mfData]="allInstances" #mf2="mfDataTable" [mfRowsOnPage]="5">
+                    <table class="table table-striped" [mfData]="allInstances" #mf2="mfDataTable" [mfRowsOnPage]="10">
                         <thead>
                         <tr style="background-color:#7D95CC">
                             <th style="width:30%" >AppID</th>

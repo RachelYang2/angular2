@@ -3,40 +3,47 @@ import  {HttpClient} from '@angular/common/http';
 import  {Router} from "@angular/router";
 import {ChartService} from '../service/chart.service';
 import  {DatePipe} from '@angular/common';
-import {GetMetricService} from '../service/get-metric.service';
+import {ServiceService} from '../service/service.service';
+// import {GetMetricService} from '../service/get-metric.service';
 import * as $ from 'jquery';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  providers:[ChartService,GetMetricService]
+  providers:[ChartService,ServiceService]
 })
 export class SidebarComponent implements OnInit {
 
   constructor(private http: HttpClient,
   	private router:Router,
-  	public chartService:ChartService,
-  	public getMetricService:GetMetricService) {
+    public servicecService:ServiceService,
+  	public chartService:ChartService) {
   }
 
   orgs = [];
-  finalData :any;
+  finalData = [];
+  originalOrgs = [];
   status:{
   	'health':number,
   	'invalid':number
   };
+  metricData = [];
+  originalData :any;
+  metricName = [];
+  metricNameUnique = [];
+  myData = [];
   chartOption = new Map();
   // var formatUtil = echarts.format;
 
   pageInit() {
-    var allDataassets = '...';
-    var health_url = '...';
+    // var allDataassets = this.servicecService.config.uri.dataassetlist;
+    var health_url = this.servicecService.config.uri.statistics;
         this.http.get(health_url).subscribe(data => {
-          //this.status.health = data.healthyJobCount;
-          //this.status.invalid = data.jobCount - data.healthyJobCount;
+          // this.status.health = data.healthyJobCount;
+          // this.status.invalid = data.jobCount - data.healthyJobCount;
           // renderDataAssetPie(this.status);
-          //this.sideBarList();
+          this.sideBarList(null);
         },err => {});
   }
   
@@ -81,7 +88,69 @@ export class SidebarComponent implements OnInit {
    }
 
     sideBarList(sysName){
-    	this.finalData = this.getMetricService.renderData();
+    	// this.finalData = this.getMetricService.renderData();
+      var url_organization = this.servicecService.config.uri.organization;
+    this.http.get(url_organization).subscribe(data => {
+      let orgWithMeasure = data;
+      var orgNode = null;
+      for(let orgName in orgWithMeasure){
+        orgNode = new Object();
+        orgNode.name = orgName;
+        orgNode.measureMap = orgWithMeasure[orgName];
+        this.orgs.push(orgNode);
+      }
+      this.originalOrgs = this.orgs;
+      let url_dashboard = this.servicecService.config.uri.dashboard;
+      this.http.post(url_dashboard, {"query": {"match_all":{}},  "sort": [{"tmst": {"order": "asc"}}],"size":1000}).subscribe(data => {
+            // this.originalData = JSON.parse(JSON.stringify(data));
+            this.originalData = data;
+            this.myData = JSON.parse(JSON.stringify(this.originalData.hits.hits));
+            this.metricName = [];
+            for(var i = 0;i<this.myData.length;i++){
+                this.metricName.push(this.myData[i]._source.name);
+            }
+            this.metricNameUnique = [];
+            for(let name of this.metricName){
+                if(this.metricNameUnique.indexOf(name) === -1){
+                    this.metricData[this.metricNameUnique.length] = new Array();
+                    this.metricNameUnique.push(name);
+                }
+            };
+            for(var i = 0;i<this.myData.length;i++){
+                for(var j = 0 ;j<this.metricNameUnique.length;j++){
+                    if(this.myData[i]._source.name==this.metricNameUnique[j]){
+                        this.metricData[j].push(this.myData[i]);
+                    }
+                }
+            }
+            for(let sys of this.originalOrgs){
+                var node = null;
+                node = new Object();
+                node.name = sys.name;
+                node.dq = 0;
+                node.metrics = new Array();
+                for (let metric of this.metricData){
+                    if(sys.measureMap.indexOf(metric[metric.length-1]._source.name)!= -1){
+                        var metricNode = {
+                            'name':'',
+                            'timestamp':'',
+                            'dq':0,
+                            'details':[]
+                        }
+                        metricNode.name = metric[metric.length-1]._source.name;
+                        metricNode.timestamp = metric[metric.length-1]._source.tmst;
+                        metricNode.dq = metric[metric.length-1]._source.matched/metric[metric.length-1]._source.total*100;
+                        metricNode.details = metric;
+                        node.metrics.push(metricNode);
+                    }
+                }
+                this.finalData.push(node);
+            }
+            console.log(this.finalData);
+            // return JSON.parse(JSON.stringify(this.finalData));
+            return this.finalData;
+      });
+    });
     }
 
   ngOnInit() {

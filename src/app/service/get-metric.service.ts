@@ -168,7 +168,7 @@ export class GetMetricService {
      // let orgWithMeasure = {"waq":["waq","search_hourly"],"xi":["xixi","haha"],"hadoop":["viewitem_hourly","buy_hourly","hh"]};
 
   renderData(){
-  	var url_organization = 'http://localhost:8080/orgWithMetricsName';
+  	var url_organization = this.servicecService.config.uri.organization;
     this.http.get(url_organization).subscribe(data => {
       let orgWithMeasure = data;
       var orgNode = null;
